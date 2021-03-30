@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Builder
-public class MemberDto {
+public class MemberDTO {
 
     @Size(min = 1, max = 32, message = "Username can't be more than 32 characters!")
     public String username;
@@ -23,7 +23,7 @@ public class MemberDto {
     public String email;
 
     @JsonCreator
-    public MemberDto(@JsonProperty("username") String username,
+    public MemberDTO(@JsonProperty("username") String username,
                      @JsonProperty("password") String password,
                      @JsonProperty("email") String email) {
 
