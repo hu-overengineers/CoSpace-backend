@@ -1,8 +1,8 @@
-package com.overengineers.cospace.controller;
+package com.overengineers.cospace.Controller;
 
 
-import com.overengineers.cospace.auth.TokenManager;
-import com.overengineers.cospace.dto.LoginRequest;
+import com.overengineers.cospace.Auth.TokenManager;
+import com.overengineers.cospace.Dto.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

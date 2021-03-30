@@ -1,4 +1,4 @@
-package com.overengineers.cospace.entity;
+package com.overengineers.cospace.Entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

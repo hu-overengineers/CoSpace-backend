@@ -1,4 +1,4 @@
-package com.overengineers.cospace.dto;
+package com.overengineers.cospace.Dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

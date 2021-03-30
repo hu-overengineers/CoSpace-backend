@@ -1,4 +1,4 @@
-package com.overengineers.cospace.auth;
+package com.overengineers.cospace.Auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

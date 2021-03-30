@@ -1,4 +1,4 @@
-package com.overengineers.cospace.dto;
+package com.overengineers.cospace.Dto;
 
 
 import lombok.AllArgsConstructor;
