@@ -17,8 +17,8 @@ import java.util.Set;
 @Setter
 @Getter
 @SequenceGenerator(name = "idgen", sequenceName = "CLUB_SEQ")
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Club extends BaseEntity {
     @Column(name = "CLUB_NAME")
     private String clubName;
@@ -27,6 +27,6 @@ public class Club extends BaseEntity {
     private String details;
 
     @ManyToMany(mappedBy = "clubs")
-    private Set<Club> members = new HashSet<>();
+    private Set<Member> members = new HashSet<>();
     
 }

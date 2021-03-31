@@ -1,5 +1,7 @@
 package com.overengineers.cospace.Auth;
 
+import com.overengineers.cospace.Entity.Member;
+import com.overengineers.cospace.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,23 +16,17 @@ import java.util.Map;
 
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
-    private Map<String, String> users = new HashMap<>();
-
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
-    @PostConstruct
-    public void init(){
-        String password = "123";
-        String encodedPassword = passwordEncoder.encode(password);
-        users.put("yusuf",encodedPassword);
-    }
+    MemberService memberService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        if (users.containsKey(username)){
-            return new User(username, users.get(username), new ArrayList<>());
+        Member currentMember = memberService.login(username);
+        if (currentMember.isNull()){
+            throw new UsernameNotFoundException(username);
+        }else
+        {
+            return new User(currentMember.getUsername(), currentMember.getPassword(), new ArrayList<>());
         }
-        throw new UsernameNotFoundException(username);
     }
 }
