@@ -14,17 +14,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
-    private MemberRepository memberRepository;
-    private MemberMapper memberMapper;
+    private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    public MemberService(MemberRepository memberRepository, MemberMapper memberMapper) {
-        this.memberRepository = memberRepository;
-        this.memberMapper = memberMapper;
-    }
 
     public List<Member> listAllMembers() {
         return memberRepository.findAll();

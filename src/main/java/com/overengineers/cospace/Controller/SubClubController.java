@@ -1,7 +1,9 @@
 package com.overengineers.cospace.Controller;
 
+import com.overengineers.cospace.Dto.PostDTO;
 import com.overengineers.cospace.Dto.SubClubDTO;
 import com.overengineers.cospace.Entity.Club;
+import com.overengineers.cospace.Entity.Post;
 import com.overengineers.cospace.Entity.SubClub;
 import com.overengineers.cospace.Mapper.SubClubMapper;
 import com.overengineers.cospace.Repository.ClubRepository;
@@ -40,5 +42,6 @@ public class SubClubController {
         }
         return null;
     }
+
 
 }

@@ -26,6 +26,9 @@ public class SubClub extends BaseEntity {
     @ManyToMany(mappedBy = "subClubs")
     private Set<Member> members = new HashSet<>();
 
+    @OneToMany(mappedBy = "postSubClub")
+    private Set<Post> posts = new HashSet<>();
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinTable(name = "club_subClub",
             joinColumns = {@JoinColumn(name = "fk_subClub")},
