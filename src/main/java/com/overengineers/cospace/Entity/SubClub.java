@@ -34,6 +34,5 @@ public class SubClub extends BaseEntity {
             joinColumns = {@JoinColumn(name = "fk_subClub")},
             inverseJoinColumns = {@JoinColumn(name = "fk_club")}
     )
-    @JsonIgnore
     private Club upperClub = new Club();
 }

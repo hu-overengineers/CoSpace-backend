@@ -1,5 +1,6 @@
 package com.overengineers.cospace.Dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.overengineers.cospace.Entity.SubClub;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,5 +17,6 @@ public class PostDTO {
 
     public final String postSubClubName;
 
+    @JsonIgnore
     public SubClub postSubClub;
 }

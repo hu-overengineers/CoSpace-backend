@@ -23,7 +23,7 @@ public class ClubController {
     private final ClubRepository clubRepository;
     // Everyone
     @GetMapping(value = "/all-clubs")
-    public List<ClubDTO> listAllEvents() {
+    public List<ClubDTO> listAllClubs() {
         List<Club> clubList = clubService.listAllClubs();
         return clubMapper.mapToDto(clubList);
     }

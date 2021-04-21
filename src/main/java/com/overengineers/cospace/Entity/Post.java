@@ -33,6 +33,5 @@ public class Post extends BaseEntity {
             joinColumns = {@JoinColumn(name = "fk_post")},
             inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}
     )
-    @JsonIgnore
     private SubClub postSubClub = new SubClub();
 }

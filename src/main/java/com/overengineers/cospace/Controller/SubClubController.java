@@ -10,12 +10,10 @@ import com.overengineers.cospace.Repository.ClubRepository;
 import com.overengineers.cospace.Repository.SubClubRepository;
 import com.overengineers.cospace.Service.SubClubService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -26,6 +24,13 @@ public class SubClubController {
     private final SubClubMapper subClubMapper;
     private final SubClubRepository subClubRepository;
     private final ClubRepository clubRepository;
+
+
+    @GetMapping(value = "/all-subclubs")
+    public List<SubClubDTO> listAllSubClubs() {
+        List<SubClub> subClubList = subClubService.listAllSubClubs();
+        return subClubMapper.mapToDto(subClubList);
+    }
 
     @PostMapping(value = "/create")
     public SubClubDTO createSubClub(@RequestBody SubClubDTO subClubDTO){
