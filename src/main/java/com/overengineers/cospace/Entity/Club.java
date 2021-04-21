@@ -6,17 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Setter
 @Getter
-@SequenceGenerator(name = "idgen", sequenceName = "CLUB_SEQ")
+@SequenceGenerator(name = "idgen2", sequenceName = "CLUB_SEQ")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Club extends BaseEntity {
@@ -26,7 +23,12 @@ public class Club extends BaseEntity {
     @Column(name = "DETAILS")
     private String details;
 
+    // Club - Member Relation
     @ManyToMany(mappedBy = "clubs")
     private Set<Member> members = new HashSet<>();
-    
+
+    // Club - SubClub Relation
+    @OneToMany(mappedBy = "upperClub")
+    private Set<SubClub> subs = new HashSet<>();
+
 }

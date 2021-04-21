@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
-@SequenceGenerator(name = "idgen", sequenceName = "MEMBER_SEQ")
+@SequenceGenerator(name = "idgen1", sequenceName = "MEMBER_SEQ")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member extends BaseEntity {
@@ -37,9 +37,17 @@ public class Member extends BaseEntity {
     )
     private Set<Club> clubs = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "member_subClub",
+            joinColumns = {@JoinColumn(name = "fk_member")},
+            inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}
+    )
+    private Set<SubClub> subClubs = new HashSet<>();
+
     public Set<Club> getClubs() {
         return this.clubs;
     }
+    public Set<SubClub> getSubClubs() { return this.subClubs;}
 
     public boolean isNull() {
         return this.clubs == null;
