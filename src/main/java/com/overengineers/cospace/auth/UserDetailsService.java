@@ -1,18 +1,14 @@
-package com.overengineers.cospace.Auth;
+package com.overengineers.cospace.auth;
 
-import com.overengineers.cospace.Entity.Member;
-import com.overengineers.cospace.Service.MemberService;
+import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {

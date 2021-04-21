@@ -1,4 +1,4 @@
-package com.overengineers.cospace.Entity.Common;
+package com.overengineers.cospace.entity.common;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.overengineers.cospace.Auth;
+package com.overengineers.cospace.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

@@ -1,6 +1,6 @@
-package com.overengineers.cospace.Repository;
+package com.overengineers.cospace.repository;
 
-import com.overengineers.cospace.Entity.Member;
+import com.overengineers.cospace.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.overengineers.cospace.Dto;
+package com.overengineers.cospace.dto;
 
 import lombok.Builder;
 import lombok.Getter;

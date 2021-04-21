@@ -1,8 +1,8 @@
-package com.overengineers.cospace.Mapper;
+package com.overengineers.cospace.mapper;
 
 import org.mapstruct.Mapper;
-import com.overengineers.cospace.Entity.Member;
-import com.overengineers.cospace.Dto.MemberDTO;
+import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.dto.MemberDTO;
 
 import java.util.List;
 

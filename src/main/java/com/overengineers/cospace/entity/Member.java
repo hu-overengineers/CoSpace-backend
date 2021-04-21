@@ -1,6 +1,6 @@
-package com.overengineers.cospace.Entity;
+package com.overengineers.cospace.entity;
 
-import com.overengineers.cospace.Entity.Common.BaseEntity;
+import com.overengineers.cospace.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

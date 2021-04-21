@@ -1,12 +1,12 @@
-package com.overengineers.cospace.Controller;
+package com.overengineers.cospace.controller;
 
 
-import com.overengineers.cospace.Auth.TokenManager;
-import com.overengineers.cospace.Dto.LoginRequest;
-import com.overengineers.cospace.Dto.MemberDTO;
-import com.overengineers.cospace.Entity.Member;
-import com.overengineers.cospace.Mapper.MemberMapper;
-import com.overengineers.cospace.Service.MemberService;
+import com.overengineers.cospace.auth.TokenManager;
+import com.overengineers.cospace.dto.LoginRequest;
+import com.overengineers.cospace.dto.MemberDTO;
+import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.mapper.MemberMapper;
+import com.overengineers.cospace.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

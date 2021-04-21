@@ -1,8 +1,8 @@
-package com.overengineers.cospace.Mapper;
+package com.overengineers.cospace.mapper;
 
 import org.mapstruct.Mapper;
-import com.overengineers.cospace.Dto.ClubDTO;
-import com.overengineers.cospace.Entity.Club;
+import com.overengineers.cospace.dto.ClubDTO;
+import com.overengineers.cospace.entity.Club;
 import java.util.List;
 
 @Mapper(componentModel = "spring")

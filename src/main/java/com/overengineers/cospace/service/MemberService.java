@@ -1,8 +1,8 @@
-package com.overengineers.cospace.Service;
+package com.overengineers.cospace.service;
 
-import com.overengineers.cospace.Entity.Member;
-import com.overengineers.cospace.Mapper.MemberMapper;
-import com.overengineers.cospace.Repository.MemberRepository;
+import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.mapper.MemberMapper;
+import com.overengineers.cospace.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
