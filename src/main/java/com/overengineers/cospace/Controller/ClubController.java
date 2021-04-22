@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*") // TODO: Might need to remove this in production. For debugging purposes.
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/club")
