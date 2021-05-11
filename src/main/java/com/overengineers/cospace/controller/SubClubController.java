@@ -39,7 +39,7 @@ public class SubClubController {
                 SubClub newSubClub = subClubMapper.mapToEntity(subClubDTO);
                 SubClub returnedSubClub = subClubService.saveNewSubClub(newSubClub);
 
-                return subClubMapper.mapToDto(returnedSubClub);
+                return  subClubMapper.mapToDto(returnedSubClub);
             }
 
         }
