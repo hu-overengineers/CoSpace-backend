@@ -4,47 +4,71 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TokenManager {
 
-    // validityTime as ms -> (24: hour - 60: min -  60: sec - 1000: ms)
-    private static final int validityTime = 24 * 60 * 60 * 1000;
-    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final int expirationDay = 7;
+    private static Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
 
-    public String generateToken(String username){
+    public static String generateToken(Authentication user){
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(user.getName())
+                .claim("authorities", getAuthorities(user))
                 .setIssuer("www.cospace.com")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + validityTime))
+                .setExpiration(calculateExpirationDate(expirationDay))
                 .signWith(key)
                 .compact();
     }
 
-    public boolean tokenValidate(String token){
+    private static List<String> getAuthorities(Authentication user) {
+        return user.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+    }
+
+    private static Date calculateExpirationDate(Integer expirationDay){
+        Instant expirationTime = LocalDate.now()
+                .plusDays(expirationDay)
+                .atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant();
+
+        return Date.from(expirationTime);
+    }
+
+    public static boolean tokenValidate(String token){
         if (getUsernameFromToken(token) != null && !isExpired(token)){
             return true;
         }
         return false;
     }
 
-    public String getUsernameFromToken(String token){
+    public static String getUsernameFromToken(String token){
         Claims claims = getClaims(token);
         return claims.getSubject();
     }
 
-    private boolean isExpired(String token){
+    private static boolean isExpired(String token){
         Claims claims = getClaims(token);
         return claims.getExpiration().before(new Date(System.currentTimeMillis()));
     }
 
-    private Claims getClaims(String token) {
+    private static Claims getClaims(String token) {
         return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
     }
 

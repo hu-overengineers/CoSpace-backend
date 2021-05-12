@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
-@SequenceGenerator(name = "idgen2", sequenceName = "CLUB_SEQ")
+@SequenceGenerator(name = "idgen2", sequenceName = "CLUB_SEQ", allocationSize = 1)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Club extends BaseEntity {

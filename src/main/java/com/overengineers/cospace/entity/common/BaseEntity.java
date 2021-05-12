@@ -21,15 +21,7 @@ public abstract class BaseEntity {
     @Column(name = "ID")
     private Long id;
 
-    @Version
-    @Column(name = "VERSION")
-    private Long version;
-
     @CreatedDate
     @Column(name = "CREATED", updatable = false)
     private LocalDateTime created = LocalDateTime.now();
-
-    @LastModifiedDate
-    @Column(name = "LAST_MODIFIED", insertable = false)
-    private LocalDateTime lastModified;
 }

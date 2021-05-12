@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Setter
 @Getter
-@SequenceGenerator(name = "idgen4", sequenceName = "POST_SEQ")
+@SequenceGenerator(name = "idgen4", sequenceName = "POST_SEQ", allocationSize = 1)
 @AllArgsConstructor
 @NoArgsConstructor
 public class Post extends BaseEntity {

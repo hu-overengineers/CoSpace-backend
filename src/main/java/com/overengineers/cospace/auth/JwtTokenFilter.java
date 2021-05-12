@@ -1,8 +1,11 @@
 package com.overengineers.cospace.auth;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.service.CustomUserDetailsManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -15,10 +18,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 @Component
+@RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private TokenManager tokenManager;
+    private final CustomUserDetailsManager userDetailsManager;
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
@@ -33,7 +36,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         if(authHeader != null && authHeader.contains("Bearer")){
             token = authHeader.substring(7);
             try{
-                username = tokenManager.getUsernameFromToken(token);
+                username = TokenManager.getUsernameFromToken(token);
             } catch (Exception e){
                 System.out.println(e.getMessage());
             }
@@ -41,8 +44,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         if(username != null && token != null
                 && SecurityContextHolder.getContext().getAuthentication() == null){
-            if(tokenManager.tokenValidate(token)){
-                UsernamePasswordAuthenticationToken upassToken = new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+            if(TokenManager.tokenValidate(token)){
+                Member member = (Member) userDetailsManager.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken upassToken = new UsernamePasswordAuthenticationToken(username, null, member.getAuthorities());
                 upassToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(upassToken);
             }

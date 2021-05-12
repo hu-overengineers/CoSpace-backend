@@ -10,7 +10,7 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
-@SequenceGenerator(name = "idgen3", sequenceName = "SUB_CLUB_SEQ")
+@SequenceGenerator(name = "idgen3", sequenceName = "SUB_CLUB_SEQ", allocationSize = 1)
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubClub extends BaseEntity {
