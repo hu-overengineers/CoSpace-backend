@@ -6,6 +6,7 @@ import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -24,34 +25,34 @@ public class AuthService {
 
     public ResponseEntity<String> login(LoginRequest loginRequest){
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
-
-
         try{
-             Authentication user = authenticationProvider.authenticate(authentication);
+            Authentication user = authenticationProvider.authenticate(authentication);
             String token = TokenManager.generateToken(user);
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(token); // 200
         }
         catch (AuthenticationException e){
-            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED) // 401
+                    .body("Login Error!");
         }
-        return null;
     }
 
     public ResponseEntity<String> register(MemberDTO memberDTO){
         Member member = memberMapper.mapToEntity(memberDTO);
         if(customUserDetailsManager.userExistsByEmail(member.getEmail())) {
-            return ResponseEntity.ok("Member with that email already exists!");
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT) // 409
+                    .body("Member with that email already exists!");
         }
 
         if(customUserDetailsManager.userExists(member.getUsername())){
-            return ResponseEntity.ok("Member with that username already exists!");
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT) // 409
+                    .body("Member with that username already exists!");
         }
 
         // Success Case
         customUserDetailsManager.createUser(member);
         return ResponseEntity.ok("You are successfully registered.");
     }
-
-
-
 }
