@@ -17,6 +17,8 @@ public class PostDTO {
 
     public final String postSubClubName;
 
+    public final long postVoting;
+
     @JsonIgnore
     public SubClub postSubClub;
 }

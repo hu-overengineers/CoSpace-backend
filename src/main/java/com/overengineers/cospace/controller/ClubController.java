@@ -6,6 +6,7 @@ import com.overengineers.cospace.mapper.ClubMapper;
 import com.overengineers.cospace.repository.ClubRepository;
 import com.overengineers.cospace.service.ClubService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,26 +18,10 @@ import java.util.List;
 @RequestMapping("/club")
 public class ClubController {
     private final ClubService clubService;
-    private final ClubMapper clubMapper;
-    private final ClubRepository clubRepository;
-    // Everyone
-    @GetMapping(value = "/all-clubs")
+
+    @GetMapping(value = "/all")
     public List<ClubDTO> listAllClubs() {
-        List<Club> clubList = clubService.listAllClubs();
-        return clubMapper.mapToDto(clubList);
+        return clubService.listAllClubs();
     }
-
-    // Admin
-    @PostMapping(value = "/create")
-    public ClubDTO createClub(@Valid @RequestBody ClubDTO clubDTO) {
-        Club club = clubMapper.mapToEntity(clubDTO);
-        Club newClub = clubService.saveNewClub(club);
-        return clubMapper.mapToDto(newClub);
-    }
-
-
-
-
-
 
 }

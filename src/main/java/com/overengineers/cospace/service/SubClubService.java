@@ -1,5 +1,6 @@
 package com.overengineers.cospace.service;
 
+import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.repository.SubClubRepository;
@@ -15,8 +16,10 @@ public class SubClubService {
     private final SubClubRepository subClubRepository;
     private final SubClubMapper subClubMapper;
 
-    public List<SubClub> listAllSubClubs(){
-        return subClubRepository.findAll();
+    public List<SubClubDTO> listAllSubClubs(){
+        List<SubClub> subClubList= subClubRepository.findAll();
+        List<SubClubDTO> subClubDTOList = subClubMapper.mapToDto(subClubList);
+        return subClubDTOList;
     }
 
     public SubClub saveNewSubClub(SubClub subClub){ return subClubRepository.save(subClub); }

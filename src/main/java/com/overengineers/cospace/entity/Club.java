@@ -31,4 +31,7 @@ public class Club extends BaseEntity {
     @OneToMany(mappedBy = "upperClub")
     private Set<SubClub> subs = new HashSet<>();
 
+    @OneToMany(mappedBy = "questionClub")
+    private Set<Question> questionnaire = new HashSet<>();
+
 }

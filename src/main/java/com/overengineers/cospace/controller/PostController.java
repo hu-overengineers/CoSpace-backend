@@ -8,6 +8,7 @@ import com.overengineers.cospace.repository.PostRepository;
 import com.overengineers.cospace.repository.SubClubRepository;
 import com.overengineers.cospace.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,29 +19,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
-    private final SubClubRepository subClubRepository;
-    private final PostRepository postRepository;
-    private final PostMapper postMapper;
     private final PostService postService;
 
-
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
     @PostMapping(value = "/create")
     public PostDTO createPost(@RequestBody PostDTO postDTO){
-        if(postDTO.postSubClub == null){
-            Optional<SubClub> postSubClub = subClubRepository.findBySubClubName(postDTO.postSubClubName);
-            if(postSubClub.isPresent()){
-                postDTO.postSubClub = postSubClub.get();
-                Post newPost = postMapper.mapToEntity(postDTO);
-                Post savedPost = postService.saveNewPost(newPost);
-                return postMapper.mapToDto(savedPost);
-            }
-        }
-        return null;
+        return postService.savePost(postDTO);
     }
 
-    @GetMapping(value = "/get")
+    @GetMapping(value = "/{subClubName}")
     @ResponseBody
-    public List<PostDTO> getSubClubPosts(@RequestParam("subClubName") String subClubName){
-        return postMapper.mapToDto(postRepository.findByPostSubClubName(subClubName));
+    public List<PostDTO> getSubClubPosts(@PathVariable String subClubName){
+        return postService.getSubClubPosts(subClubName);
     }
+
+
 }

@@ -27,6 +27,9 @@ public class Post extends BaseEntity {
     @Column(name = "POST_SUB_CLUB_NAME")
     private String postSubClubName;
 
+    @Column(name = "POST_VOTING")
+    private long postVoting;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinTable(name = "subClub_post",
             joinColumns = {@JoinColumn(name = "fk_post")},

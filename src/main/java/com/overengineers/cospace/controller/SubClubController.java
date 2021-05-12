@@ -8,6 +8,7 @@ import com.overengineers.cospace.repository.ClubRepository;
 import com.overengineers.cospace.repository.SubClubRepository;
 import com.overengineers.cospace.service.SubClubService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,31 +21,10 @@ import java.util.Optional;
 public class SubClubController {
     private final SubClubService subClubService;
     private final SubClubMapper subClubMapper;
-    private final SubClubRepository subClubRepository;
-    private final ClubRepository clubRepository;
 
-
-    @GetMapping(value = "/all-subclubs")
+    @GetMapping(value = "/all")
     public List<SubClubDTO> listAllSubClubs() {
-        List<SubClub> subClubList = subClubService.listAllSubClubs();
-        return subClubMapper.mapToDto(subClubList);
+        return subClubService.listAllSubClubs();
     }
-
-    @PostMapping(value = "/create")
-    public SubClubDTO createSubClub(@RequestBody SubClubDTO subClubDTO){
-        if(subClubDTO.upperClub == null){
-            Optional<Club> upperClub = clubRepository.findByClubName(subClubDTO.upperClubName);
-            if(upperClub.isPresent()){
-                subClubDTO.upperClub = upperClub.get();
-                SubClub newSubClub = subClubMapper.mapToEntity(subClubDTO);
-                SubClub returnedSubClub = subClubService.saveNewSubClub(newSubClub);
-
-                return  subClubMapper.mapToDto(returnedSubClub);
-            }
-
-        }
-        return null;
-    }
-
 
 }
