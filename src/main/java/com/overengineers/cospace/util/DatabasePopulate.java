@@ -1,15 +1,15 @@
 package com.overengineers.cospace.util;
 
-import com.overengineers.cospace.entity.Authority;
-import com.overengineers.cospace.entity.Member;
-import com.overengineers.cospace.repository.AuthorityRepository;
-import com.overengineers.cospace.repository.MemberRepository;
+import com.overengineers.cospace.entity.*;
+import com.overengineers.cospace.repository.*;
 import com.overengineers.cospace.service.CustomUserDetailsManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -20,11 +20,32 @@ public class DatabasePopulate {
     private final AuthorityRepository authorityRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final ClubRepository clubRepository;
+    private final SubClubRepository subClubRepository;
+    private final PostRepository postRepository;
 
     @Transactional
     public void populateDatabase(){
         List<Authority> savedAuthorities = authorityRepository.saveAll(Set.of(new Authority(null, null, "USER"), new Authority(null, null,"ADMIN")));
-        Member member = new Member("yusuf", passwordEncoder.encode("12345"),"ketenyusuf@gmail.com", null, null, Set.of(savedAuthorities.get(0), savedAuthorities.get(1)));
-        memberRepository.save(member);
+        List<String> adminList = new ArrayList<>(Arrays.asList("yusuf", "cagatay", "samil","mert","selim"));
+
+        for(int i = 0; i < adminList.size(); i++){
+            String currentUsername = adminList.get(i);
+            Member currentAdmin = new Member(currentUsername, passwordEncoder.encode("12345"),currentUsername + "@gmail.com", null, null, Set.of(savedAuthorities.get(0), savedAuthorities.get(1)));
+            memberRepository.save(currentAdmin);
+        }
+
+        Member memberTest = new Member("memberTest", passwordEncoder.encode("12345"), "memberTest@gmail.com", null, null, Set.of(savedAuthorities.get(0)));
+        memberRepository.save(memberTest);
+
+        Club clubTest = new Club("ClubTest", "ClubTest Details", null, null, null);
+        clubRepository.save(clubTest);
+
+        SubClub subTest = new SubClub("SubTest", "SubTest Details", "ClubTest", null, null, clubRepository.findByClubName("ClubTest").get());
+        subClubRepository.save(subTest);
+
+        Post postTest = new Post("memberTest", "TitleTest", "This is a test content", "SubTest", 0, null, subClubRepository.findBySubClubName("SubTest").get());
+        postRepository.save(postTest);
+
     }
 }
