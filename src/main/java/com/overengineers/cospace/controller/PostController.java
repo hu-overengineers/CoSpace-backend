@@ -1,6 +1,7 @@
 package com.overengineers.cospace.controller;
 
 import com.overengineers.cospace.dto.PostDTO;
+import com.overengineers.cospace.dto.ReportDTO;
 import com.overengineers.cospace.service.PostService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,13 @@ public class PostController {
     public List<PostDTO> getSubClubPosts(@PathVariable String subClubName){
         return postService.getSubClubPosts(subClubName);
     }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
+    @PostMapping(value = "/report")
+    public ReportDTO reportPost(@RequestBody ReportDTO reportDTO){
+        return postService.reportPost(reportDTO);
+    }
+
 
 
 }

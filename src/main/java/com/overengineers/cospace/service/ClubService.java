@@ -22,5 +22,6 @@ public class ClubService {
         return clubDTOList;
     }
 
-    public Club saveNewClub(Club club){ return clubRepository.save(club); }
+    public Club saveNewClub(Club club){
+        return clubRepository.save(club); }
 }

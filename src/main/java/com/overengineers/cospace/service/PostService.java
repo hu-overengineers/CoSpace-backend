@@ -1,14 +1,19 @@
 package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.PostDTO;
+import com.overengineers.cospace.dto.ReportDTO;
 import com.overengineers.cospace.entity.Post;
+import com.overengineers.cospace.entity.Report;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.PostMapper;
+import com.overengineers.cospace.mapper.ReportMapper;
 import com.overengineers.cospace.repository.PostRepository;
+import com.overengineers.cospace.repository.ReportRepository;
 import com.overengineers.cospace.repository.SubClubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,20 +22,11 @@ import java.util.Optional;
 public class PostService {
     private final SubClubRepository subClubRepository;
 
+    private final ReportRepository reportRepository;
+    private final ReportMapper reportMapper;
+
     private final PostRepository postRepository;
     private final PostMapper postMapper;
-
-    public List<Post> listAllPosts(){
-        return postRepository.findAll();
-    }
-
-    public List<Post> listSubClubPosts(String subClubName){
-        return postRepository.findByPostSubClubName(subClubName);
-    }
-
-    public List<Post> listAuthorPosts(String postAuthor){
-        return postRepository.findByPostAuthor(postAuthor);
-    }
 
     public PostDTO savePost(PostDTO postDTO) {
         if(postDTO.postSubClub == null){
@@ -39,6 +35,7 @@ public class PostService {
                 postDTO.postSubClub = postSubClub.get();
                 Post newPost = postMapper.mapToEntity(postDTO);
                 newPost.setPostVoting(0);
+                newPost.setCreated(LocalDateTime.now());
                 Post savedPost = postRepository.save(newPost);
                 return postMapper.mapToDto(savedPost);
             }
@@ -48,5 +45,19 @@ public class PostService {
 
     public List<PostDTO> getSubClubPosts(String subClubName) {
         return postMapper.mapToDto(postRepository.findByPostSubClubName(subClubName));
+    }
+
+    public ReportDTO reportPost(ReportDTO reportDTO) {
+        if(reportDTO.reportedPost == null){
+            Optional<Post> reportedPost = postRepository.findById(Long.parseLong(reportDTO.getReportedPostId()));
+            if(reportedPost.isPresent()){
+                reportDTO.reportedPost = reportedPost.get();
+                Report newReport = reportMapper.mapToEntity(reportDTO);
+                newReport.setCreated(LocalDateTime.now());
+                Report savedReport = reportRepository.save(newReport);
+                return reportMapper.mapToDto(savedReport);
+            }
+        }
+        return null;
     }
 }

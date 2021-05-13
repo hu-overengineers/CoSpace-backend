@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Setter
@@ -29,6 +31,9 @@ public class Post extends BaseEntity {
 
     @Column(name = "POST_VOTING")
     private long postVoting;
+
+    @OneToMany(mappedBy = "reportedPost")
+    private Set<Report> reports = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinTable(name = "subClub_post",

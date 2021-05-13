@@ -1,15 +1,19 @@
 package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.ClubDTO;
+import com.overengineers.cospace.dto.ReportDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.entity.Club;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.ClubMapper;
+import com.overengineers.cospace.mapper.ReportMapper;
 import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.repository.ClubRepository;
+import com.overengineers.cospace.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +26,8 @@ public class AdminService {
     private final SubClubMapper subClubMapper;
     private final SubClubService subClubService;
 
+    private final ReportMapper reportMapper;
+    private final ReportRepository reportRepository;
 
     public ClubDTO createClub(ClubDTO clubDTO) {
         Club club = clubMapper.mapToEntity(clubDTO);
@@ -40,5 +46,9 @@ public class AdminService {
             }
         }
         return null;
+    }
+
+    public List<ReportDTO> getAllReports() {
+        return reportMapper.mapToDto(reportRepository.findAll());
     }
 }

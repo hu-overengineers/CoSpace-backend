@@ -8,4 +8,5 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByPostSubClubName(String postSubClubName);
     List<Post> findByPostAuthor(String postAuthor);
+    Post findById(String id);
 }

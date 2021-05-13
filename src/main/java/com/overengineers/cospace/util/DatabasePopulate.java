@@ -24,7 +24,7 @@ public class DatabasePopulate {
     @Transactional
     public void populateDatabase(){
         List<Authority> savedAuthorities = authorityRepository.saveAll(Set.of(new Authority(null, null, "USER"), new Authority(null, null,"ADMIN")));
-        Member member = new Member("yusuf", passwordEncoder.encode("12345"),"ketenyusuf@gmail.com", null, null,Set.of(savedAuthorities.get(0), savedAuthorities.get(1)));
+        Member member = new Member("yusuf", passwordEncoder.encode("12345"),"ketenyusuf@gmail.com", null, null, Set.of(savedAuthorities.get(0), savedAuthorities.get(1)));
         memberRepository.save(member);
     }
 }
