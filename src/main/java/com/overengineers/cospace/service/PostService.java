@@ -11,6 +11,10 @@ import com.overengineers.cospace.repository.PostRepository;
 import com.overengineers.cospace.repository.ReportRepository;
 import com.overengineers.cospace.repository.SubClubRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,6 +49,10 @@ public class PostService {
         return postMapper.mapToDto(postRepository.findByPostSubClubName(subClubName));
     }
 
+    public PostDTO getPostDTOById(Long postID){
+        return postMapper.mapToDto(postRepository.findById(postID).get());
+    }
+
     public ReportDTO reportPost(ReportDTO reportDTO) {
         Optional<Post> reportedPost = postRepository.findById(Long.parseLong(reportDTO.getReportedPostId()));
         if(reportedPost.isPresent()){
@@ -56,5 +64,37 @@ public class PostService {
         }
 
         return null;
+    }
+
+    public List<PostDTO> getTrends(Pageable pageable) {
+        Sort sorting;
+
+        if(pageable.getSort() != null) {
+            sorting = pageable.getSort();
+        }
+        else {
+            // Default Sorting
+           sorting = Sort.by("postVoting");
+        }
+
+        Pageable sortedByName =
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
+        Page<Post> allProducts = postRepository.findAll(sortedByName);
+
+        return postMapper.mapToDto(allProducts.getContent());
+    }
+
+    public PostDTO votePost(Long postId) {
+        Optional<Post> optionalCurrentPost = postRepository.findById(postId);
+        if(!optionalCurrentPost.isPresent()){
+            return null;
+        }
+        else{
+            Post currentPost = optionalCurrentPost.get();
+            Long currentVoting = currentPost.getPostVoting();
+            currentPost.setPostVoting(currentVoting + 1);
+            postRepository.save(currentPost);
+            return postMapper.mapToDto(currentPost);
+        }
     }
 }

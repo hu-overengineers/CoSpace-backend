@@ -5,6 +5,7 @@ import com.overengineers.cospace.dto.ReportDTO;
 import com.overengineers.cospace.service.PostService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,11 @@ import java.util.List;
 @RequestMapping("/post")
 public class PostController {
     private final PostService postService;
+
+    @GetMapping(value = "/{postId}")
+    public PostDTO getPost(@PathVariable Long postId){
+        return postService.getPostDTOById(postId);
+    }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/create")
@@ -30,9 +36,20 @@ public class PostController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping(value = "/vote/{postId}")
+    public PostDTO votePost(@PathVariable Long postId){
+        return postService.votePost(postId);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/report")
     public ReportDTO reportPost(@RequestBody ReportDTO reportDTO){
         return postService.reportPost(reportDTO);
+    }
+
+    @GetMapping(value = "/trends")
+    public @ResponseBody List<PostDTO> getTrends(Pageable pageable) throws Exception {
+        return postService.getTrends(pageable);
     }
 
 
