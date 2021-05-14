@@ -1,7 +1,6 @@
 package com.overengineers.cospace.controller;
 
 import com.overengineers.cospace.dto.SubClubDTO;
-import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.service.SubClubService;
 
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,8 @@ import java.util.List;
 @RequestMapping("/subclub")
 public class SubClubController {
     private final SubClubService subClubService;
-    private final SubClubMapper subClubMapper;
+
+
 
     @GetMapping(value = "/all")
     public List<SubClubDTO> listAllSubClubs() {

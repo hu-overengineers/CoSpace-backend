@@ -17,7 +17,7 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/create")
     public PostDTO createPost(@RequestBody PostDTO postDTO){
         return postService.savePost(postDTO);
@@ -29,7 +29,7 @@ public class PostController {
         return postService.getSubClubPosts(subClubName);
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'MEMBER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/report")
     public ReportDTO reportPost(@RequestBody ReportDTO reportDTO){
         return postService.reportPost(reportDTO);

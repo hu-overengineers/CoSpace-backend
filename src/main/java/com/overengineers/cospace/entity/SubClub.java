@@ -22,9 +22,6 @@ public class SubClub extends BaseEntity {
 
     private String upperClubName;
 
-    @ManyToMany(mappedBy = "subClubs")
-    private Set<Member> members = new HashSet<>();
-
     @OneToMany(mappedBy = "postSubClub")
     private Set<Post> posts = new HashSet<>();
 

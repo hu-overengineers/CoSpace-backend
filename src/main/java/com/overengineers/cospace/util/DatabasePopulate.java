@@ -31,17 +31,17 @@ public class DatabasePopulate {
 
         for(int i = 0; i < adminList.size(); i++){
             String currentUsername = adminList.get(i);
-            Member currentAdmin = new Member(currentUsername, passwordEncoder.encode("12345"),currentUsername + "@gmail.com", null, null, Set.of(savedAuthorities.get(0), savedAuthorities.get(1)));
+            Member currentAdmin = new Member(currentUsername, passwordEncoder.encode("12345"),currentUsername + "@gmail.com", null, Set.of(savedAuthorities.get(0), savedAuthorities.get(1)));
             memberRepository.save(currentAdmin);
         }
 
-        Member memberTest = new Member("memberTest", passwordEncoder.encode("12345"), "memberTest@gmail.com", null, null, Set.of(savedAuthorities.get(0)));
+        Member memberTest = new Member("memberTest", passwordEncoder.encode("12345"), "memberTest@gmail.com", null, Set.of(savedAuthorities.get(0)));
         memberRepository.save(memberTest);
 
         Club clubTest = new Club("ClubTest", "ClubTest Details", null, null, null);
         clubRepository.save(clubTest);
 
-        SubClub subTest = new SubClub("SubTest", "SubTest Details", "ClubTest", null, null, clubRepository.findByClubName("ClubTest").get());
+        SubClub subTest = new SubClub("SubTest", "SubTest Details", "ClubTest", null, clubRepository.findByClubName("ClubTest").get());
         subClubRepository.save(subTest);
 
         Post postTest = new Post("memberTest", "TitleTest", "This is a test content", "SubTest", 0, null, subClubRepository.findBySubClubName("SubTest").get());

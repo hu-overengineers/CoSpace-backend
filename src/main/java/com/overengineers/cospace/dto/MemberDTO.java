@@ -1,7 +1,5 @@
 package com.overengineers.cospace.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -22,13 +20,4 @@ public class MemberDTO {
     @Email(message = "Write a valid e-mail address")
     public String email;
 
-    @JsonCreator
-    public MemberDTO(@JsonProperty("username") String username,
-                     @JsonProperty("password") String password,
-                     @JsonProperty("email") String email) {
-
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
 }

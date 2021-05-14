@@ -31,21 +31,21 @@ public class AdminService {
 
     public ClubDTO createClub(ClubDTO clubDTO) {
         Club club = clubMapper.mapToEntity(clubDTO);
+
         Club newClub = clubService.saveNewClub(club);
         return clubMapper.mapToDto(newClub);
     }
 
     public SubClubDTO createSubClub(SubClubDTO subClubDTO) {
-        if(subClubDTO.upperClub == null){
+
             Optional<Club> upperClub = clubRepository.findByClubName(subClubDTO.upperClubName);
             if(upperClub.isPresent()){
-                subClubDTO.upperClub = upperClub.get();
                 SubClub newSubClub = subClubMapper.mapToEntity(subClubDTO);
+                newSubClub.setUpperClub(upperClub.get());
                 SubClub returnedSubClub = subClubService.saveNewSubClub(newSubClub);
                 return subClubMapper.mapToDto(returnedSubClub);
             }
-        }
-        return null;
+            return null;
     }
 
     public List<ReportDTO> getAllReports() {

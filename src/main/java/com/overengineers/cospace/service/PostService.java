@@ -29,16 +29,14 @@ public class PostService {
     private final PostMapper postMapper;
 
     public PostDTO savePost(PostDTO postDTO) {
-        if(postDTO.postSubClub == null){
-            Optional<SubClub> postSubClub = subClubRepository.findBySubClubName(postDTO.postSubClubName);
-            if(postSubClub.isPresent()){
-                postDTO.postSubClub = postSubClub.get();
-                Post newPost = postMapper.mapToEntity(postDTO);
-                newPost.setPostVoting(0);
-                newPost.setCreated(LocalDateTime.now());
-                Post savedPost = postRepository.save(newPost);
-                return postMapper.mapToDto(savedPost);
-            }
+        Optional<SubClub> postSubClub = subClubRepository.findBySubClubName(postDTO.postSubClubName);
+        if(postSubClub.isPresent()){
+            Post newPost = postMapper.mapToEntity(postDTO);
+            newPost.setPostSubClub(postSubClub.get());
+            newPost.setPostVoting(0);
+            newPost.setCreated(LocalDateTime.now());
+            Post savedPost = postRepository.save(newPost);
+            return postMapper.mapToDto(savedPost);
         }
         return null;
     }
@@ -48,16 +46,15 @@ public class PostService {
     }
 
     public ReportDTO reportPost(ReportDTO reportDTO) {
-        if(reportDTO.reportedPost == null){
-            Optional<Post> reportedPost = postRepository.findById(Long.parseLong(reportDTO.getReportedPostId()));
-            if(reportedPost.isPresent()){
-                reportDTO.reportedPost = reportedPost.get();
-                Report newReport = reportMapper.mapToEntity(reportDTO);
-                newReport.setCreated(LocalDateTime.now());
-                Report savedReport = reportRepository.save(newReport);
-                return reportMapper.mapToDto(savedReport);
-            }
+        Optional<Post> reportedPost = postRepository.findById(Long.parseLong(reportDTO.getReportedPostId()));
+        if(reportedPost.isPresent()){
+            Report newReport = reportMapper.mapToEntity(reportDTO);
+            newReport.setReportedPost(reportedPost.get());
+            newReport.setCreated(LocalDateTime.now());
+            Report savedReport = reportRepository.save(newReport);
+            return reportMapper.mapToDto(savedReport);
         }
+
         return null;
     }
 }

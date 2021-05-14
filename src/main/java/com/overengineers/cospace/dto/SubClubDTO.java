@@ -1,7 +1,5 @@
 package com.overengineers.cospace.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.overengineers.cospace.entity.Club;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,6 +17,4 @@ public class SubClubDTO {
 
     public final String upperClubName;
 
-    @JsonIgnore
-    public Club upperClub;
 }
