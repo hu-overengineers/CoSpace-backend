@@ -6,7 +6,8 @@ import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,7 +36,7 @@ public class AuthService {
 
             return new ResponseEntity<String>(resp.toString(), HttpStatus.OK);
         }
-        catch (AuthenticationException e){
+        catch (AuthenticationException | JSONException e){
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED) // 401
                     .body("Login Error!");
