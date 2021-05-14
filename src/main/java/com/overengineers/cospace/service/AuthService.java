@@ -6,6 +6,7 @@ import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,12 +24,16 @@ public class AuthService {
     private final CustomUserDetailsManager customUserDetailsManager;
     private final MemberMapper memberMapper;
 
-    public ResponseEntity<String> login(LoginRequest loginRequest){
+    public ResponseEntity<?> login(LoginRequest loginRequest){
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
         try{
             Authentication user = authenticationProvider.authenticate(authentication);
             String token = TokenManager.generateToken(user);
-            return ResponseEntity.ok(token); // 200
+            JSONObject resp = new JSONObject();
+            resp.put("token", token);
+            resp.put("auth", TokenManager.getAuthorities(user));
+
+            return new ResponseEntity<String>(resp.toString(), HttpStatus.OK);
         }
         catch (AuthenticationException e){
             return ResponseEntity

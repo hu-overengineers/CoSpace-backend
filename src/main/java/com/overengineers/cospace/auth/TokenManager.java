@@ -34,7 +34,7 @@ public class TokenManager {
                 .compact();
     }
 
-    private static List<String> getAuthorities(Authentication user) {
+    public static List<String> getAuthorities(Authentication user) {
         return user.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
