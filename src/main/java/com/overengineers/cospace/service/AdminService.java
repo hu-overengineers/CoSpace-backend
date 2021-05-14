@@ -19,6 +19,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AdminService {
+
     private final ClubService clubService;
     private final ClubMapper clubMapper;
     private final ClubRepository clubRepository;
@@ -31,24 +32,25 @@ public class AdminService {
 
     public ClubDTO createClub(ClubDTO clubDTO) {
         Club club = clubMapper.mapToEntity(clubDTO);
-
+        club.setRating(0);
         Club newClub = clubService.saveNewClub(club);
         return clubMapper.mapToDto(newClub);
     }
 
     public SubClubDTO createSubClub(SubClubDTO subClubDTO) {
-
-            Optional<Club> upperClub = clubRepository.findByClubName(subClubDTO.upperClubName);
-            if(upperClub.isPresent()){
-                SubClub newSubClub = subClubMapper.mapToEntity(subClubDTO);
-                newSubClub.setUpperClub(upperClub.get());
-                SubClub returnedSubClub = subClubService.saveNewSubClub(newSubClub);
-                return subClubMapper.mapToDto(returnedSubClub);
-            }
-            return null;
+        Optional<Club> upperClub = clubRepository.findByClubName(subClubDTO.upperClubName);
+        if(upperClub.isPresent()){
+            SubClub subClub = subClubMapper.mapToEntity(subClubDTO);
+            subClub.setUpperClub(upperClub.get());
+            subClub.setRating(0);
+            SubClub newSubClub = subClubService.saveNewSubClub(subClub);
+            return subClubMapper.mapToDto(newSubClub);
+        }
+        return null;
     }
 
     public List<ReportDTO> getAllReports() {
         return reportMapper.mapToDto(reportRepository.findAll());
     }
+
 }

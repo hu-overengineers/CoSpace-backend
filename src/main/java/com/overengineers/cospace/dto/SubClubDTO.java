@@ -17,4 +17,6 @@ public class SubClubDTO {
 
     public final String upperClubName;
 
+    public final long rating;
+
 }

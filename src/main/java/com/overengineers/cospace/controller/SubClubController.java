@@ -15,11 +15,13 @@ import java.util.List;
 public class SubClubController {
     private final SubClubService subClubService;
 
-
-
     @GetMapping(value = "/all")
     public List<SubClubDTO> listAllSubClubs() {
         return subClubService.listAllSubClubs();
     }
 
+    @PostMapping("/{subClubName}/rate")
+    public SubClubDTO rate(@PathVariable String subClubName){
+        return subClubService.rate(subClubName);
+    }
 }

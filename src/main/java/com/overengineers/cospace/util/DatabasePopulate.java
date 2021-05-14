@@ -38,10 +38,10 @@ public class DatabasePopulate {
         Member memberTest = new Member("memberTest", passwordEncoder.encode("12345"), "memberTest@gmail.com", null, Set.of(savedAuthorities.get(0)));
         memberRepository.save(memberTest);
 
-        Club clubTest = new Club("ClubTest", "ClubTest Details", null, null, null);
+        Club clubTest = new Club("ClubTest", "ClubTest Details", 0,null, null, null);
         clubRepository.save(clubTest);
 
-        SubClub subTest = new SubClub("SubTest", "SubTest Details", "ClubTest", null, clubRepository.findByClubName("ClubTest").get());
+        SubClub subTest = new SubClub("SubTest", "SubTest Details", "ClubTest", 0, null, clubRepository.findByClubName("ClubTest").get());
         subClubRepository.save(subTest);
 
         Post postTest = new Post("memberTest", "TitleTest", "This is a test content", "SubTest", 0, null, subClubRepository.findBySubClubName("SubTest").get());

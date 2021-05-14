@@ -61,4 +61,8 @@ public class AuthService {
         customUserDetailsManager.createUser(member);
         return ResponseEntity.ok("You are successfully registered.");
     }
+
+    public ResponseEntity<String> forgotPassword(String username) {
+        return null;
+    }
 }

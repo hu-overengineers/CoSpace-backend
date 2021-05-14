@@ -26,7 +26,12 @@ public class AuthController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<String > register(@Valid @RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<String> register(@Valid @RequestBody MemberDTO memberDTO) {
         return authService.register(memberDTO);
+    }
+
+    @PostMapping(value = "/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestParam String username){
+        return authService.forgotPassword(username);
     }
 }

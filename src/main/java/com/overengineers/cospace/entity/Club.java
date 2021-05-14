@@ -23,6 +23,9 @@ public class Club extends BaseEntity {
     @Column(name = "DETAILS")
     private String details;
 
+    @Column(name = "RATING")
+    private long rating;
+
     // Club - Member Relation
     @ManyToMany(mappedBy = "clubs")
     private Set<Member> members = new HashSet<>();

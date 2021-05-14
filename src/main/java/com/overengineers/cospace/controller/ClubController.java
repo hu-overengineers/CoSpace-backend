@@ -25,6 +25,12 @@ public class ClubController {
         return clubService.listAllClubs();
     }
 
+    @PostMapping("/{clubName}/rate")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public ClubDTO rate(@PathVariable String clubName){
+        return clubService.rate(clubName);
+    }
+
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/{clubName}/enroll")
     public ResponseEntity<String> enrollClub(@PathVariable String clubName){

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,4 +24,18 @@ public class SubClubService {
     }
 
     public SubClub saveNewSubClub(SubClub subClub){ return subClubRepository.save(subClub); }
+
+    public SubClubDTO rate(String subClubName) {
+        Optional<SubClub> optionalSubClub = subClubRepository.findBySubClubName(subClubName);
+        if(!optionalSubClub.isPresent()){
+            return null;
+        }
+        else{
+            SubClub currentSubClub = optionalSubClub.get();
+            long currentRating = currentSubClub.getRating();
+            currentSubClub.setRating(currentRating + 1);
+            subClubRepository.save(currentSubClub);
+            return subClubMapper.mapToDto(currentSubClub);
+        }
+    }
 }
