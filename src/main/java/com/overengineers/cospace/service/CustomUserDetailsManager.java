@@ -23,7 +23,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CustomUserDetailsManager implements UserDetailsManager {
     private final MemberRepository memberRepository;
-    private final MemberMapper memberMapper;
     private final AuthorityRepository authorityRepository;
 
     @Override
