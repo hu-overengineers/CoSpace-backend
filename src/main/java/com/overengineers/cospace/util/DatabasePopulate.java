@@ -28,10 +28,11 @@ public class DatabasePopulate {
     public void populateDatabase(){
         List<Authority> savedAuthorities = authorityRepository.saveAll(Set.of(new Authority(null, null, "USER"), new Authority(null, null,"ADMIN")));
         List<String> adminList = new ArrayList<>(Arrays.asList("yusuf", "cagatay", "samil","mert","selim"));
-
+        List<String> adminEmailList = new ArrayList<>(Arrays.asList("ketenyusuf", "cagatayyigit3", "m.samilatesoglu", "validatedev", "selim.seker00"));
         for(int i = 0; i < adminList.size(); i++){
             String currentUsername = adminList.get(i);
-            Member currentAdmin = new Member(currentUsername, passwordEncoder.encode("12345"),currentUsername + "@gmail.com", null, Set.of(savedAuthorities.get(0), savedAuthorities.get(1)));
+            String currentEmail = adminEmailList.get(i);
+            Member currentAdmin = new Member(currentUsername, passwordEncoder.encode("12345"),currentEmail + "@gmail.com", null, Set.of(savedAuthorities.get(0), savedAuthorities.get(1)));
             memberRepository.save(currentAdmin);
         }
 
