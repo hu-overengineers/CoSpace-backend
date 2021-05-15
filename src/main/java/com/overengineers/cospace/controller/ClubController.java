@@ -25,15 +25,15 @@ public class ClubController {
         return clubService.listAllClubs();
     }
 
-    @PostMapping("/{clubName}/rate")
+    @PostMapping("/rate")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public ClubDTO rate(@PathVariable String clubName){
-        return clubService.rate(clubName);
+    public ClubDTO rate(@RequestParam(name = "clubName") String clubName){
+        return clubService.rate(clubName); // TODO: Auth check by enrollment
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    @PostMapping(value = "/{clubName}/enroll")
-    public ResponseEntity<String> enrollClub(@PathVariable String clubName){
+    @PostMapping(value = "/enroll")
+    public ResponseEntity<String> enrollClub(@RequestParam(name = "clubName") String clubName){
         return clubService.enrollClub(clubName);
     }
 

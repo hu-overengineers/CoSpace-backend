@@ -4,6 +4,7 @@ import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.service.SubClubService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +21,9 @@ public class SubClubController {
         return subClubService.listAllSubClubs();
     }
 
-    @PostMapping("/{subClubName}/rate")
-    public SubClubDTO rate(@PathVariable String subClubName){
-        return subClubService.rate(subClubName);
+    @PostMapping("/rate")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public SubClubDTO rate(@RequestParam(name = "subClubName") String subClubName){
+        return subClubService.rate(subClubName); // TODO: Auth check by enrollment
     }
 }

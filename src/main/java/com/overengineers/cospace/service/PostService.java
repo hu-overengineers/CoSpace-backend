@@ -2,29 +2,33 @@ package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.PostDTO;
 import com.overengineers.cospace.dto.ReportDTO;
+import com.overengineers.cospace.entity.Club;
 import com.overengineers.cospace.entity.Post;
 import com.overengineers.cospace.entity.Report;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.PostMapper;
 import com.overengineers.cospace.mapper.ReportMapper;
-import com.overengineers.cospace.repository.PostRepository;
-import com.overengineers.cospace.repository.ReportRepository;
-import com.overengineers.cospace.repository.SubClubRepository;
+import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final SubClubRepository subClubRepository;
+    private final ClubRepository clubRepository;
+    private final MemberRepository memberRepository;
 
     private final ReportRepository reportRepository;
     private final ReportMapper reportMapper;
@@ -32,9 +36,26 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
 
+    public boolean isAuthorizedForClub(String clubName){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();
+        Set<Club> clubs = memberRepository.findByUsername(username).getClubs();
+        if (!clubRepository.findByClubName(clubName).isPresent()) // Club is not existed
+            return false;
+
+        Club club = clubRepository.findByClubName(clubName).get();
+        if (clubs.contains(club)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public PostDTO savePost(PostDTO postDTO) {
         Optional<SubClub> postSubClub = subClubRepository.findBySubClubName(postDTO.postSubClubName);
         if(postSubClub.isPresent()){
+            if(postSubClub.get().getUpperClub() == null || !isAuthorizedForClub(postSubClub.get().getUpperClubName()))
+                return null; // Not authorized or Club is not existed
             Post newPost = postMapper.mapToEntity(postDTO);
             newPost.setPostSubClub(postSubClub.get());
             newPost.setPostVoting(0);
@@ -68,7 +89,6 @@ public class PostService {
 
     public List<PostDTO> getTrends(Pageable pageable) {
         Sort sorting;
-
         if(pageable.getSort() != null) {
             sorting = pageable.getSort();
         }
@@ -86,15 +106,24 @@ public class PostService {
 
     public PostDTO votePost(Long postId) {
         Optional<Post> optionalCurrentPost = postRepository.findById(postId);
+
         if(!optionalCurrentPost.isPresent()){
             return null;
         }
-        else{
-            Post currentPost = optionalCurrentPost.get();
-            Long currentVoting = currentPost.getPostVoting();
-            currentPost.setPostVoting(currentVoting + 1);
-            postRepository.save(currentPost);
-            return postMapper.mapToDto(currentPost);
-        }
+        Post currentPost = optionalCurrentPost.get();
+
+        if(currentPost.getPostSubClub() == null)
+            return null; // Post SubClub is not existed
+        if(currentPost.getPostSubClub().getUpperClub() == null)
+            return null; // Upper club of post subclub is not existed
+        if(!isAuthorizedForClub(currentPost.getPostSubClub().getUpperClubName()))
+            return null; // Not authorized
+
+        Long currentVoting = currentPost.getPostVoting();
+        currentPost.setPostVoting(currentVoting + 1);
+        postRepository.save(currentPost);
+        return postMapper.mapToDto(currentPost);
+
     }
+
 }

@@ -18,8 +18,8 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    @GetMapping(value = "/{postId}")
-    public PostDTO getPost(@PathVariable Long postId){
+    @GetMapping
+    public PostDTO getPost(@RequestParam(name = "postId") Long postId){
         return postService.getPostDTOById(postId);
     }
 
@@ -29,15 +29,15 @@ public class PostController {
         return postService.savePost(postDTO);
     }
 
-    @GetMapping(value = "/{subClubName}")
+    @GetMapping(value = "/subClubPosts")
     @ResponseBody
-    public List<PostDTO> getSubClubPosts(@PathVariable String subClubName){
+    public List<PostDTO> getSubClubPosts(@RequestParam(name = "subClubName") String subClubName){
         return postService.getSubClubPosts(subClubName);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    @PostMapping(value = "/vote/{postId}")
-    public PostDTO votePost(@PathVariable Long postId){
+    @PostMapping(value = "/vote")
+    public PostDTO votePost(@RequestParam(name = "postId") Long postId){
         return postService.votePost(postId);
     }
 
