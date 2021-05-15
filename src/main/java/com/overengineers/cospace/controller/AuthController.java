@@ -3,13 +3,19 @@ package com.overengineers.cospace.controller;
 
 import com.overengineers.cospace.dto.LoginRequest;
 import com.overengineers.cospace.dto.MemberDTO;
+import com.overengineers.cospace.entity.GenericResponse;
+import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Locale;
+import java.util.Optional;
 
 //@Validated
 @CrossOrigin(origins = "*") // TODO: Might need to remove this in production. For debugging purposes.
@@ -30,8 +36,10 @@ public class AuthController {
         return authService.register(memberDTO);
     }
 
-    @PostMapping(value = "/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestParam String username){
-        return authService.forgotPassword(username);
+    @PostMapping(value = "/reset-password")
+    public GenericResponse resetPassword(final HttpServletRequest request, @RequestParam("email") final String userEmail){
+        return authService.resetPassword(request, userEmail);
     }
+
+
 }
