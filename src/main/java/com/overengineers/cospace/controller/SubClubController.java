@@ -1,5 +1,6 @@
 package com.overengineers.cospace.controller;
 
+import com.overengineers.cospace.dto.ReviewDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.service.SubClubService;
 
@@ -21,9 +22,15 @@ public class SubClubController {
         return subClubService.listAllSubClubs();
     }
 
-    @PostMapping("/rate")
+    @PostMapping("/review")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    public SubClubDTO rate(@RequestParam(name = "subClubName") String subClubName){
-        return subClubService.rate(subClubName); // TODO: Auth check by enrollment
+    public ReviewDTO review(@RequestBody ReviewDTO reviewDTO){
+        return subClubService.review(reviewDTO); // TODO: Auth check by enrollment
+    }
+
+    @GetMapping("/reviews")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    public List<ReviewDTO> getReviewsByParentName(@RequestParam(name = "subClubName") String subClubName){
+        return subClubService.getReviewsByParentName(subClubName);
     }
 }
