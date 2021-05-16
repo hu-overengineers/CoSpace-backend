@@ -13,14 +13,14 @@ public class PostDTO {
 
     public final LocalDateTime created;
 
-    public final String postAuthor;
+    public final String author;
 
-    public final String postTitle;
+    public final String title;
 
-    public final String postContent;
+    public final String content;
 
-    public final String postSubClubName;
+    public final String parentName;
 
-    public final long postVoting;
+    public final long voting;
 
 }

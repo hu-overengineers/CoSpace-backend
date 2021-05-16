@@ -20,7 +20,7 @@ public class Authority implements GrantedAuthority {
     private Long id;
 
     @ManyToMany(mappedBy = "authorities")
-    private Set<Member> memberEntities;
+    private Set<Member> members;
 
     private String authority;
 

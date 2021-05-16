@@ -14,8 +14,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Question extends BaseEntity {
-    @Column(name = "QUESTION")
-    private String question;
+    @Column(name = "CONTENT")
+    private String content;
 
     @Column(name = "ANSWER")
     private String answer;
@@ -25,5 +25,5 @@ public class Question extends BaseEntity {
             joinColumns = {@JoinColumn(name = "fk_question")},
             inverseJoinColumns = {@JoinColumn(name = "fk_club")}
     )
-    private Club questionClub = new Club();
+    private Club parent = new Club();
 }

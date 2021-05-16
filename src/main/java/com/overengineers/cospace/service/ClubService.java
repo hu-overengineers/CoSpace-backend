@@ -31,25 +31,11 @@ public class ClubService {
     }
 
     public Optional<Club> findByClubName(String clubName){
-        return clubRepository.findByClubName(clubName);
+        return clubRepository.findByName(clubName);
     }
 
     public Club saveNewClub(Club club){
         return clubRepository.save(club); }
-
-    public ClubDTO rate(String clubName) {
-        Optional<Club> optionalClub = clubRepository.findByClubName(clubName);
-        if(!optionalClub.isPresent()){
-            return null;
-        }
-        else{
-            Club currentClub = optionalClub.get();
-            long currentRating = currentClub.getRating();
-            currentClub.setRating(currentRating + 1);
-            clubRepository.save(currentClub);
-            return clubMapper.mapToDto(currentClub);
-        }
-    }
 
     public ResponseEntity<String> enrollClub(String clubName){
         if (findByClubName(clubName).isPresent()){

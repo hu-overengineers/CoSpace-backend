@@ -17,22 +17,19 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Post extends BaseEntity {
-    @Column(name = "POST_AUTHOR")
-    private String postAuthor;
+    @Column(name = "AUTHOR")
+    private String author;
 
-    @Column(name = "POST_TITLE")
-    private String postTitle;
+    @Column(name = "TITLE")
+    private String title;
 
-    @Column(name = "POST_CONTENT")
-    private String postContent;
+    @Column(name = "content")
+    private String content;
 
-    @Column(name = "POST_SUB_CLUB_NAME")
-    private String postSubClubName;
+    @Column(name = "voting")
+    private long voting;
 
-    @Column(name = "POST_VOTING")
-    private long postVoting;
-
-    @OneToMany(mappedBy = "reportedPost")
+    @OneToMany(mappedBy = "post")
     private Set<Report> reports = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.ALL})
@@ -40,5 +37,5 @@ public class Post extends BaseEntity {
             joinColumns = {@JoinColumn(name = "fk_post")},
             inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}
     )
-    private SubClub postSubClub = new SubClub();
+    private SubClub parent = new SubClub();
 }

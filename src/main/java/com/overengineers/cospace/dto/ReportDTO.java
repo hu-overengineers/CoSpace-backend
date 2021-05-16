@@ -7,10 +7,10 @@ import lombok.Getter;
 @Builder
 public class ReportDTO {
 
-    private String reportAuthor;
+    private String author;
 
-    private String reportMessage;
+    private String content;
 
-    private String reportedPostId;
+    private String postId;
 
 }

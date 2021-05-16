@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findByPostSubClubName(String postSubClubName);
-    List<Post> findByPostAuthor(String postAuthor);
+    List<Post> findByParentName(String parentName);
+    List<Post> findByAuthor(String author);
     Post findById(String id);
 }

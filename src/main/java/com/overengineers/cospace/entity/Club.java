@@ -17,24 +17,21 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Club extends BaseEntity {
-    @Column(name = "CLUB_NAME")
-    private String clubName;
+    @Column(name = "NAME")
+    private String name;
 
     @Column(name = "DETAILS")
     private String details;
-
-    @Column(name = "RATING")
-    private long rating;
 
     // Club - Member Relation
     @ManyToMany(mappedBy = "clubs")
     private Set<Member> members = new HashSet<>();
 
     // Club - SubClub Relation
-    @OneToMany(mappedBy = "upperClub")
-    private Set<SubClub> subs = new HashSet<>();
+    @OneToMany(mappedBy = "parent")
+    private Set<SubClub> childs = new HashSet<>();
 
-    @OneToMany(mappedBy = "questionClub")
-    private Set<Question> questionnaire = new HashSet<>();
+    @OneToMany(mappedBy = "parent")
+    private Set<Question> questions = new HashSet<>();
 
 }

@@ -10,22 +10,23 @@ import java.util.Set;
 @Entity
 @Setter
 @Getter
-@SequenceGenerator(name = "idgen3", sequenceName = "SUB_CLUB_SEQ", allocationSize = 1)
+@SequenceGenerator(name = "idgen3", sequenceName = "SUBCLUB_SEQ", allocationSize = 1)
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubClub extends BaseEntity {
-    @Column(name = "SUB_CLUB_NAME")
-    private String subClubName;
+    @Column(name = "NAME")
+    private String name;
 
     @Column(name = "DETAILS")
     private String details;
 
-    private String upperClubName;
-
     @Column(name = "RATING")
-    private long rating;
+    private int rating;
 
-    @OneToMany(mappedBy = "postSubClub")
+    @OneToMany(mappedBy = "parent")
+    private Set<Review> reviews = new HashSet<>();
+
+    @OneToMany(mappedBy = "parent")
     private Set<Post> posts = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.ALL})
@@ -33,5 +34,5 @@ public class SubClub extends BaseEntity {
             joinColumns = {@JoinColumn(name = "fk_subClub")},
             inverseJoinColumns = {@JoinColumn(name = "fk_club")}
     )
-    private Club upperClub = new Club();
+    private Club parent = new Club();
 }

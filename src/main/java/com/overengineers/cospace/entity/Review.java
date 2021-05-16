@@ -1,5 +1,6 @@
 package com.overengineers.cospace.entity;
 
+
 import com.overengineers.cospace.entity.common.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,21 +12,24 @@ import javax.persistence.*;
 @Entity
 @Setter
 @Getter
-@SequenceGenerator(name = "idgen5", sequenceName = "REPORT_SEQ", allocationSize = 1)
+@SequenceGenerator(name = "idgen6", sequenceName = "REVIEW_SEQ", allocationSize = 1)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Report extends BaseEntity {
-
+public class Review extends BaseEntity {
     @Column(name = "AUTHOR")
     private String author;
 
     @Column(name = "CONTENT")
     private String content;
 
+    @Column(name = "RATING")
+    private int rating;
+
     @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinTable(name = "post_report",
-            joinColumns = {@JoinColumn(name = "fk_report")},
-            inverseJoinColumns = {@JoinColumn(name = "fk_post")}
+    @JoinTable(name = "subClub_review",
+            joinColumns = {@JoinColumn(name = "fk_review")},
+            inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}
     )
-    private Post post = new Post();
+
+    private SubClub parent = new SubClub();
 }

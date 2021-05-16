@@ -26,13 +26,13 @@ public class SubClubService {
     public SubClub saveNewSubClub(SubClub subClub){ return subClubRepository.save(subClub); }
 
     public SubClubDTO rate(String subClubName) {
-        Optional<SubClub> optionalSubClub = subClubRepository.findBySubClubName(subClubName);
+        Optional<SubClub> optionalSubClub = subClubRepository.findByName(subClubName);
         if(!optionalSubClub.isPresent()){
             return null;
         }
         else{
             SubClub currentSubClub = optionalSubClub.get();
-            long currentRating = currentSubClub.getRating();
+            int currentRating = currentSubClub.getRating();
             currentSubClub.setRating(currentRating + 1);
             subClubRepository.save(currentSubClub);
             return subClubMapper.mapToDto(currentSubClub);

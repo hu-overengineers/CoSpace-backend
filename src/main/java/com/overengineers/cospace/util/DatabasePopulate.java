@@ -2,7 +2,6 @@ package com.overengineers.cospace.util;
 
 import com.overengineers.cospace.entity.*;
 import com.overengineers.cospace.repository.*;
-import com.overengineers.cospace.service.CustomUserDetailsManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,13 +38,13 @@ public class DatabasePopulate {
         Member memberTest = new Member("memberTest", passwordEncoder.encode("12345"), "memberTest@gmail.com", null, Set.of(savedAuthorities.get(0)));
         memberRepository.save(memberTest);
 
-        Club clubTest = new Club("ClubTest", "ClubTest Details", 0,null, null, null);
+        Club clubTest = new Club("ClubTest", "ClubTest Details",null, null, null);
         clubRepository.save(clubTest);
 
-        SubClub subTest = new SubClub("SubTest", "SubTest Details", "ClubTest", 0, null, clubRepository.findByClubName("ClubTest").get());
+        SubClub subTest = new SubClub("SubTest", "SubTest Details", 0, null, null, clubRepository.findByName("ClubTest").get());
         subClubRepository.save(subTest);
 
-        Post postTest = new Post("memberTest", "TitleTest", "This is a test content", "SubTest", 0, null, subClubRepository.findBySubClubName("SubTest").get());
+        Post postTest = new Post("memberTest", "TitleTest", "This is a test content", 0, null, subClubRepository.findByName("SubTest").get());
         postRepository.save(postTest);
 
     }

@@ -10,13 +10,13 @@ import javax.validation.constraints.Size;
 public class SubClubDTO {
 
     @Size(min = 1, max = 32, message = "Club name can't be more than 32 characters!")
-    public final String subClubName;
+    public final String name;
 
     @Size(min = 1, max = 255, message = "Club details can't be more than 255 characters!")
     public final String details;
 
-    public final String upperClubName;
+    public final String parentName;
 
-    public final long rating;
+    public final int rating;
 
 }

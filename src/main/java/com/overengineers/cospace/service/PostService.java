@@ -40,10 +40,10 @@ public class PostService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) authentication.getPrincipal();
         Set<Club> clubs = memberRepository.findByUsername(username).getClubs();
-        if (!clubRepository.findByClubName(clubName).isPresent()) // Club is not existed
+        if (!clubRepository.findByName(clubName).isPresent()) // Club is not existed
             return false;
 
-        Club club = clubRepository.findByClubName(clubName).get();
+        Club club = clubRepository.findByName(clubName).get();
         if (clubs.contains(club)){
             return true;
         } else {
@@ -52,13 +52,16 @@ public class PostService {
     }
 
     public PostDTO savePost(PostDTO postDTO) {
-        Optional<SubClub> postSubClub = subClubRepository.findBySubClubName(postDTO.postSubClubName);
+        Optional<SubClub> postSubClub = subClubRepository.findByName(postDTO.getParentName());
         if(postSubClub.isPresent()){
-            if(postSubClub.get().getUpperClub() == null || !isAuthorizedForClub(postSubClub.get().getUpperClubName()))
+            if(postSubClub.get().getParent() == null || !isAuthorizedForClub(postSubClub.get().getParent().getName()))
                 return null; // Not authorized or Club is not existed
             Post newPost = postMapper.mapToEntity(postDTO);
-            newPost.setPostSubClub(postSubClub.get());
-            newPost.setPostVoting(0);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = (String) authentication.getPrincipal();
+            newPost.setAuthor(username);
+            newPost.setParent(postSubClub.get());
+            newPost.setVoting(0);
             newPost.setCreated(LocalDateTime.now());
             Post savedPost = postRepository.save(newPost);
             return postMapper.mapToDto(savedPost);
@@ -67,7 +70,7 @@ public class PostService {
     }
 
     public List<PostDTO> getSubClubPosts(String subClubName) {
-        return postMapper.mapToDto(postRepository.findByPostSubClubName(subClubName));
+        return postMapper.mapToDto(postRepository.findByParentName(subClubName));
     }
 
     public PostDTO getPostDTOById(Long postID){
@@ -75,10 +78,10 @@ public class PostService {
     }
 
     public ReportDTO reportPost(ReportDTO reportDTO) {
-        Optional<Post> reportedPost = postRepository.findById(Long.parseLong(reportDTO.getReportedPostId()));
+        Optional<Post> reportedPost = postRepository.findById(Long.parseLong(reportDTO.getPostId()));
         if(reportedPost.isPresent()){
             Report newReport = reportMapper.mapToEntity(reportDTO);
-            newReport.setReportedPost(reportedPost.get());
+            newReport.setPost(reportedPost.get());
             newReport.setCreated(LocalDateTime.now());
             Report savedReport = reportRepository.save(newReport);
             return reportMapper.mapToDto(savedReport);
@@ -112,15 +115,15 @@ public class PostService {
         }
         Post currentPost = optionalCurrentPost.get();
 
-        if(currentPost.getPostSubClub() == null)
+        if(currentPost.getParent() == null)
             return null; // Post SubClub is not existed
-        if(currentPost.getPostSubClub().getUpperClub() == null)
+        if(currentPost.getParent().getParent() == null)
             return null; // Upper club of post subclub is not existed
-        if(!isAuthorizedForClub(currentPost.getPostSubClub().getUpperClubName()))
+        if(!isAuthorizedForClub(currentPost.getParent().getParent().getName()))
             return null; // Not authorized
 
-        Long currentVoting = currentPost.getPostVoting();
-        currentPost.setPostVoting(currentVoting + 1);
+        Long currentVoting = currentPost.getVoting();
+        currentPost.setVoting(currentVoting + 1);
         postRepository.save(currentPost);
         return postMapper.mapToDto(currentPost);
 
