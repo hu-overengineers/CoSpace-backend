@@ -9,6 +9,7 @@ import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.repository.ReviewRepository;
 import com.overengineers.cospace.repository.SubClubRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -60,5 +61,9 @@ public class SubClubService {
 
     public List<ReviewDTO> getReviewsByParentName(String subClubName) {
         return reviewMapper.mapToDto(reviewRepository.findByParentName(subClubName));
+    }
+
+    public List<SubClubDTO> search(String query, Pageable pageable){
+        return subClubMapper.mapToDto(subClubRepository.findByNameIgnoreCaseContaining(query, pageable));
     }
 }

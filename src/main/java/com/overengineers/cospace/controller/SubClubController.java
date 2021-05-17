@@ -5,6 +5,7 @@ import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.service.SubClubService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,4 +34,10 @@ public class SubClubController {
     public List<ReviewDTO> getReviewsByParentName(@RequestParam(name = "subClubName") String subClubName){
         return subClubService.getReviewsByParentName(subClubName);
     }
+
+    @GetMapping("/search")
+    public List<SubClubDTO> search(@RequestParam(name = "query") String query, Pageable pageable){
+        return subClubService.search(query,  pageable);
+    }
+
 }

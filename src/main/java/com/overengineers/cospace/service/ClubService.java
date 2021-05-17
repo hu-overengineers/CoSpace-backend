@@ -7,6 +7,7 @@ import com.overengineers.cospace.mapper.ClubMapper;
 import com.overengineers.cospace.repository.ClubRepository;
 import com.overengineers.cospace.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,6 +50,10 @@ public class ClubService {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND) // 404
                 .body("CLUB NOT FOUND!");
+    }
+
+    public List<ClubDTO> search(String query, Pageable pageable){
+        return clubMapper.mapToDto(clubRepository.findByNameIgnoreCaseContaining(query, pageable));
     }
 
 }

@@ -46,7 +46,7 @@ public class DatabasePopulate {
 
             SubClub sub = new SubClub("sub" + i, "sub" + i + " Details", 0, null, null, clubRepository.findByName("club" + i).get());
             subClubRepository.save(sub);
-            
+
             Post post = new Post("member" + i, "Title" + i, "This is a test content for sub" + i, i, null, subClubRepository.findByName("sub" + i).get());
             postRepository.save(post);
 
