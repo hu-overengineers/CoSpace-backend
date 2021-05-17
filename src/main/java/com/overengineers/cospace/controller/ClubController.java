@@ -1,7 +1,6 @@
 package com.overengineers.cospace.controller;
 
 import com.overengineers.cospace.dto.ClubDTO;
-import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.service.ClubService;
 
 import lombok.RequiredArgsConstructor;
@@ -17,8 +16,6 @@ import java.util.List;
 @RequestMapping("/club")
 public class ClubController {
     private final ClubService clubService;
-
-    private final MemberRepository memberRepository;
 
     @GetMapping(value = "/all")
     public List<ClubDTO> listAllClubs() {

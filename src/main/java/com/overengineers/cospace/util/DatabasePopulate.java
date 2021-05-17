@@ -35,17 +35,22 @@ public class DatabasePopulate {
             memberRepository.save(currentAdmin);
         }
 
-        Member memberTest = new Member("memberTest", passwordEncoder.encode("12345"), "memberTest@gmail.com", null, Set.of(savedAuthorities.get(0)));
-        memberRepository.save(memberTest);
+        int populationCount = 3;
+        for(int i = 1; i <= populationCount; i++){
 
-        Club clubTest = new Club("ClubTest", "ClubTest Details",null, null, null);
-        clubRepository.save(clubTest);
+            Member member = new Member("member" + i, passwordEncoder.encode("123456"), "member" + i + "@gmail.com", null, Set.of(savedAuthorities.get(0)));
+            memberRepository.save(member);
 
-        SubClub subTest = new SubClub("SubTest", "SubTest Details", 0, null, null, clubRepository.findByName("ClubTest").get());
-        subClubRepository.save(subTest);
+            Club club = new Club("club" + i, "club" + i + " Details",null, null, null);
+            clubRepository.save(club);
 
-        Post postTest = new Post("memberTest", "TitleTest", "This is a test content", 0, null, subClubRepository.findByName("SubTest").get());
-        postRepository.save(postTest);
+            SubClub sub = new SubClub("sub" + i, "sub" + i + " Details", 0, null, null, clubRepository.findByName("club" + i).get());
+            subClubRepository.save(sub);
+            
+            Post post = new Post("member" + i, "Title" + i, "This is a test content for sub" + i, i, null, subClubRepository.findByName("sub" + i).get());
+            postRepository.save(post);
+
+        }
 
     }
 }
