@@ -13,6 +13,7 @@ import com.overengineers.cospace.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,12 +31,14 @@ public class AdminService {
     private final ReportMapper reportMapper;
     private final ReportRepository reportRepository;
 
+    @Transactional
     public ClubDTO createClub(ClubDTO clubDTO) {
         Club club = clubMapper.mapToEntity(clubDTO);
         Club newClub = clubService.saveNewClub(club);
         return clubMapper.mapToDto(newClub);
     }
 
+    @Transactional
     public SubClubDTO createSubClub(SubClubDTO subClubDTO) {
         Optional<Club> parent = clubRepository.findByName(subClubDTO.getParentName());
         if(parent.isPresent()){

@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,8 +34,10 @@ public class SubClubService {
         return subClubDTOList;
     }
 
+    @Transactional
     public SubClub saveNewSubClub(SubClub subClub){ return subClubRepository.save(subClub); }
 
+    @Transactional
     public ReviewDTO review(ReviewDTO reviewDTO) {
         Optional<SubClub> optionalSubClub = subClubRepository.findByName(reviewDTO.getParentName());
         if(!optionalSubClub.isPresent()){

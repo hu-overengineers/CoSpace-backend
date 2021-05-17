@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,7 @@ public class PostService {
         }
     }
 
+    @Transactional
     public PostDTO savePost(PostDTO postDTO) {
         Optional<SubClub> postSubClub = subClubRepository.findByName(postDTO.getParentName());
         if(postSubClub.isPresent()){
@@ -77,6 +79,7 @@ public class PostService {
         return postMapper.mapToDto(postRepository.findById(postID).get());
     }
 
+    @Transactional
     public ReportDTO reportPost(ReportDTO reportDTO) {
         Optional<Post> reportedPost = postRepository.findById(Long.parseLong(reportDTO.getPostId()));
         if(reportedPost.isPresent()){
@@ -92,12 +95,12 @@ public class PostService {
 
     public List<PostDTO> getTrends(Pageable pageable) {
         Sort sorting;
-        if(pageable.getSort() != null) {
+        if(!pageable.getSort().isUnsorted()) {
             sorting = pageable.getSort();
         }
         else {
             // Default Sorting
-           sorting = Sort.by("postVoting");
+           sorting = Sort.by("voting").descending();
         }
 
         Pageable sortedByName =
@@ -107,6 +110,7 @@ public class PostService {
         return postMapper.mapToDto(allProducts.getContent());
     }
 
+    @Transactional
     public PostDTO votePost(Long postId) {
         Optional<Post> optionalCurrentPost = postRepository.findById(postId);
 

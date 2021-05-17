@@ -1,9 +1,11 @@
 package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.ClubDTO;
+import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.entity.Club;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.mapper.ClubMapper;
+import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.repository.ClubRepository;
 import com.overengineers.cospace.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -21,6 +24,7 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final ClubMapper clubMapper;
 
+    private final MemberMapper memberMapper;
     private final MemberRepository memberRepository;
 
     public List<ClubDTO> listAllClubs(){
@@ -33,17 +37,17 @@ public class ClubService {
         return clubRepository.findByName(clubName);
     }
 
+    @Transactional
     public Club saveNewClub(Club club){
         return clubRepository.save(club); }
 
+    @Transactional
     public ResponseEntity<String> enrollClub(String clubName){
         if (findByClubName(clubName).isPresent()){
             Club currentClub = findByClubName(clubName).get();
             String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Member currentMember = memberRepository.findByUsername(username);
             currentMember.getClubs().add(currentClub);
-            currentClub.getMembers().add(currentMember);
-            saveNewClub(currentClub);
             memberRepository.save(currentMember);
             return ResponseEntity.ok("You are successfully enrolled.");
         }
@@ -56,4 +60,12 @@ public class ClubService {
         return clubMapper.mapToDto(clubRepository.findByNameIgnoreCaseContaining(query, pageable));
     }
 
+    public List<MemberDTO> getClubMembers(String clubName) {
+        if(!findByClubName(clubName).isPresent()) {
+            return null;
+        }
+
+        Club club = findByClubName(clubName).get();
+        return memberMapper.mapToDto(new ArrayList<>(club.getMembers()));
+    }
 }

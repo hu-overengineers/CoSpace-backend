@@ -1,6 +1,7 @@
 package com.overengineers.cospace.controller;
 
 import com.overengineers.cospace.dto.ClubDTO;
+import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.service.ClubService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,12 @@ public class ClubController {
     @GetMapping("/search")
     public List<ClubDTO> search(@RequestParam(name = "query") String query, Pageable pageable){
         return clubService.search(query, pageable);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping("/members")
+    public List<MemberDTO> getClubMembers(@RequestParam(name = "clubName") String clubName){
+        return clubService.getClubMembers(clubName);
     }
 
 }
