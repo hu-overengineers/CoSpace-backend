@@ -8,7 +8,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ClubMapper {
 
-
     ClubDTO mapToDto(Club club);
 
     Club mapToEntity(ClubDTO clubDTO);
@@ -16,4 +15,5 @@ public interface ClubMapper {
     List<ClubDTO> mapToDto(List<Club> clubList);
 
     List<Club> mapToEntity(List<ClubDTO> clubDTOList);
+
 }

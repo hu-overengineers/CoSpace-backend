@@ -19,4 +19,6 @@ public class SubClubDTO {
 
     public final int rating;
 
+    public final String moderatorUsername;
+
 }

@@ -2,6 +2,7 @@ package com.overengineers.cospace.controller;
 
 import com.overengineers.cospace.dto.ClubDTO;
 import com.overengineers.cospace.dto.MemberDTO;
+import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +21,15 @@ public class MemberController {
     private final MemberService memberService;
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    @GetMapping(value = "/enrolled-clubs")
-    public List<ClubDTO> getEnrolledClubs(){
-        return memberService.getEnrolledClubs();
+    @GetMapping(value = "/enrolled-subclubs")
+    public List<SubClubDTO> getEnrolledSubClubs(){
+        return memberService.getEnrolledSubClubs();
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/search")
     public List<MemberDTO> searchMember(@RequestParam("query") String query, @RequestParam("parentName") String parentName, Pageable pageable) throws Exception {
-        // Query may be a username or an email
+        // query should include substring of the username
         return memberService.search(query, parentName, pageable);
     }
 

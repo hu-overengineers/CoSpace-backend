@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/club")
 public class ClubController {
+
     private final ClubService clubService;
 
     @GetMapping(value = "/all")
@@ -24,21 +25,9 @@ public class ClubController {
         return clubService.listAllClubs();
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    @PostMapping(value = "/enroll")
-    public ResponseEntity<String> enrollClub(@RequestParam(name = "clubName") String clubName){
-        return clubService.enrollClub(clubName);
-    }
-
     @GetMapping("/search")
     public List<ClubDTO> search(@RequestParam(name = "query") String query, Pageable pageable){
         return clubService.search(query, pageable);
-    }
-
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    @GetMapping("/members")
-    public List<MemberDTO> getClubMembers(@RequestParam(name = "clubName") String clubName){
-        return clubService.getClubMembers(clubName);
     }
 
 }

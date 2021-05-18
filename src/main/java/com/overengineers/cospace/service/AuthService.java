@@ -1,5 +1,6 @@
 package com.overengineers.cospace.service;
 
+import antlr.Token;
 import com.overengineers.cospace.auth.TokenManager;
 import com.overengineers.cospace.dto.LoginRequest;
 import com.overengineers.cospace.dto.MemberDTO;
@@ -29,10 +30,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -55,13 +54,25 @@ public class AuthService {
         try{
             Authentication user = authenticationProvider.authenticate(authentication);
             String token = TokenManager.generateToken(user);
+
+            /*
+            // Ban check
+            String username = TokenManager.getUsernameFromToken(token);
+            Member member = memberRepository.findByUsername(username);
+            Date now = Calendar.getInstance().getTime();
+
+            if(member.getBan() != null && member.getBan().getEndDate().after(now)){
+                throw new Exception();
+            }
+            */
+
             JSONObject resp = new JSONObject();
             resp.put("token", token);
             resp.put("auth", TokenManager.getAuthorities(user));
 
             return new ResponseEntity<String>(resp.toString(), HttpStatus.OK);
         }
-        catch (AuthenticationException | JSONException e){
+        catch (Exception e){
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED) // 401
                     .body("Login Error!");

@@ -10,6 +10,7 @@ import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.service.AdminService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -43,5 +44,10 @@ public class AdminController {
     public List<MemberDTO> getAllMembers(){
         List<Member> memberList = memberRepository.findAll();
         return memberMapper.mapToDto(memberList);
+    }
+
+    @PostMapping(value = "/ban-member")
+    public MemberDTO banMember(@RequestParam(name = "username") String username){
+        return adminService.banMember(username);
     }
 }

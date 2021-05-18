@@ -24,8 +24,6 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final ClubMapper clubMapper;
 
-    private final MemberMapper memberMapper;
-    private final MemberRepository memberRepository;
 
     public List<ClubDTO> listAllClubs(){
         List<Club> clubList = clubRepository.findAll();
@@ -33,39 +31,14 @@ public class ClubService {
         return clubDTOList;
     }
 
-    public Optional<Club> findByClubName(String clubName){
-        return clubRepository.findByName(clubName);
-    }
 
     @Transactional
     public Club saveNewClub(Club club){
         return clubRepository.save(club); }
 
-    @Transactional
-    public ResponseEntity<String> enrollClub(String clubName){
-        if (findByClubName(clubName).isPresent()){
-            Club currentClub = findByClubName(clubName).get();
-            String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Member currentMember = memberRepository.findByUsername(username);
-            currentMember.getClubs().add(currentClub);
-            memberRepository.save(currentMember);
-            return ResponseEntity.ok("You are successfully enrolled.");
-        }
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND) // 404
-                .body("CLUB NOT FOUND!");
-    }
 
     public List<ClubDTO> search(String query, Pageable pageable){
         return clubMapper.mapToDto(clubRepository.findByNameIgnoreCaseContaining(query, pageable));
     }
 
-    public List<MemberDTO> getClubMembers(String clubName) {
-        if(!findByClubName(clubName).isPresent()) {
-            return null;
-        }
-
-        Club club = findByClubName(clubName).get();
-        return memberMapper.mapToDto(new ArrayList<>(club.getMembers()));
-    }
 }

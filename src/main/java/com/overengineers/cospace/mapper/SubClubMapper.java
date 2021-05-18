@@ -12,6 +12,7 @@ import java.util.List;
 public interface SubClubMapper {
 
     @Mapping(source = "subClub", target = "parentName", qualifiedByName = "parentName")
+    @Mapping(source = "subClub", target = "moderatorUsername", qualifiedByName = "moderatorUsername")
     SubClubDTO mapToDto(SubClub subClub);
 
     @Named("parentName")
@@ -19,9 +20,18 @@ public interface SubClubMapper {
         return subClub.getParent().getName();
     }
 
+    @Named("moderatorUsername")
+    default String moderatorToModeratorUsername(SubClub subClub){
+        if(subClub.getModerator() != null)
+            return subClub.getModerator().getUsername();
+        else
+            return "";
+    }
+
     SubClub mapToEntity(SubClubDTO subClubDTO);
 
     List<SubClubDTO> mapToDto(List<SubClub> subClubList);
 
     List<SubClub> mapToEntity(List<SubClubDTO> subClubDTOList);
+
 }

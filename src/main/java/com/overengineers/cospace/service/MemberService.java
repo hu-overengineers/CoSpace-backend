@@ -2,10 +2,13 @@ package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.ClubDTO;
 import com.overengineers.cospace.dto.MemberDTO;
+import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.entity.Club;
 import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.ClubMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
+import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
@@ -27,14 +30,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
 
-    private final ClubMapper clubMapper;
+    private final SubClubMapper subClubMapper;
 
-    public List<ClubDTO> getEnrolledClubs() {
+    private final SecurityService securityService;
+
+    public List<SubClubDTO> getEnrolledSubClubs() {
         try{
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = (String) authentication.getPrincipal();
-            Set<Club> clubs = memberRepository.findByUsername(username).getClubs();
-            return clubMapper.mapToDto(new ArrayList<>(clubs));
+            Set<SubClub> subClubs = securityService.getAuthorizedMember().getSubClubs();
+            return subClubMapper.mapToDto(new ArrayList<>(subClubs));
         }
         catch (Exception e){
             e.printStackTrace();
@@ -42,8 +45,9 @@ public class MemberService {
         }
 
     }
-
+/*
     public boolean clubAuthCheck(String clubName){
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) authentication.getPrincipal();
         Set<Club> enrolledClubs = memberRepository.findByUsername(username).getClubs();
@@ -56,13 +60,15 @@ public class MemberService {
         if(result == null)
             return false;
         return true;
-    }
 
-    public List<MemberDTO> search(String query, String clubName, Pageable pageable) {
-        if(!clubAuthCheck(clubName))
+
+    }
+*/
+    public List<MemberDTO> search(String query, String subClubName, Pageable pageable) {
+        if(!securityService.isAuthorizedToSubClub(subClubName))
             return null;
-        else{
-            return memberMapper.mapToDto(memberRepository.findByUsernameIgnoreCaseContainingAndClubs_Name(query, clubName, pageable));
-        }
+
+        return memberMapper.mapToDto(memberRepository.findByUsernameIgnoreCaseContainingAndSubClubs_Name(query, subClubName, pageable));
+
     }
 }

@@ -23,11 +23,17 @@ public class SubClub extends BaseEntity {
     @Column(name = "RATING")
     private int rating;
 
+    @ManyToMany(mappedBy = "subClubs")
+    private Set<Member> members = new HashSet<>();
+
+    @OneToMany(mappedBy = "parent")
+    private Set<Post> posts = new HashSet<>();
+
     @OneToMany(mappedBy = "parent")
     private Set<Review> reviews = new HashSet<>();
 
     @OneToMany(mappedBy = "parent")
-    private Set<Post> posts = new HashSet<>();
+    private Set<Question> questions = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinTable(name = "club_subClub",
@@ -35,4 +41,8 @@ public class SubClub extends BaseEntity {
             inverseJoinColumns = {@JoinColumn(name = "fk_club")}
     )
     private Club parent = new Club();
+
+    @OneToOne
+    @JoinColumn(name = "member_username")
+    private Member moderator;
 }
