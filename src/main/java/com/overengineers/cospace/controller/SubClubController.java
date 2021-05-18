@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -70,13 +71,12 @@ public class SubClubController {
     @PreAuthorize("permitAll")
     
     @GetMapping("/statistics")
-    public SubClubStatisticsDTO getStatistics(TimeZone timeZone, // Not sure if its the correct way of passing zone info
-                                              @RequestParam(name = "subClubName") String subClubName,
+    public SubClubStatisticsDTO getStatistics(@RequestParam(name = "subClubName") String subClubName,
                                               @RequestParam(name = "timeStart") Long timeStart,
                                               @RequestParam(name = "timeEnd") Long timeEnd) {
         return subClubService.getStatistics(subClubName,
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStart), timeZone.toZoneId()),
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(timeEnd), timeZone.toZoneId()));
+                Date.from(Instant.ofEpochMilli(timeStart)),
+                Date.from(Instant.ofEpochMilli(timeEnd)));
     }
 
     @GetMapping("/ban-check")
