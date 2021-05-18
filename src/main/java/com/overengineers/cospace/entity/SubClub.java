@@ -35,7 +35,7 @@ public class SubClub extends BaseEntity {
     @OneToMany(mappedBy = "parent")
     private Set<Question> questions = new HashSet<>();
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinTable(name = "club_subClub",
             joinColumns = {@JoinColumn(name = "fk_subClub")},
             inverseJoinColumns = {@JoinColumn(name = "fk_club")}
@@ -49,4 +49,6 @@ public class SubClub extends BaseEntity {
     @ManyToMany(mappedBy = "dismissibleSubClubs")
     private Set<Member> dismissibleMembers = new HashSet<>();
 
+    @OneToMany(mappedBy = "parent")
+    private Set<Event> events = new HashSet<>();
 }

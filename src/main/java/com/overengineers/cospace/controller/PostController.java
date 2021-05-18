@@ -27,7 +27,7 @@ public class PostController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/create")
     public PostDTO createPost(@RequestBody PostDTO postDTO){
-        return postService.savePost(postDTO);
+        return postService.createPost(postDTO);
     }
 
     @PreAuthorize("permitAll")

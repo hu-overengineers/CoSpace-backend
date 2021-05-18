@@ -1,5 +1,6 @@
 package com.overengineers.cospace.service;
 
+import com.overengineers.cospace.dto.EventDTO;
 import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.dto.ReviewDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
@@ -7,9 +8,11 @@ import com.overengineers.cospace.dto.SubClubStatisticsDTO;
 import com.overengineers.cospace.entity.Ban;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.entity.SubClub;
+import com.overengineers.cospace.mapper.EventMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.repository.BanRepository;
+import com.overengineers.cospace.repository.EventRepository;
 import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.repository.PostRepository;
 import com.overengineers.cospace.repository.SubClubRepository;
@@ -21,10 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +36,9 @@ public class SubClubService {
     private final MemberMapper memberMapper;
     private final MemberRepository memberRepository;
 
+    private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
+    
     private final PostRepository postRepository;
 
     private final ReviewService reviewService;
@@ -105,7 +108,9 @@ public class SubClubService {
     }
 
     public List<SubClubDTO> search(String query, Pageable pageable){
-        return subClubMapper.mapToDto(subClubRepository.findByNameIgnoreCaseContaining(query, pageable));
+        // Sort by rating, descending
+        Pageable newPageable = UtilService.fixPageableSort(pageable, "rating", false);
+        return subClubMapper.mapToDto(subClubRepository.findByNameIgnoreCaseContaining(query, newPageable));
     }
 
     public List<MemberDTO> getMembers(String subClubName) {
@@ -116,6 +121,10 @@ public class SubClubService {
         return memberMapper.mapToDto(new ArrayList<>(members));
     }
 
+    public List<EventDTO> getEvents(String subClubName) {
+        return eventMapper.mapToDto(eventRepository.findByParentNameAndDateAfter(subClubName, LocalDateTime.now()));
+    }
+    
     public SubClubStatisticsDTO getStatistics(String subClubName, LocalDateTime timeFrameStart, LocalDateTime timeFrameEnd) {
         Optional<SubClub> subClub = subClubRepository.findByName(subClubName);
         return subClub.map(club -> new SubClubStatisticsDTO(

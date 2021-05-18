@@ -1,5 +1,6 @@
 package com.overengineers.cospace.controller;
 
+import com.overengineers.cospace.dto.EventDTO;
 import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.dto.ReviewDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
@@ -24,11 +25,13 @@ import java.util.TimeZone;
 public class SubClubController {
     private final SubClubService subClubService;
 
+    @PreAuthorize("permitAll")
     @GetMapping(value = "/all")
     public List<SubClubDTO> listAllSubClubs() {
         return subClubService.listAllSubClubs();
     }
 
+    @PreAuthorize("permitAll")
     @GetMapping("/search")
     public List<SubClubDTO> search(@RequestParam(name = "query") String query, Pageable pageable){
         return subClubService.search(query,  pageable);
@@ -40,14 +43,14 @@ public class SubClubController {
         return subClubService.enroll(subClubName);
     }
 
-    @PostMapping("/review")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping("/review")
     public ReviewDTO review(@RequestBody ReviewDTO reviewDTO){
         return subClubService.reviewToSubClub(reviewDTO); // TODO: Auth check by enrollment
     }
 
-    @GetMapping("/reviews")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping("/reviews")
     public List<ReviewDTO> getReviewsByParentName(@RequestParam(name = "subClubName") String subClubName){
         return subClubService.getReviewsByParentName(subClubName);
     }
@@ -58,6 +61,14 @@ public class SubClubController {
         return subClubService.getMembers(subClubName);
     }
 
+    @PreAuthorize("permitAll")
+    @GetMapping("/events")
+    public List<EventDTO> getSubClubEvents(@RequestParam(name = "subClubName") String subClubName){
+        return subClubService.getEvents(subClubName);
+    }
+
+    @PreAuthorize("permitAll")
+    
     @GetMapping("/statistics")
     public SubClubStatisticsDTO getStatistics(TimeZone timeZone, // Not sure if its the correct way of passing zone info
                                               @RequestParam(name = "subClubName") String subClubName,
@@ -67,7 +78,6 @@ public class SubClubController {
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStart), timeZone.toZoneId()),
                 LocalDateTime.ofInstant(Instant.ofEpochMilli(timeEnd), timeZone.toZoneId()));
     }
-
 
     @GetMapping("/ban-check")
     public boolean isMemberBannedFromSubClub(@RequestParam(name = "subClubName") String subClubName){

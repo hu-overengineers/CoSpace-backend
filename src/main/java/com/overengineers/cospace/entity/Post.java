@@ -32,7 +32,7 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private Set<Report> reports = new HashSet<>();
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.MERGE})
     @JoinTable(name = "subClub_post",
             joinColumns = {@JoinColumn(name = "fk_post")},
             inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}

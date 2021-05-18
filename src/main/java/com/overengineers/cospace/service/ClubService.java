@@ -38,7 +38,9 @@ public class ClubService {
 
 
     public List<ClubDTO> search(String query, Pageable pageable){
-        return clubMapper.mapToDto(clubRepository.findByNameIgnoreCaseContaining(query, pageable));
+        // Sort by name, alphabetic order
+        Pageable newPageable = UtilService.fixPageableSort(pageable, "name", true);
+        return clubMapper.mapToDto(clubRepository.findByNameIgnoreCaseContaining(query, newPageable));
     }
 
 }

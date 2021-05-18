@@ -33,7 +33,7 @@ public class PostService {
     private final SecurityService securityService;
 
     @Transactional
-    public PostDTO savePost(PostDTO postDTO) {
+    public PostDTO createPost(PostDTO postDTO) {
 
         if(!securityService.isAuthorizedToSubClub(postDTO.getParentName()))
             return null;
@@ -44,7 +44,6 @@ public class PostService {
         newPost.setAuthor(securityService.getAuthorizedUsername());
         newPost.setParent(subClub);
         newPost.setVoting(0);
-        newPost.setCreated(LocalDateTime.now());
         Post savedPost = postRepository.save(newPost);
         return postMapper.mapToDto(savedPost);
 
@@ -70,7 +69,6 @@ public class PostService {
         if(reportedPost.isPresent()){
             Report newReport = reportMapper.mapToEntity(reportDTO);
             newReport.setPost(reportedPost.get());
-            newReport.setCreated(LocalDateTime.now());
             newReport.setAuthor(securityService.getAuthorizedUsername());
             Report savedReport = reportRepository.save(newReport);
             return reportMapper.mapToDto(savedReport);

@@ -19,6 +19,7 @@ public class Ban extends BaseEntity {
     @Column(name = "REASON")
     private String reason;
 
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "END_DATE")
     private Date endDate;
 
