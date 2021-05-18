@@ -33,7 +33,7 @@ public class PostService {
     private final SecurityService securityService;
 
     @Transactional
-    public PostDTO savePost(PostDTO postDTO) {
+    public PostDTO createPost(PostDTO postDTO) {
 
         if(!securityService.isAuthorizedToSubClub(postDTO.getParentName()))
             return null;

@@ -2,9 +2,11 @@ package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.BanDTO;
 import com.overengineers.cospace.dto.EventDTO;
+import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.entity.*;
 import com.overengineers.cospace.mapper.BanMapper;
 import com.overengineers.cospace.mapper.EventMapper;
+import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.repository.BanRepository;
 import com.overengineers.cospace.repository.EventRepository;
 import com.overengineers.cospace.repository.MemberRepository;
@@ -14,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +26,8 @@ import java.util.Optional;
 public class ModeratorService {
 
     private final MemberRepository memberRepository;
+    private final MemberMapper memberMapper;
+
     private final SubClubRepository subClubRepository;
 
     private final SecurityService securityService;
@@ -130,6 +136,13 @@ public class ModeratorService {
         Event updatedEvent = eventRepository.save(event);
         return eventMapper.mapToDto(updatedEvent);
 
+    }
+
+    public List<MemberDTO> getDismissibleList() {
+        Member moderator = securityService.getAuthorizedMember();
+        SubClub subClub = moderator.getModeratorSubClub();
+
+        return memberMapper.mapToDto(new ArrayList<>(subClub.getDismissibleMembers()));
     }
 
 
