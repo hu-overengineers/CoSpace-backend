@@ -44,4 +44,8 @@ public class UtilService {
         return Date.from(desiredTime);
     }
 
+    public static Date now(){
+        return new java.util.Date();
+    }
+
 }

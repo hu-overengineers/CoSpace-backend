@@ -23,7 +23,7 @@ public class Club extends BaseEntity {
     @Column(name = "DETAILS")
     private String details;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.MERGE)
     private Set<SubClub> childs = new HashSet<>();
 
 }

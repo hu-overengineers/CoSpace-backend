@@ -68,6 +68,8 @@ public class MemberService {
         if(!securityService.isAuthorizedToSubClub(subClubName))
             return null;
 
+        // Sort by username, alphabetically
+        UtilService.fixPageableSort(pageable, "username", true);
         return memberMapper.mapToDto(memberRepository.findByUsernameIgnoreCaseContainingAndSubClubs_Name(query, subClubName, pageable));
 
     }

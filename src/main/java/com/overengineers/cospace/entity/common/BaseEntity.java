@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -22,6 +23,14 @@ public abstract class BaseEntity {
     private Long id;
 
     @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "CREATED", updatable = false)
-    private LocalDateTime created = LocalDateTime.now();
+    private Date created;
+
+    @Version
+    public Integer version;
+
+    @LastModifiedDate
+    @Column(name = "LAST_MODIFIED", insertable = false)
+    private Date lastModified;
 }

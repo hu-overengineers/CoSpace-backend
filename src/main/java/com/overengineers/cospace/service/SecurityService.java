@@ -45,7 +45,7 @@ public class SecurityService {
         }
         else{
             Ban ban = optionalBan.get();
-            Date now = Calendar.getInstance().getTime();
+            Date now =UtilService.now();
             if(ban.getEndDate().after(now)){
                 return true; // Ban continue
             }

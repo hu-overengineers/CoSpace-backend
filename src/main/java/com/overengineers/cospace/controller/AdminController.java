@@ -53,6 +53,15 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/ban-member")
     public MemberDTO banMember(@RequestParam(name = "username") String username){
-        return adminService.banMember(username);
+        return adminService.banMember(username); // NOT IMPLEMENTED
     }
+
+
+    // getReports about the moderators
+
+    // ban moderator of subclub with admban (maybe user check in security service ban function, and if auth=admin and username=subclub mod, make admban true)
+
+    // make moderator the member ( check admban, if true return null)
+
+    // get moderator requests
 }
