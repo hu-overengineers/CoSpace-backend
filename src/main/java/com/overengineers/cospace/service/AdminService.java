@@ -40,6 +40,8 @@ public class AdminService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
 
+    private final SecurityService securityService;
+
     @Transactional
     public ClubDTO createClub(ClubDTO clubDTO) {
         Club club = clubMapper.mapToEntity(clubDTO);
@@ -72,4 +74,22 @@ public class AdminService {
         //memberRepository.save(newMember);
         return memberMapper.mapToDto(newMember);
     }
+
+    public SubClubDTO makeModerator(String username, String subClubName){
+        if(!securityService.isAuthorizedToSubClub(username, subClubName))
+            return null; // Candidate is not authorized (banned or not enrolled)
+
+        if(securityService.isModBanned(username))
+            return null; // The candidate has banned when the member was a moderator.
+
+        SubClub subClub = subClubRepository.findByName(subClubName).get();
+        if(subClub.getModerator() != null)
+            return null; // SubClub has already a moderator, first should make him/her regular member.
+
+        Member member = memberRepository.findByUsername(username);
+        subClub.setModerator(member);
+        SubClub newSubClub = subClubRepository.save(subClub);
+        return subClubMapper.mapToDto(newSubClub);
+    }
+
 }

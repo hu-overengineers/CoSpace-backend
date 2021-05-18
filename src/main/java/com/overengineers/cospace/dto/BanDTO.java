@@ -14,7 +14,7 @@ public class BanDTO {
 
     private int count;
 
-    private boolean admBan;
+    private boolean modBan;
 
     private String subClubName;
 

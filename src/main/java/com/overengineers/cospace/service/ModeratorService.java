@@ -82,11 +82,14 @@ public class ModeratorService {
     @Transactional
     public EventDTO createEvent(EventDTO eventDTO) {
 
-        String subClubName = eventDTO.getParentName();
-        if(!securityService.isModeratorOfSubClub(subClubName))
+        SubClub subClub = securityService.getAuthorizedMember().getModeratorSubClub();
+
+        if(subClub == null){
+            return null;
+        }
+        if(!securityService.isModeratorOfSubClub(subClub.getName()))
             return null; // Authorized member is not the moderator of the SubClub
 
-        SubClub subClub  = subClubRepository.findByName(subClubName).get();
         Event newEvent = eventMapper.mapToEntity(eventDTO);
         newEvent.setParent(subClub);
         Event savedEvent = eventRepository.save(newEvent);

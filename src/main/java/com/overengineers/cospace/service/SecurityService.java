@@ -11,8 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -95,6 +95,17 @@ public class SecurityService {
 
         return ((subClub.getModerator().getUsername().equals(member.getUsername())) &&
                 (subClub.getName().equals(member.getModeratorSubClub().getName())));
+    }
+
+    public boolean isModBanned(String username){
+        List<Ban> banList = banRepository.findByMember_Username(username);
+
+        for (Ban ban: banList) {
+            if(ban.isModBan())
+                return true; // Banned when the member was a moderator, therefore the member can not be a moderator
+        }
+
+        return false; // Never banned or never mod banned
     }
 
 }

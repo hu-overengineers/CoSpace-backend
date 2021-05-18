@@ -69,7 +69,6 @@ public class SubClubController {
     }
 
     @PreAuthorize("permitAll")
-    
     @GetMapping("/statistics")
     public SubClubStatisticsDTO getStatistics(@RequestParam(name = "subClubName") String subClubName,
                                               @RequestParam(name = "timeStart") Long timeStart,

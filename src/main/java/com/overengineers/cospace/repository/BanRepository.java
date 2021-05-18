@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface BanRepository extends JpaRepository<Ban, Long> {
     Optional<Ban> findBySubClubNameAndMember_Username(String subClubName, String username);
+    List<Ban> findByMember_Username(String username);
 }

@@ -26,8 +26,8 @@ public class Ban extends BaseEntity {
     @Column(name = "COUNT")
     private int count;
 
-    @Column(name = "ADM_BAN")
-    private boolean admBan; // SubClub admin ban, block to be a admin of any subclub
+    @Column(name = "MOD_BAN")
+    private boolean modBan; // SubClub admin ban, block to be a admin of any subclub
 
     @Column(name = "SUB_CLUB_NAME")
     private String subClubName;

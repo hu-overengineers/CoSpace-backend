@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Builder
@@ -24,6 +25,6 @@ public class SubClubDTO {
     
     public final int id;
 
-    public LocalDateTime created;
+    public final Date created;
 
 }

@@ -51,17 +51,23 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping(value = "/make-moderator")
+    public SubClubDTO makeModerator(@RequestParam(name = "username") String username,
+                                   @RequestParam(name = "subClubName") String subClubName){
+        return adminService.makeModerator(username, subClubName);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/ban-member")
     public MemberDTO banMember(@RequestParam(name = "username") String username){
         return adminService.banMember(username); // NOT IMPLEMENTED
     }
 
-
     // getReports about the moderators
 
-    // ban moderator of subclub with admban (maybe user check in security service ban function, and if auth=admin and username=subclub mod, make admban true)
+    // ban moderator of subclub with modban (maybe user check in security service ban function, and if auth=admin and username=subclub mod, make admban true)
 
-    // make moderator the member ( check admban, if true return null)
+    // make moderator the member ( check modban, if true return null)
 
     // get moderator requests
 }
