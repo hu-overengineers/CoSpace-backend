@@ -4,6 +4,7 @@ import com.overengineers.cospace.dto.EventDTO;
 import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.dto.ReviewDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
+import com.overengineers.cospace.dto.SubClubStatisticsDTO;
 import com.overengineers.cospace.service.SubClubService;
 
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.TimeZone;
 
 @CrossOrigin(origins = "*") // TODO: Might need to remove this in production. For debugging purposes.
 @RestController
@@ -64,6 +69,16 @@ public class SubClubController {
     }
 
     @PreAuthorize("permitAll")
+    
+    @GetMapping("/statistics")
+    public SubClubStatisticsDTO getStatistics(@RequestParam(name = "subClubName") String subClubName,
+                                              @RequestParam(name = "timeStart") Long timeStart,
+                                              @RequestParam(name = "timeEnd") Long timeEnd) {
+        return subClubService.getStatistics(subClubName,
+                Date.from(Instant.ofEpochMilli(timeStart)),
+                Date.from(Instant.ofEpochMilli(timeEnd)));
+    }
+
     @GetMapping("/ban-check")
     public boolean isMemberBannedFromSubClub(@RequestParam(name = "subClubName") String subClubName){
         return subClubService.isBanned(subClubName);

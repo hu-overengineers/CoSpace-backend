@@ -7,7 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -46,10 +49,10 @@ public class DatabasePopulate {
             Member member = new Member(memberUsername, memberPassword,memberEmail,null,null,null,null,Set.of(userAuthority),null);
             memberRepository.save(member);
 
-            Club club = new Club("club" + i, "club" + i + " Details",null);
+            Club club = new Club("club" + i, "club" + i + " Details", null);
             clubRepository.save(club);
 
-            SubClub sub = new SubClub("sub" + i, "sub" + i + " Details", 0, null, null, null, null,clubRepository.findByName("club" + i).get(), null, null,null);
+            SubClub sub = new SubClub("sub" + i, "sub" + i + " Details", 0, null, null, null, null, club, null, null, null);
             subClubRepository.save(sub);
 
             Post post = new Post("member" + i, "Title" + i, "This is a test content for sub" + i, i, null, subClubRepository.findByName("sub" + i).get());
