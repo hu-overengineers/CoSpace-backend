@@ -93,6 +93,12 @@ public class SecurityService {
 
         SubClub subClub = subClubRepository.findByName(subClubName).get();
 
+        if(subClub.getModerator() == null)
+            return false;
+
+        if(member.getModeratorSubClub() == null)
+            return false;
+
         return ((subClub.getModerator().getUsername().equals(member.getUsername())) &&
                 (subClub.getName().equals(member.getModeratorSubClub().getName())));
     }
