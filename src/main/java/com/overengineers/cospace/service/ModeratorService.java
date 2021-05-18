@@ -15,7 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -91,6 +94,7 @@ public class ModeratorService {
             return null; // Authorized member is not the moderator of the SubClub
 
         Event newEvent = eventMapper.mapToEntity(eventDTO);
+        newEvent.setOnline(Boolean.parseBoolean(eventDTO.getIsOnline()));
         newEvent.setParent(subClub);
         Event savedEvent = eventRepository.save(newEvent);
         return eventMapper.mapToDto(savedEvent);
@@ -133,7 +137,7 @@ public class ModeratorService {
 
         event.setDetails(eventDTO.getDetails());
         event.setLocation(eventDTO.getLocation());
-        event.setOnline(eventDTO.isOnline());
+        event.setOnline(Boolean.parseBoolean(eventDTO.getIsOnline()));
         event.setTitle(eventDTO.getTitle());
         event.setUtilLink(eventDTO.getUtilLink());
         Event updatedEvent = eventRepository.save(event);

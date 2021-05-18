@@ -3,6 +3,8 @@ package com.overengineers.cospace.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.Date;
+
 @Getter
 @Builder
 public class EventDTO {
@@ -13,7 +15,9 @@ public class EventDTO {
 
     public final String details;
 
-    public final boolean isOnline;
+    public final String date;
+
+    public final String isOnline;
 
     public final String location;
 

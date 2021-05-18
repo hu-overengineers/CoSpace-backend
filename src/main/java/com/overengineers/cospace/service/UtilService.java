@@ -30,7 +30,7 @@ public class UtilService {
     public static Date calculateDate(int day){
         LocalDate date= LocalDate.now();
         if(day < 0){
-            date = date.minusDays(day);
+            date = date.minusDays(day * (-1));
         }
         else if(day > 0){
             date = date.plusDays(day);

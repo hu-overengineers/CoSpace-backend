@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -116,7 +117,9 @@ public class SubClubService {
     }
 
     public List<EventDTO> getEvents(String subClubName) {
-        return eventMapper.mapToDto(eventRepository.findByParentNameAndDateAfter(subClubName, LocalDateTime.now()));
+        Date convertedDatetime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+
+        return eventMapper.mapToDto(eventRepository.findByParent_NameAndDateAfter(subClubName,convertedDatetime ));
     }
 
     public SubClubStatisticsDTO getStatistics(String subClubName, Date timeFrameStart, Date timeFrameEnd) {

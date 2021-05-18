@@ -45,7 +45,7 @@ public class ModeratorController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    @GetMapping(value = "dismiss-list")
+    @GetMapping(value = "/dismiss-list")
     public List<MemberDTO> getDismissibleList(){
         return moderatorService.getDismissibleList();
     }
