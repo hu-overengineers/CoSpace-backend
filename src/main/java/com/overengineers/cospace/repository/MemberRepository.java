@@ -16,6 +16,4 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // Search
     List<Member> findByUsernameIgnoreCaseContainingAndSubClubs_Name(String username, String name, Pageable page);
 
-
-
 }

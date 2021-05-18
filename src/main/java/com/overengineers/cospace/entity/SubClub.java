@@ -45,4 +45,8 @@ public class SubClub extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "member_username")
     private Member moderator;
+
+    @ManyToMany(mappedBy = "dismissibleSubClubs")
+    private Set<Member> dismissibleMembers = new HashSet<>();
+
 }

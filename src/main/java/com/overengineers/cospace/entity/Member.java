@@ -40,6 +40,13 @@ public class Member extends BaseEntity implements UserDetails {
     )
     private Set<SubClub> subClubs = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "member_dismissibleSubClub",
+            joinColumns = {@JoinColumn(name = "fk_member")},
+            inverseJoinColumns = {@JoinColumn(name = "fk_dismissibleSubClub")}
+    )
+    private Set<SubClub> dismissibleSubClubs = new HashSet<>();
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ban_id", referencedColumnName = "id")
     private Ban ban;

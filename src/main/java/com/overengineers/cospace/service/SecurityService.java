@@ -23,7 +23,7 @@ public class SecurityService {
     private final MemberRepository memberRepository;
     private final SubClubRepository subClubRepository;
     private final BanRepository banRepository;
-    
+
     public String getAuthorizedUsername(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getPrincipal().toString();
