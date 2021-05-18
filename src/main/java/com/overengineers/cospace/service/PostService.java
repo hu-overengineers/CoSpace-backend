@@ -31,7 +31,6 @@ public class PostService {
     private final PostMapper postMapper;
 
     private final SecurityService securityService;
-    private final UtilService utilService;
 
     @Transactional
     public PostDTO savePost(PostDTO postDTO) {
@@ -60,7 +59,7 @@ public class PostService {
     }
 
     public List<PostDTO> getTrends(Pageable pageable) {
-        Pageable sortedByName = utilService.fixPageableSort(pageable, "voting", false); // false: Descending
+        Pageable sortedByName = UtilService.fixPageableSort(pageable, "voting", false); // false: Descending
         Page<Post> allProducts = postRepository.findAll(sortedByName);
         return postMapper.mapToDto(allProducts.getContent());
     }
