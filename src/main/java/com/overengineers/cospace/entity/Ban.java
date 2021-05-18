@@ -16,6 +16,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ban extends BaseEntity {
+    @Column(name = "REASON")
+    private String reason;
+
     @Column(name = "END_DATE")
     private Date endDate;
 

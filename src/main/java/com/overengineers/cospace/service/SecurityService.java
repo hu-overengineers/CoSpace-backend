@@ -4,7 +4,6 @@ import com.overengineers.cospace.entity.Ban;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.repository.BanRepository;
-import com.overengineers.cospace.repository.ClubRepository;
 import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.repository.SubClubRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class SecurityService {
     private final MemberRepository memberRepository;
     private final SubClubRepository subClubRepository;
     private final BanRepository banRepository;
-
+    
     public String getAuthorizedUsername(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getPrincipal().toString();
@@ -35,11 +34,10 @@ public class SecurityService {
         return memberRepository.findByUsername(username);
     }
 
-    public boolean isMemberBannedFromSubClub(String subClubName){
+    public boolean isMemberBannedFromSubClub(String username, String subClubName){
         if(!subClubRepository.findByName(subClubName).isPresent())
             return true; // SubClub not found
 
-        String username = getAuthorizedUsername();
         Optional<Ban> optionalBan = banRepository.findBySubClubNameAndMember_Username(subClubName, username);
 
         if(!optionalBan.isPresent()){
@@ -57,8 +55,14 @@ public class SecurityService {
         }
     }
 
-    public boolean isMemberEnrolledToSubClub(String subClubName){
-        Set<SubClub> userSubClubs = getAuthorizedMember().getSubClubs();
+    public boolean isMemberBannedFromSubClub(String subClubName){
+        String username = getAuthorizedUsername();
+        return isMemberBannedFromSubClub(username, subClubName);
+    }
+
+    public boolean isMemberEnrolledToSubClub(String username, String subClubName) {
+        Member member = memberRepository.findByUsername(username);
+        Set<SubClub> userSubClubs = member.getSubClubs();
 
         if (!subClubRepository.findByName(subClubName).isPresent()) // SubClub is not found
             return false;
@@ -68,7 +72,29 @@ public class SecurityService {
         return userSubClubs.contains(subClub);
     }
 
-    public boolean isAuthorizedToSubClub(String subClubName){
-        return !isMemberBannedFromSubClub(subClubName) && isMemberEnrolledToSubClub(subClubName);
+    public boolean isMemberEnrolledToSubClub(String subClubName) {
+        String username = getAuthorizedUsername();
+        return isMemberEnrolledToSubClub(username, subClubName);
     }
+
+    public boolean isAuthorizedToSubClub(String username, String subClubName) {
+        return !isMemberBannedFromSubClub(username, subClubName) && isMemberEnrolledToSubClub(username, subClubName);
+    }
+
+    public boolean isAuthorizedToSubClub(String subClubName){
+        String username = getAuthorizedUsername();
+        return isAuthorizedToSubClub(username, subClubName);
+    }
+
+    public boolean isModeratorOfSubClub(String subClubName){
+        Member member =  getAuthorizedMember();
+        if (!subClubRepository.findByName(subClubName).isPresent())
+            return false; // SubClub is not found
+
+        SubClub subClub = subClubRepository.findByName(subClubName).get();
+
+        return ((subClub.getModerator().getUsername().equals(member.getUsername())) &&
+                (subClub.getName().equals(member.getModeratorSubClub().getName())));
+    }
+
 }
