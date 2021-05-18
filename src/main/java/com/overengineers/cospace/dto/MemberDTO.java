@@ -13,6 +13,7 @@ public class MemberDTO {
     @Size(min = 1, max = 32, message = "Username can't be more than 32 characters!")
     public String username;
 
+    // TODO: Remove this.
     @Size(min = 1, max = 32, message = "Password can't be more than 32 characters!")
     public final String password;
 

@@ -3,6 +3,7 @@ package com.overengineers.cospace.controller;
 import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.dto.ReviewDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
+import com.overengineers.cospace.dto.SubClubStatisticsDTO;
 import com.overengineers.cospace.service.SubClubService;
 
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.TimeZone;
 
 @CrossOrigin(origins = "*") // TODO: Might need to remove this in production. For debugging purposes.
 @RestController
@@ -53,6 +57,17 @@ public class SubClubController {
     public List<MemberDTO> getSubClubMembers(@RequestParam(name = "subClubName") String subClubName){
         return subClubService.getMembers(subClubName);
     }
+
+    @GetMapping("/statistics")
+    public SubClubStatisticsDTO getStatistics(TimeZone timeZone, // Not sure if its the correct way of passing zone info
+                                              @RequestParam(name = "subClubName") String subClubName,
+                                              @RequestParam(name = "timeStart") Long timeStart,
+                                              @RequestParam(name = "timeEnd") Long timeEnd) {
+        return subClubService.getStatistics(subClubName,
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(timeStart), timeZone.toZoneId()),
+                LocalDateTime.ofInstant(Instant.ofEpochMilli(timeEnd), timeZone.toZoneId()));
+    }
+
 
     @GetMapping("/ban-check")
     public boolean isMemberBannedFromSubClub(@RequestParam(name = "subClubName") String subClubName){
