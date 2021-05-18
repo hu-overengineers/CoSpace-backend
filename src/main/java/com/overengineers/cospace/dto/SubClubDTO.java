@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -18,5 +19,9 @@ public class SubClubDTO {
     public final String parentName;
 
     public final int rating;
+
+    public final int id;
+
+    public LocalDateTime created;
 
 }
