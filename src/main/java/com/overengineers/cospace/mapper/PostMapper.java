@@ -16,7 +16,10 @@ public interface PostMapper {
 
     @Named("parentName")
     default String parentToParentName(Post post){
-        return post.getParent().getName();
+        if(post.getParent() != null)
+            return post.getParent().getName();
+        else
+            return "";
     }
 
     Post mapToEntity(PostDTO postDTO);
@@ -24,4 +27,5 @@ public interface PostMapper {
     List<PostDTO> mapToDto(List<Post> postList);
 
     List<Post> mapToEntity(List<PostDTO> postDTOList);
+
 }

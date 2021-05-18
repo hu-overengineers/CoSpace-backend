@@ -10,6 +10,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ReviewMapper {
+
     @Mapping(source = "review", target = "parentName", qualifiedByName = "parentName")
     ReviewDTO mapToDto(Review review);
 
@@ -23,4 +24,5 @@ public interface ReviewMapper {
     List<ReviewDTO> mapToDto(List<Review> reviewList);
 
     List<Review> mapToEntity(List<ReviewDTO> reviewDTOList);
+
 }

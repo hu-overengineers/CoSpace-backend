@@ -16,4 +16,5 @@ public interface MemberMapper {
     List<MemberDTO> mapToDto(List<Member> memberList);
 
     List<Member> mapToEntity(List<MemberDTO> memberDTOList);
+
 }

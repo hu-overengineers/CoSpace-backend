@@ -30,6 +30,6 @@ public class Review extends BaseEntity {
             joinColumns = {@JoinColumn(name = "fk_review")},
             inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}
     )
-
     private SubClub parent = new SubClub();
+
 }

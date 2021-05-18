@@ -26,22 +26,26 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @PreAuthorize("permitAll")
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
         return authService.login(loginRequest);
     }
 
+    @PreAuthorize("permitAll")
     @PostMapping(value = "/register")
     public ResponseEntity<String> register(@Valid @RequestBody MemberDTO memberDTO) {
         return authService.register(memberDTO);
     }
 
+    @PreAuthorize("permitAll")
     @PostMapping(value = "/reset-password")
     public GenericResponse resetPassword(final HttpServletRequest request,
                                          @RequestParam("email") final String userEmail){
         return authService.resetPassword(request, userEmail);
     }
 
+    @PreAuthorize("permitAll")
     @PostMapping("/change-password-token")
     public GenericResponse changePasswordWithToken(@RequestParam(name = "token") @NotBlank String token,
                                                    @RequestParam(name = "newPassword") @NotBlank String newPassword){

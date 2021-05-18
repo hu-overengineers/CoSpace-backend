@@ -23,15 +23,7 @@ public class Club extends BaseEntity {
     @Column(name = "DETAILS")
     private String details;
 
-    // Club - Member Relation
-    @ManyToMany(mappedBy = "clubs")
-    private Set<Member> members = new HashSet<>();
-
-    // Club - SubClub Relation
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private Set<SubClub> childs = new HashSet<>();
-
-    @OneToMany(mappedBy = "parent")
-    private Set<Question> questions = new HashSet<>();
 
 }

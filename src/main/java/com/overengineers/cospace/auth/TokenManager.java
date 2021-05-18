@@ -1,4 +1,5 @@
 package com.overengineers.cospace.auth;
+import com.overengineers.cospace.service.UtilService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,7 +30,7 @@ public class TokenManager {
                 .claim("authorities", getAuthorities(user))
                 .setIssuer("www.cospace.com")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(calculateExpirationDate(expirationDay))
+                .setExpiration(UtilService.calculateDate(expirationDay))
                 .signWith(key)
                 .compact();
     }
@@ -41,15 +42,7 @@ public class TokenManager {
                 .collect(Collectors.toList());
     }
 
-    private static Date calculateExpirationDate(Integer expirationDay){
-        Instant expirationTime = LocalDate.now()
-                .plusDays(expirationDay)
-                .atStartOfDay()
-                .atZone(ZoneId.systemDefault())
-                .toInstant();
 
-        return Date.from(expirationTime);
-    }
 
     public static boolean tokenValidate(String token){
         if (getUsernameFromToken(token) != null && !isExpired(token)){

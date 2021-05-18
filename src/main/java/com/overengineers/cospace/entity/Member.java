@@ -34,27 +34,40 @@ public class Member extends BaseEntity implements UserDetails {
     private String email;
 
     @ManyToMany
-    @JoinTable(name = "member_club",
+    @JoinTable(name = "member_subClub",
             joinColumns = {@JoinColumn(name = "fk_member")},
-            inverseJoinColumns = {@JoinColumn(name = "fk_club")}
+            inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}
     )
-    private Set<Club> clubs = new HashSet<>();
+    private Set<SubClub> subClubs = new HashSet<>();
 
-    public Set<Club> getClubs() {
-        return this.clubs;
-    }
+    @ManyToMany
+    @JoinTable(name = "member_dismissibleSubClub",
+            joinColumns = {@JoinColumn(name = "fk_member")},
+            inverseJoinColumns = {@JoinColumn(name = "fk_dismissibleSubClub")}
+    )
+    private Set<SubClub> dismissibleSubClubs = new HashSet<>();
 
-    public boolean isNull() {
-        return this.clubs == null;
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ban_id", referencedColumnName = "id")
+    private Ban ban;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "MEMBER_AUTHORITIES",
             joinColumns = @JoinColumn(name = "member_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id")
     )
     private Set<Authority> authorities;
+
+    @OneToOne(mappedBy = "moderator")
+    private SubClub moderatorSubClub;
+
+
+    // Functions
+
+    public boolean isNull() {
+        return getSubClubs() == null;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

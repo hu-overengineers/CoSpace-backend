@@ -21,9 +21,9 @@ public class Question extends BaseEntity {
     private String answer;
 
     @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinTable(name = "club_question",
+    @JoinTable(name = "subClub_question",
             joinColumns = {@JoinColumn(name = "fk_question")},
-            inverseJoinColumns = {@JoinColumn(name = "fk_club")}
+            inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}
     )
-    private Club parent = new Club();
+    private SubClub parent = new SubClub();
 }

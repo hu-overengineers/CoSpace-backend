@@ -18,6 +18,7 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
+    @PreAuthorize("permitAll")
     @GetMapping
     public PostDTO getPost(@RequestParam(name = "postId") Long postId){
         return postService.getPostDTOById(postId);
@@ -29,6 +30,7 @@ public class PostController {
         return postService.savePost(postDTO);
     }
 
+    @PreAuthorize("permitAll")
     @GetMapping(value = "/subClubPosts")
     @ResponseBody
     public List<PostDTO> getSubClubPosts(@RequestParam(name = "subClubName") String subClubName){
@@ -47,6 +49,7 @@ public class PostController {
         return postService.reportPost(reportDTO);
     }
 
+    @PreAuthorize("permitAll")
     @GetMapping(value = "/trends")
     public @ResponseBody List<PostDTO> getTrends(Pageable pageable) throws Exception {
         return postService.getTrends(pageable);
