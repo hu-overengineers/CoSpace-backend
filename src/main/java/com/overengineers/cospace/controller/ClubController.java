@@ -20,11 +20,13 @@ public class ClubController {
 
     private final ClubService clubService;
 
+    @PreAuthorize("permitAll")
     @GetMapping(value = "/all")
     public List<ClubDTO> listAllClubs() {
         return clubService.listAllClubs();
     }
 
+    @PreAuthorize("permitAll")
     @GetMapping("/search")
     public List<ClubDTO> search(@RequestParam(name = "query") String query, Pageable pageable){
         return clubService.search(query, pageable);
