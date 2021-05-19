@@ -38,9 +38,15 @@ public class PostController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    @PostMapping(value = "/vote")
-    public PostDTO votePost(@RequestParam(name = "postId") Long postId){
-        return postService.votePost(postId);
+    @PostMapping(value = "/upvote")
+    public PostDTO upvotePost(@RequestParam(name = "postId") Long postId){
+        return postService.upvotePost(postId);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping(value = "/downvote")
+    public PostDTO downvotePost(@RequestParam(name = "postId") Long postId){
+        return postService.downvotePost(postId);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")

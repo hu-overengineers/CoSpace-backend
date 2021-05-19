@@ -78,7 +78,16 @@ public class PostService {
     }
 
     @Transactional
-    public PostDTO votePost(Long postId) {
+    public PostDTO upvotePost(Long postId) {
+        return votePost(postId, 1);
+    }
+
+    @Transactional
+    public PostDTO downvotePost(Long postId) {
+        return votePost(postId, -1);
+    }
+
+    private PostDTO votePost(Long postId, int vote) {
         Optional<Post> optionalCurrentPost = postRepository.findById(postId);
 
         if(!optionalCurrentPost.isPresent()){
@@ -89,11 +98,10 @@ public class PostService {
         if(!securityService.isAuthorizedToSubClub(currentPost.getParent().getName()))
             return null; // Not authorized
 
-        Long currentVoting = currentPost.getVoting();
-        currentPost.setVoting(currentVoting + 1);
+        long currentVote = currentPost.getVoting();
+        currentPost.setVoting(currentVote + vote);
         Post newPost = postRepository.save(currentPost);
         return postMapper.mapToDto(newPost);
-
     }
 
 }
