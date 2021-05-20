@@ -86,21 +86,29 @@ public class SecurityService {
         return isAuthorizedToSubClub(username, subClubName);
     }
 
-    public boolean isModeratorOfSubClub(String subClubName){
-        Member member =  getAuthorizedMember();
-        if (!subClubRepository.findByName(subClubName).isPresent())
-            return false; // SubClub is not found
+    public SubClub getSubClubOfModerator(){
+        Member moderator =  getAuthorizedMember();
+        SubClub subClubOfModerator = moderator.getModeratorSubClub();
 
-        SubClub subClub = subClubRepository.findByName(subClubName).get();
+        if(subClubOfModerator == null)
+            return null;
 
-        if(subClub.getModerator() == null)
-            return false;
+        String nameSubClubOfModerator = subClubOfModerator.getName();
+        if (!subClubRepository.findByName(nameSubClubOfModerator).isPresent())
+            return null; // SubClub is not found
 
-        if(member.getModeratorSubClub() == null)
-            return false;
+        SubClub subClubFromRepository = subClubRepository.findByName(nameSubClubOfModerator).get();
 
-        return ((subClub.getModerator().getUsername().equals(member.getUsername())) &&
-                (subClub.getName().equals(member.getModeratorSubClub().getName())));
+        if(subClubFromRepository.getModerator() == null)
+            return null;
+
+        boolean moderatorCheck = ((subClubFromRepository.getModerator().getUsername().equals(moderator.getUsername())) &&
+                (subClubFromRepository.getName().equals(nameSubClubOfModerator)));
+
+        if (moderatorCheck)
+            return subClubFromRepository;
+        else
+            return null;
     }
 
     public boolean isModBanned(String username){
