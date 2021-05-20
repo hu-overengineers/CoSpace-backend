@@ -68,6 +68,12 @@ public class SubClubController {
         return subClubService.getEvents(subClubName);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping("/mod-request")
+    public ResponseEntity<String> sendModRequest(@RequestParam("subClubName") String subClubName){
+        return subClubService.sendModRequest(subClubName);
+    }
+
     @PreAuthorize("permitAll")
     @GetMapping("/statistics")
     public SubClubStatisticsDTO getStatistics(@RequestParam(name = "subClubName") String subClubName,
@@ -79,7 +85,7 @@ public class SubClubController {
     }
 
     @GetMapping("/ban-check")
-    public boolean isMemberBannedFromSubClub(@RequestParam(name = "subClubName") String subClubName){
+    public boolean amIBanned(@RequestParam(name = "subClubName") String subClubName){
         return subClubService.isBanned(subClubName);
     }
 

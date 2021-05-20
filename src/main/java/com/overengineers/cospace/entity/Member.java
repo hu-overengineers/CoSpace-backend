@@ -65,6 +65,12 @@ public class Member extends BaseEntity implements UserDetails {
     @OneToOne(mappedBy = "moderator")
     private SubClub moderatorSubClub;
 
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinTable(name = "subClub_modRequestMember",
+            joinColumns = {@JoinColumn(name = "fk_member")},
+            inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}
+    )
+    private SubClub modRequestedSubClubs =new SubClub();
 
     // Functions
 

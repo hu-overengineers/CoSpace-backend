@@ -122,10 +122,40 @@ public class SubClubService {
         return eventMapper.mapToDto(eventRepository.findByParent_NameAndDateAfter(subClubName,convertedDatetime ));
     }
 
+    @Transactional
+    public ResponseEntity<String> sendModRequest(String subClubName) {
+        Optional<SubClub> optionalSubClub = subClubRepository.findByName(subClubName);
+        if (optionalSubClub.isPresent()) {
+            SubClub subClub = optionalSubClub.get();
+            Member member = securityService.getAuthorizedMember();
+            if(!securityService.isAuthorizedToSubClub(subClubName)) {
+                return  ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED) // 401
+                        .body("You are banned or not enrolled!");
+            }
+            if(securityService.isModBanned()) {
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED) // 401
+                        .body("You were banned when you were a moderator!");
+            }
+
+            member.setModRequestedSubClubs(subClub);
+            memberRepository.save(member);
+
+            return ResponseEntity.ok("You are successfully applied.");
+        }
+        else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND) // 404
+                    .body("SubClub not found!");
+        }
+    }
+
     public SubClubStatisticsDTO getStatistics(String subClubName, Date timeFrameStart, Date timeFrameEnd) {
         Optional<SubClub> subClub = subClubRepository.findByName(subClubName);
         return subClub.map(theSubClub -> new SubClubStatisticsDTO(
                 theSubClub.getMembers().size(),
                 postRepository.countAllByParentNameAndCreatedBetween(subClubName, timeFrameStart, timeFrameEnd))).orElse(null);
     }
+
 }

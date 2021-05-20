@@ -122,4 +122,9 @@ public class SecurityService {
         return false; // Never banned or never mod banned
     }
 
+    public boolean isModBanned(){
+        String username = getAuthorizedUsername();
+        return isModBanned(username);
+    }
+
 }

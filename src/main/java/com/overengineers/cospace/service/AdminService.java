@@ -19,8 +19,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +77,20 @@ public class AdminService {
         return memberMapper.mapToDto(newMember);
     }
 
+    public List<Member> getModeratorRequests(String subClubName) {
+        Optional<SubClub> optionalSubClub = subClubRepository.findByName(subClubName);
+        if (!optionalSubClub.isPresent())
+            return null;
+
+        SubClub subClub = optionalSubClub.get();
+        return new ArrayList<>(subClub.getModRequestedMembers());
+    }
+
+    public List<MemberDTO> getModeratorRequestsDTO(String subClubName) {
+        return memberMapper.mapToDto(getModeratorRequests(subClubName));
+    }
+
+
     public SubClubDTO makeModerator(String username, String subClubName){
         if(!securityService.isAuthorizedToSubClub(username, subClubName))
             return null; // Candidate is not authorized (banned or not enrolled)
@@ -90,6 +106,20 @@ public class AdminService {
         subClub.setModerator(member);
         SubClub newSubClub = subClubRepository.save(subClub);
         return subClubMapper.mapToDto(newSubClub);
+    }
+
+    public SubClubDTO assignModeratorRandomly(String subClubName){
+        List<Member> requestedMembers = getModeratorRequests(subClubName);
+        if(requestedMembers == null)
+            return null;
+
+        if (requestedMembers.size() == 0)
+            return null;
+
+        Random rand = new Random();
+        int luckyMemberIndex = rand.nextInt(requestedMembers.size());
+
+        return makeModerator(requestedMembers.get(luckyMemberIndex).getUsername(), subClubName);
     }
 
 }

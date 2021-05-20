@@ -46,7 +46,6 @@ public class SubClub extends BaseEntity {
     @JoinColumn(name = "member_username")
     private Member moderator;
 
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "member_dismissibleSubClub",
             joinColumns = {@JoinColumn(name = "fk_subClub")},
@@ -56,4 +55,7 @@ public class SubClub extends BaseEntity {
 
     @OneToMany(mappedBy = "parent")
     private Set<Event> events = new HashSet<>();
+
+    @OneToMany(mappedBy = "modRequestedSubClubs")
+    private Set<Member> modRequestedMembers = new HashSet<>();
 }

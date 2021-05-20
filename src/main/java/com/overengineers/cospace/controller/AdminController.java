@@ -51,14 +51,26 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping(value = "/make-moderator")
+    @GetMapping(value = "/mod-requests") // TODO: This endpoint is used for development, remove for final product
+    public List<MemberDTO> getModeratorRequests(@RequestParam(name = "subClubName") String subClubName){
+        return adminService.getModeratorRequestsDTO(subClubName);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping(value = "/make-moderator") // TODO: This endpoint is used for development, remove for final product
     public SubClubDTO makeModerator(@RequestParam(name = "username") String username,
                                    @RequestParam(name = "subClubName") String subClubName){
         return adminService.makeModerator(username, subClubName);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping(value = "/ban-member")
+    @PostMapping(value = "/assign-moderator")
+    public SubClubDTO assignModeratorRandomly(@RequestParam(name = "subClubName") String subClubName){
+        return adminService.assignModeratorRandomly(subClubName);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping(value = "/ban-mod")
     public MemberDTO banMember(@RequestParam(name = "username") String username){
         return adminService.banMember(username); // NOT IMPLEMENTED
     }
@@ -66,8 +78,6 @@ public class AdminController {
     // getReports about the moderators
 
     // ban moderator of subclub with modban (maybe user check in security service ban function, and if auth=admin and username=subclub mod, make admban true)
-
-    // make moderator the member ( check modban, if true return null)
 
     // get moderator requests
 }
