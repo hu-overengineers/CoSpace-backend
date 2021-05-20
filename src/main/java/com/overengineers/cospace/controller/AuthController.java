@@ -1,10 +1,10 @@
 package com.overengineers.cospace.controller;
 
 
-import com.overengineers.cospace.dto.LoginRequest;
+import com.overengineers.cospace.dto.LoginRequestDTO;
+import com.overengineers.cospace.dto.LoginResponseDTO;
 import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.entity.GenericResponse;
-import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class AuthController {
 
     @PreAuthorize("permitAll")
     @PostMapping(value = "/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest){
         return authService.login(loginRequest);
     }
 
