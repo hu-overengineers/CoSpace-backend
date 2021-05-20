@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface SubClubRepository extends JpaRepository<SubClub, Long> {
     Optional<SubClub> findByName(String name);
     List<SubClub> findByNameIgnoreCaseContaining(String name, Pageable pageable);
-
+    List<SubClub> findByParent_Name(String name);
 }

@@ -158,4 +158,7 @@ public class SubClubService {
                 postRepository.countAllByParentNameAndCreatedBetween(subClubName, timeFrameStart, timeFrameEnd))).orElse(null);
     }
 
+    public List<SubClubDTO> listByParentName(String clubName) {
+        return subClubMapper.mapToDto(subClubRepository.findByParent_Name(clubName));
+    }
 }

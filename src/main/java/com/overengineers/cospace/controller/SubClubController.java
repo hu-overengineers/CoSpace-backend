@@ -32,6 +32,13 @@ public class SubClubController {
         return subClubService.listAllSubClubs();
     }
 
+
+    @PreAuthorize("permitAll")
+    @GetMapping(value = "/all-with-clubname")
+    public List<SubClubDTO> listByParentName(@RequestParam(name = "clubName") String clubName){
+        return subClubService.listByParentName(clubName);
+    }
+
     @PreAuthorize("permitAll")
     @GetMapping("/search")
     public List<SubClubDTO> search(@RequestParam(name = "query") String query, Pageable pageable){
