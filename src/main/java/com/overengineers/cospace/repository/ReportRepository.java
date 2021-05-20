@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
     List<Report> findAll();
+    List<Report> findByPost_Parent_Name(String name); // findBySubClubName
 }

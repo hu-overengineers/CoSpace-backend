@@ -3,6 +3,7 @@ package com.overengineers.cospace.controller;
 import com.overengineers.cospace.dto.BanDTO;
 import com.overengineers.cospace.dto.EventDTO;
 import com.overengineers.cospace.dto.MemberDTO;
+import com.overengineers.cospace.dto.ReportDTO;
 import com.overengineers.cospace.service.ModeratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,19 +46,19 @@ public class ModeratorController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping(value = "/reports")
+    public List<ReportDTO> getReports(){
+        return moderatorService.getReports();
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/dismiss-list")
     public List<MemberDTO> getDismissibleList(){
         return moderatorService.getDismissibleList();
     }
 
-
-    // get dismissible list
-
     // dismiss from SubClub
 
-    // getReportsFor only mod's subclub
-
-    // member participate-unparticipate event in subclub controller
-
+    // member participate-unparticipate to event in subclub controller
 
 }

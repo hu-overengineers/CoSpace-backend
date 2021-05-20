@@ -3,14 +3,13 @@ package com.overengineers.cospace.service;
 import com.overengineers.cospace.dto.BanDTO;
 import com.overengineers.cospace.dto.EventDTO;
 import com.overengineers.cospace.dto.MemberDTO;
+import com.overengineers.cospace.dto.ReportDTO;
 import com.overengineers.cospace.entity.*;
 import com.overengineers.cospace.mapper.BanMapper;
 import com.overengineers.cospace.mapper.EventMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
-import com.overengineers.cospace.repository.BanRepository;
-import com.overengineers.cospace.repository.EventRepository;
-import com.overengineers.cospace.repository.MemberRepository;
-import com.overengineers.cospace.repository.SubClubRepository;
+import com.overengineers.cospace.mapper.ReportMapper;
+import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -37,12 +36,23 @@ public class ModeratorService {
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
 
+    private final ReportMapper reportMapper;
+    private final ReportRepository reportRepository;
+
     private final int maxBanCountForDismiss = 3;
     private final int regularBanDurationAsDay = 5;
 
+    public boolean moderatorCheckBySubClubName(String subClubName){
+        SubClub subClub = securityService.getSubClubOfModerator();
+        if(subClub == null)
+            return false; // Member is not a moderator
+        if(subClub.getName() != subClubName)
+            return false; // Member is a moderator of another SubClub
+        return true;
+    }
     @Transactional
     public BanDTO banMemberFromSubClub(String username, String subClubName, String reason) {
-        if(!securityService.isModeratorOfSubClub(subClubName))
+        if(!moderatorCheckBySubClubName(subClubName))
             return null; // Authorized member is not the moderator of the SubClub
 
         if(!securityService.isAuthorizedToSubClub(username, subClubName)){
@@ -86,7 +96,7 @@ public class ModeratorService {
         if(subClub == null){
             return null;
         }
-        if(!securityService.isModeratorOfSubClub(subClub.getName()))
+        if(!moderatorCheckBySubClubName(subClub.getName()))
             return null; // Authorized member is not the moderator of the SubClub
 
         Event newEvent = eventMapper.mapToEntity(eventDTO);
@@ -103,7 +113,7 @@ public class ModeratorService {
     public boolean deleteEvent(EventDTO eventDTO){
 
         String subClubName = eventDTO.getParentName();
-        if(!securityService.isModeratorOfSubClub(subClubName))
+        if(!moderatorCheckBySubClubName(subClubName))
             return false; // Authorized member is not the moderator of the SubClub
 
         Optional<Event> optionalEvent = eventRepository.findById(eventDTO.getId());
@@ -121,7 +131,7 @@ public class ModeratorService {
     public EventDTO updateEvent(EventDTO eventDTO){
 
         String subClubName = eventDTO.getParentName();
-        if(!securityService.isModeratorOfSubClub(subClubName))
+        if(!moderatorCheckBySubClubName(subClubName))
             return null; // Authorized member is not the moderator of the SubClub
 
         Optional<Event> optionalEvent = eventRepository.findById(eventDTO.getId());
@@ -142,19 +152,20 @@ public class ModeratorService {
     }
 
     public List<MemberDTO> getDismissibleList() {
-        Member moderator = securityService.getAuthorizedMember();
-        if (moderator.getModeratorSubClub() == null)
+        SubClub subClub = securityService.getSubClubOfModerator();
+        if (subClub == null)
             return null;
-
-        SubClub subClub = moderator.getModeratorSubClub();
-
-        if(!securityService.isModeratorOfSubClub(subClub.getName()))
-            return null; // Authorized member is not the moderator of the SubClub
 
         return memberMapper.mapToDto(new ArrayList<>(subClub.getDismissibleMembers()));
     }
 
-    // dismiss from subclub
+    public List<ReportDTO> getReports() {
+        SubClub subClub = securityService.getSubClubOfModerator();
+        if (subClub == null)
+            return null;
 
-    // getReports for only mod's subclub
+        return reportMapper.mapToDto(reportRepository.findByPost_Parent_Name(subClub.getName()));
+    }
+
+    // dismiss from subclub
 }
