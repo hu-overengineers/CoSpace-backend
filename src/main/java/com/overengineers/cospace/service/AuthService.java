@@ -62,16 +62,19 @@ public class AuthService {
             }
             */
 
-            JSONObject resp = new JSONObject();
-            resp.put("token", token);
-            resp.put("auth", TokenManager.getAuthorities(user));
+            Member member = memberRepository.findByUsername(loginRequest.getUsername());
 
-            return new ResponseEntity<String>(resp.toString(), HttpStatus.OK);
+            // TODO: Add time-zone instead of Local Server Date
+            member.setLastLogin(new Date());
+            memberRepository.save(member);
+
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, TokenManager.getAuthorities(user));
+            return new ResponseEntity<LoginResponseDTO>(loginResponseDTO, HttpStatus.OK);
         }
         catch (Exception e){
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED) // 401
-                    .body("Login Error!");
+                    .body(null);
         }
     }
 
