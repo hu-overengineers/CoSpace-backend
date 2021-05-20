@@ -72,6 +72,9 @@ public class Member extends BaseEntity implements UserDetails {
     )
     private SubClub modRequestedSubClubs =new SubClub();
 
+    @OneToMany(mappedBy = "targetMember")
+    private Set<PrivateMessage> privateMessages = new HashSet<>();
+
     // Functions
 
     public boolean isNull() {

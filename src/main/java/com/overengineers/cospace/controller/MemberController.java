@@ -2,8 +2,10 @@ package com.overengineers.cospace.controller;
 
 import com.overengineers.cospace.dto.ClubDTO;
 import com.overengineers.cospace.dto.MemberDTO;
+import com.overengineers.cospace.dto.PrivateMessageDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.entity.PrivateMessage;
 import com.overengineers.cospace.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -32,5 +34,19 @@ public class MemberController {
         // query should include substring of the username
         return memberService.search(query, parentName, pageable);
     }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping(value = "/private-message")
+    public List<PrivateMessageDTO> getPrivateMessages(){
+        return memberService.getPrivateMessages();
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping(value = "/private-message")
+    public PrivateMessageDTO sendPrivateMessage(@RequestBody PrivateMessageDTO privateMessageDTO){
+        return memberService.sendPrivateMessage(privateMessageDTO);
+    }
+
+
 
 }
