@@ -15,10 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -147,13 +143,16 @@ public class ModeratorService {
 
     public List<MemberDTO> getDismissibleList() {
         Member moderator = securityService.getAuthorizedMember();
+        if (moderator.getModeratorSubClub() == null)
+            return null;
+
         SubClub subClub = moderator.getModeratorSubClub();
+
+        if(!securityService.isModeratorOfSubClub(subClub.getName()))
+            return null; // Authorized member is not the moderator of the SubClub
 
         return memberMapper.mapToDto(new ArrayList<>(subClub.getDismissibleMembers()));
     }
-
-
-    // get dismissible list
 
     // dismiss from subclub
 
