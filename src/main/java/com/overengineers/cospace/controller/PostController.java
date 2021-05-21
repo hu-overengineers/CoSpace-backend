@@ -6,6 +6,7 @@ import com.overengineers.cospace.service.PostService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +62,14 @@ public class PostController {
         return postService.getTrends(pageable);
     }
 
-
+    @PreAuthorize("permitAll")
+    @GetMapping(value = "/by-author")
+    public @ResponseBody List<PostDTO> getPostsByAuthorAndSubClub(@RequestParam(name = "username") String username,
+                                                                  @Nullable @RequestParam(name = "subClubName") String subClubName) {
+        if (subClubName == null || subClubName.isEmpty()) {
+            return postService.getPostsByAuthor(username);
+        }
+        return postService.getPostsByAuthorAndSubClub(username, subClubName);
+    }
 
 }

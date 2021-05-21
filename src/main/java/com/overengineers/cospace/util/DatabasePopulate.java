@@ -5,12 +5,9 @@ import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,16 +20,18 @@ public class DatabasePopulate {
     private final SubClubRepository subClubRepository;
     private final PostRepository postRepository;
 
-    public void populateDatabase(){
+    @Transactional
+    public void populateDatabase() {
 
-        authorityRepository.saveAll(Set.of(new Authority(null, null, "USER"), new Authority(null, null,"ADMIN")));
+        authorityRepository.saveAll(Set.of(new Authority(null, null, "USER"), new Authority(null, null, "ADMIN")));
 
-        List<String> adminList = new ArrayList<>(Arrays.asList("yusuf", "cagatay", "samil","mert","selim"));
+        List<String> adminList = new ArrayList<>(Arrays.asList("yusuf", "cagatay", "samil", "mert", "selim"));
         List<String> adminEmailList = new ArrayList<>(Arrays.asList("ketenyusuf", "cagatayyigit3", "m.samilatesoglu", "validatedev", "selim.seker00"));
         Authority adminAuthority = authorityRepository.findByAuthority("ADMIN");
         Authority userAuthority = authorityRepository.findByAuthority("USER");
 
-        for(int i = 0; i < adminList.size(); i++){
+        Set<Member> admins = new HashSet<>();
+        for (int i = 0; i < adminList.size(); i++) {
             String adminUsername = adminList.get(i);
             String adminPassword = passwordEncoder.encode("12345");
             String adminEmail = adminEmailList.get(i) + "@gmail.com";
@@ -42,7 +41,7 @@ public class DatabasePopulate {
         }
 
         int populationCount = 3;
-        for(int i = 1; i <= populationCount; i++){
+        for (int i = 1; i <= populationCount; i++) {
             String memberUsername = "member" + i;
             String memberPassword = passwordEncoder.encode("123456");
             String memberEmail = memberUsername + "@gmail.com";
@@ -54,9 +53,12 @@ public class DatabasePopulate {
 
             SubClub sub = new SubClub("sub" + i, "sub" + i + " Details", 0, null, null, null, null, club, null, null, null,null);
             subClubRepository.save(sub);
+            for (int j = 0; j < 100; j++) {
+                Post post = new Post("member" + i, "Title" + i, "This is a test content for sub" + i, i, null, subClubRepository.findByName("sub" + i).get());
+                postRepository.save(post);
+            }
 
-            Post post = new Post("member" + i, "Title" + i, "This is a test content for sub" + i, i, null, subClubRepository.findByName("sub" + i).get());
-            postRepository.save(post);
+
 
         }
 
