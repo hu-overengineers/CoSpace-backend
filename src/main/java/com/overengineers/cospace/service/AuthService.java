@@ -1,8 +1,8 @@
 package com.overengineers.cospace.service;
 
-import antlr.Token;
 import com.overengineers.cospace.auth.TokenManager;
-import com.overengineers.cospace.dto.LoginRequest;
+import com.overengineers.cospace.dto.LoginRequestDTO;
+import com.overengineers.cospace.dto.LoginResponseDTO;
 import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.entity.GenericResponse;
 import com.overengineers.cospace.entity.Member;
@@ -11,7 +11,6 @@ import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.repository.PasswordResetTokenRepository;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -19,18 +18,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -49,10 +44,11 @@ public class AuthService {
     private final PasswordResetTokenRepository passwordTokenRepository;
 
     @Transactional
-    public ResponseEntity<?> login(LoginRequest loginRequest){
+    public ResponseEntity<LoginResponseDTO> login(LoginRequestDTO loginRequest){
         Authentication authentication = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
         try{
             Authentication user = authenticationProvider.authenticate(authentication);
+
             String token = TokenManager.generateToken(user);
 
             /*
@@ -66,16 +62,19 @@ public class AuthService {
             }
             */
 
-            JSONObject resp = new JSONObject();
-            resp.put("token", token);
-            resp.put("auth", TokenManager.getAuthorities(user));
+            Member member = memberRepository.findByUsername(loginRequest.getUsername());
 
-            return new ResponseEntity<String>(resp.toString(), HttpStatus.OK);
+            // TODO: Add time-zone instead of Local Server Date
+            member.setLastLogin(new Date());
+            memberRepository.save(member);
+
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, TokenManager.getAuthorities(user));
+            return new ResponseEntity<LoginResponseDTO>(loginResponseDTO, HttpStatus.OK);
         }
         catch (Exception e){
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED) // 401
-                    .body("Login Error!");
+                    .body(null);
         }
     }
 
