@@ -3,14 +3,12 @@ package com.overengineers.cospace.service;
 import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.entity.Enrollment;
 import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.entity.Question;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.EventMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.mapper.SubClubMapper;
-import com.overengineers.cospace.repository.EventRepository;
-import com.overengineers.cospace.repository.MemberRepository;
-import com.overengineers.cospace.repository.PostRepository;
-import com.overengineers.cospace.repository.SubClubRepository;
+import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -40,6 +38,7 @@ public class SubClubService {
     private final SecurityService securityService;
     private final EnrollmentService enrollmentService;
 
+    private final QuestionRepository questionRepository;
 
     public SubClub getByName(String subClubName){
         if(!subClubRepository.findByName(subClubName).isPresent())
@@ -147,4 +146,18 @@ public class SubClubService {
     public List<SubClub> listByParentName(String clubName) {
         return subClubRepository.findByParent_Name(clubName);
     }
+
+    public List<Question> getQuestionnaire() {
+        return enrollmentService.getQuestionnaire();
+    }
+
+    public List<Question> getQuestionnaireBySubClub(String subClubName) {
+        return questionRepository.findByParent_Name(subClubName);
+    }
+
+    /*
+    public ResponseEntity<String> enroll(String subClubName) {
+        return enrollmentService.enroll(subClubName)
+    }
+     */
 }
