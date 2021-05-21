@@ -13,4 +13,5 @@ public class EnrollmentDTO {
 
     public final float interestRate;
 
+    public final boolean isEnrolled;
 }

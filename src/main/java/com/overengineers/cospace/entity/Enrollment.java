@@ -28,5 +28,7 @@ public class Enrollment extends BaseEntity {
     SubClub subClub;
 
     float interestRate;
+
+    boolean isEnrolled;
     
 }

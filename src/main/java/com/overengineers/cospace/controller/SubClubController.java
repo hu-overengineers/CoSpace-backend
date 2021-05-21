@@ -61,9 +61,8 @@ public class SubClubController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/enroll")
-    public ResponseEntity<String> enroll(@RequestParam(name = "subClubName") String subClubName){
-        //return subClubService.enroll(subClubName);
-        return null;
+    public ResponseEntity<String> enroll(@RequestBody List<QuestionDTO> answers){
+        return subClubService.enroll(answers);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")

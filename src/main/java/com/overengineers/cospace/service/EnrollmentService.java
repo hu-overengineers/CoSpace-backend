@@ -31,34 +31,13 @@ public class EnrollmentService {
     private int questionNumberPerSubClub = 3;
 
     public List<Member> getSubClubMembers(String subClubName){
-        return memberRepository.findByEnrollments_SubClub_Name(subClubName);
+        return memberRepository.findByEnrollments_SubClub_NameAndEnrollments_IsEnrolledTrue(subClubName);
     }
 
     public List<SubClub> getMemberSubClubs(String username){
-        return subClubRepository.findByEnrollments_Member_Username(username);
+        return subClubRepository.findByEnrollments_Member_UsernameAndEnrollments_IsEnrolledTrue(username);
     }
 
-    /*
-    @Transactional
-    public ResponseEntity<String> enroll(String subClubName, List<QuestionDTO> memberAnswers) {
-
-        Optional<SubClub> subClub = subClubRepository.findByName(subClubName);
-        if(!subClub.isPresent()){
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND) // 404
-                    .body("SubClub not found!");
-        }
-        else {
-            Member member = securityService.getAuthorizedMember();
-            Enrollment enrollment = new Enrollment(member, subClub.get(), interestRate);
-            Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
-
-            // return savedEnrollment with GenericResponse new implementation
-            return ResponseEntity.ok("You are successfully enrolled.");
-        }
-
-    }
-*/
     public List<Question> getQuestionnaire() {
         List<Question> questions = new ArrayList<>();
         List<SubClub> allSubClubs = subClubRepository.findAll();
@@ -86,5 +65,58 @@ public class EnrollmentService {
         }
         return questions;
     }
+
+    @Transactional
+    public ResponseEntity<String> enroll(List<QuestionDTO> memberAnswers, String username) {
+        List<String> enrolledSubClubNames = new ArrayList<>();
+        for (int i = 0; i < subClubNumberForQuestionnaire; i++) {
+            int correctCount = 0;
+            int subClubIdx = i * questionNumberPerSubClub + 1;
+            String subClubName = memberAnswers.get(subClubIdx).getParentName();
+            Optional<SubClub> optionalSubClub = subClubRepository.findByName(subClubName);
+            if (!optionalSubClub.isPresent())
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND) // 404
+                        .body("SubClub not found!");
+
+            for (int j = 0; j < questionNumberPerSubClub; j++) {
+                QuestionDTO currentQuestionDTO = memberAnswers.get(i * questionNumberPerSubClub + j);
+                Optional<Question> optionalQuestion = questionRepository.findById(currentQuestionDTO.getId());
+                if (!optionalQuestion.isPresent())
+                    continue;
+
+                if (optionalQuestion.get().getGroundTruth().equals(currentQuestionDTO.getGroundTruth()))
+                    correctCount++;
+            }
+
+            float currentInterestRate = (correctCount / questionNumberPerSubClub) * 100;
+
+            SubClub currentSubClub = optionalSubClub.get();
+            Member authorizedMember = memberRepository.findByUsername(username);
+
+            if (currentInterestRate >= minimumInterestRate) {
+                Enrollment enrollment = new Enrollment(authorizedMember, currentSubClub, currentInterestRate, true);
+                Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+                enrolledSubClubNames.add(currentSubClub.getName());
+            }
+            else
+            {
+                Enrollment enrollment = new Enrollment(authorizedMember, currentSubClub, currentInterestRate, false);
+                Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+            }
+
+        }
+        return ResponseEntity
+                .status(HttpStatus.OK) // 200
+                .body("Enrolled SubClubs: " + enrolledSubClubNames.toString());
+    }
+
+
+
+
+
+
+
+
 
 }

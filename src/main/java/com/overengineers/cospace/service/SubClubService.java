@@ -155,9 +155,10 @@ public class SubClubService {
         return questionRepository.findByParent_Name(subClubName);
     }
 
-    /*
-    public ResponseEntity<String> enroll(String subClubName) {
-        return enrollmentService.enroll(subClubName)
+
+    public ResponseEntity<String> enroll(List<QuestionDTO> answers ) {
+        // TODO: Auth check vs return null, not member and ban check, isDismissed->null
+        String authorizedUsername = securityService.getAuthorizedUsername();
+        return enrollmentService.enroll(answers, authorizedUsername);
     }
-     */
 }
