@@ -39,6 +39,8 @@ public class MemberService {
     private final SecurityService securityService;
     private final PrivateMessageService privateMessageService;
 
+    private final SubClubService subClubService;
+
     public List<SubClubDTO> getEnrolledSubClubs() {
         try{
             Set<SubClub> subClubs = securityService.getAuthorizedMember().getSubClubs();
@@ -62,20 +64,10 @@ public class MemberService {
     }
 
     public PrivateMessageDTO sendPrivateMessage(PrivateMessageDTO privateMessageDTO) {
-        Set<SubClub> authorSubClubs = securityService.getAuthorizedMember().getSubClubs();
-        if(authorSubClubs == null)
-            return null;
+        String currentlySignedInMemberUsername = securityService.getAuthorizedUsername();
 
-        Member targetMember = memberRepository.findByUsername(privateMessageDTO.getTargetMemberUsername());
-        if(targetMember == null)
-            return null;
-
-        Set<SubClub> targetSubClubs = targetMember.getSubClubs();
-        if (targetSubClubs == null)
-            return null;
-
-        Set<SubClub> intersection = new HashSet<SubClub>(authorSubClubs);
-        intersection.retainAll(targetSubClubs);
+        List<SubClubDTO> intersection = subClubService.getCommonSubClubs(currentlySignedInMemberUsername, privateMessageDTO.targetMemberUsername);
+        if (intersection == null) return null;
 
         if(intersection.size() > 0) // At least one common SubClub between two members
            return privateMessageService.send(privateMessageDTO);
