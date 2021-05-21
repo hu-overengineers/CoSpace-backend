@@ -5,12 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +34,10 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(name = "EMAIL", unique = true)
     @Email
     private String email;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "LAST_LOGIN")
+    private Date lastLogin;
 
     @ManyToMany
     @JoinTable(name = "member_subClub",
