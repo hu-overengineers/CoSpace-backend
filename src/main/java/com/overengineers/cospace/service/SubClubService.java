@@ -161,4 +161,22 @@ public class SubClubService {
     public List<SubClubDTO> listByParentName(String clubName) {
         return subClubMapper.mapToDto(subClubRepository.findByParent_Name(clubName));
     }
+
+    public List<SubClubDTO> getCommonSubClubs(String sourceUsername, String targetUsername) {
+        Set<SubClub> authorSubClubs = memberRepository.findByUsername(sourceUsername).getSubClubs();
+        if(authorSubClubs == null)
+            return null;
+
+        Member targetMember = memberRepository.findByUsername(targetUsername);
+        if(targetMember == null)
+            return null;
+
+        Set<SubClub> targetSubClubs = targetMember.getSubClubs();
+        if (targetSubClubs == null)
+            return null;
+
+        Set<SubClub> intersection = new HashSet<>(authorSubClubs);
+        intersection.retainAll(targetSubClubs);
+        return subClubMapper.mapToDto(new ArrayList<>(intersection));
+    }
 }

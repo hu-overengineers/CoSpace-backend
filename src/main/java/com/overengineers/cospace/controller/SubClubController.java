@@ -5,6 +5,7 @@ import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.dto.ReviewDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.dto.SubClubStatisticsDTO;
+import com.overengineers.cospace.service.SecurityService;
 import com.overengineers.cospace.service.SubClubService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.TimeZone;
 @RequestMapping("/subclub")
 public class SubClubController {
     private final SubClubService subClubService;
+    private final SecurityService securityService;
 
     @PreAuthorize("permitAll")
     @GetMapping(value = "/all")
@@ -94,6 +96,12 @@ public class SubClubController {
     @GetMapping("/ban-check")
     public boolean amIBanned(@RequestParam(name = "subClubName") String subClubName){
         return subClubService.isBanned(subClubName);
+    }
+    
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping("/common-subclubs")
+    public List<SubClubDTO> getCommonSubClubs(@RequestParam(name = "username") String username) {
+        return subClubService.getCommonSubClubs(securityService.getAuthorizedUsername(), username);
     }
 
 }
