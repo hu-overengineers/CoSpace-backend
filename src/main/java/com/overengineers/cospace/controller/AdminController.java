@@ -1,11 +1,10 @@
 package com.overengineers.cospace.controller;
 
-import com.overengineers.cospace.dto.ClubDTO;
-import com.overengineers.cospace.dto.MemberDTO;
-import com.overengineers.cospace.dto.ReportDTO;
-import com.overengineers.cospace.dto.SubClubDTO;
+import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.entity.Question;
 import com.overengineers.cospace.mapper.MemberMapper;
+import com.overengineers.cospace.mapper.QuestionMapper;
 import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.service.AdminService;
 
@@ -22,9 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/admin")
 public class AdminController {
+
     private final AdminService adminService;
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
+    private final QuestionMapper questionMapper;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/create-club")
@@ -35,7 +36,18 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/create-sub-club")
     public SubClubDTO createSubClub(@RequestBody SubClubDTO subClubDTO){
-        return adminService.createSubClub(subClubDTO);
+        SubClubDTO savedSubClubDTO = adminService.createSubClub(subClubDTO);
+
+        if(savedSubClubDTO.getQuestions() != null)
+            savedSubClubDTO.getQuestions().clear();
+
+        for(QuestionDTO questionDTO : subClubDTO.getQuestions()){
+            Question currentQuestion = adminService.createQuestion(questionDTO, subClubDTO.getName());
+            QuestionDTO currentQuestionDTO = questionMapper.mapToDto(currentQuestion);
+            savedSubClubDTO.getQuestions().add(currentQuestionDTO);
+        }
+
+        return savedSubClubDTO;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
