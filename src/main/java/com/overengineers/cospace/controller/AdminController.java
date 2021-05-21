@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin(origins = "*") // TODO: Might need to remove this in production. For debugging purposes.
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")

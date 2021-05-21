@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.TimeZone;
 
-@CrossOrigin(origins = "*") // TODO: Might need to remove this in production. For debugging purposes.
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/subclub")
