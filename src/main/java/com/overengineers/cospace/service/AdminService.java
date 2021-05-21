@@ -20,10 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -128,4 +125,17 @@ public class AdminService {
         UtilService.fixPageableSort(pageable, "username", true);
         return memberMapper.mapToDto(memberRepository.findByUsernameIgnoreCaseContaining(query, pageable));
     }
+
+    public List<SubClubDTO> getEnrolledSubClubs(String username) {
+        try{
+            Set<SubClub> subClubs = memberRepository.findByUsername(username).getSubClubs();
+            return subClubMapper.mapToDto(new ArrayList<>(subClubs));
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+
+    }
+
 }

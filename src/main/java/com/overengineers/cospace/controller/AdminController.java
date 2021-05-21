@@ -5,6 +5,7 @@ import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.dto.ReportDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.service.AdminService;
@@ -48,6 +49,12 @@ public class AdminController {
     public List<MemberDTO> getAllMembers(){
         List<Member> memberList = memberRepository.findAll();
         return memberMapper.mapToDto(memberList);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping(value = "/enrolled-subclubs")
+    public List<SubClubDTO> getEnrolledSubClubs(@RequestParam("username") String username) throws Exception {
+        return adminService.getEnrolledSubClubs(username);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
