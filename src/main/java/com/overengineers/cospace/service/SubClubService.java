@@ -6,8 +6,6 @@ import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.entity.Question;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.EventMapper;
-import com.overengineers.cospace.mapper.MemberMapper;
-import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -162,8 +160,8 @@ public class SubClubService {
         return enrollmentService.enroll(answers, authorizedUsername);
     }
 
-    public List<SubClubDTO> getCommonSubClubs(String sourceUsername, String targetUsername) {
-        Set<SubClub> authorSubClubs = memberRepository.findByUsername(sourceUsername).getSubClubs();
+    public List<SubClub> getCommonSubClubs(String sourceUsername, String targetUsername) {
+        List<SubClub> authorSubClubs = enrollmentService.getMemberSubClubs(securityService.getAuthorizedUsername());
         if(authorSubClubs == null)
             return null;
 
@@ -171,12 +169,12 @@ public class SubClubService {
         if(targetMember == null)
             return null;
 
-        Set<SubClub> targetSubClubs = targetMember.getSubClubs();
+        List<SubClub> targetSubClubs = enrollmentService.getMemberSubClubs(targetUsername);
         if (targetSubClubs == null)
             return null;
 
         Set<SubClub> intersection = new HashSet<>(authorSubClubs);
         intersection.retainAll(targetSubClubs);
-        return subClubMapper.mapToDto(new ArrayList<>(intersection));
+        return new ArrayList<>(intersection);
     }
 }

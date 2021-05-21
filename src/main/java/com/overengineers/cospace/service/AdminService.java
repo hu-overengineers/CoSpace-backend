@@ -35,6 +35,7 @@ public class AdminService {
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
 
+    private final EnrollmentService enrollmentService;
     private final SecurityService securityService;
 
     @Transactional
@@ -131,8 +132,8 @@ public class AdminService {
 
     public List<SubClubDTO> getEnrolledSubClubs(String username) {
         try{
-            Set<SubClub> subClubs = memberRepository.findByUsername(username).getSubClubs();
-            return subClubMapper.mapToDto(new ArrayList<>(subClubs));
+            List<SubClub> subClubs = enrollmentService.getMemberSubClubs(username);
+            return subClubMapper.mapToDto(subClubs);
         }
         catch (Exception e){
             e.printStackTrace();

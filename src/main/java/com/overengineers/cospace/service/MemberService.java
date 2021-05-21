@@ -65,10 +65,10 @@ public class MemberService {
         return memberRepository.findByUsernameIgnoreCaseContainingAndEnrollments_SubClub_Name(query, subClubName, pageable);
     }
 
-    public PrivateMessageDTO sendPrivateMessage(PrivateMessageDTO privateMessageDTO) {
+    public PrivateMessage sendPrivateMessage(PrivateMessageDTO privateMessageDTO) {
         String currentlySignedInMemberUsername = securityService.getAuthorizedUsername();
 
-        List<SubClubDTO> intersection = subClubService.getCommonSubClubs(currentlySignedInMemberUsername, privateMessageDTO.targetMemberUsername);
+        List<SubClub> intersection = subClubService.getCommonSubClubs(currentlySignedInMemberUsername, privateMessageDTO.targetMemberUsername);
         if (intersection == null) return null;
 
         if(intersection.size() > 0) // At least one common SubClub between two members

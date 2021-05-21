@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
-    List<EnrollmentDTO> findBySubClub_Name(String name);
-    List<EnrollmentDTO> findByMember_Username(String username);
-
+    List<Enrollment> findBySubClub_Name(String name);
+    List<Enrollment> findByMember_Username(String username);
+    Enrollment findByMember_UsernameAndSubClub_Name(String username, String name);
 }

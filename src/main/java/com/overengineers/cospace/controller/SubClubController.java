@@ -115,7 +115,7 @@ public class SubClubController {
     @GetMapping("/common-subclubs")
     public List<SubClubDTO> getCommonSubClubs(@RequestParam(name = "username") String username) {
         String currentlySignedInMemberUsername = securityService.getAuthorizedUsername();
-        return subClubService.getCommonSubClubs(currentlySignedInMemberUsername, username);
+        return subClubMapper.mapToDto(subClubService.getCommonSubClubs(currentlySignedInMemberUsername, username));
     }
 
 }
