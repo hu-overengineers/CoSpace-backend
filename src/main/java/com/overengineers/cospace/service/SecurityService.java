@@ -21,9 +21,9 @@ import java.util.Set;
 public class SecurityService {
 
     private final BanRepository banRepository;
+    private final MemberRepository memberRepository;
+    private final SubClubRepository subClubRepository;
 
-    private final MemberService memberService;
-    private final SubClubService subClubService;
     private final EnrollmentService enrollmentService;
 
     public String getAuthorizedUsername(){
@@ -33,11 +33,11 @@ public class SecurityService {
 
     public Member getAuthorizedMember(){
         String username = getAuthorizedUsername();
-        return memberService.getByUsername(username);
+        return memberRepository.findByUsername(username);
     }
 
     public boolean isMemberBannedFromSubClub(String username, String subClubName){
-        if(subClubService.getByName(subClubName) == null){
+        if(!subClubRepository.findByName(subClubName).isPresent()){
             System.out.println("isMemberBannedFromSubClub() -> SubClub: " + subClubName + " is not found");
             return true;
         }
@@ -67,7 +67,7 @@ public class SecurityService {
 
     public boolean isMemberEnrolledToSubClub(String username, String subClubName) {
         List<SubClub> userSubClubs = enrollmentService.getMemberSubClubs(username);
-        SubClub subClub = subClubService.getByName(subClubName);
+        SubClub subClub = subClubRepository.findByName(subClubName).get();
 
         if (subClub == null){
             System.out.println("isMemberEnrolledToSubClub() -> SubClub: " + subClubName + " is not found");
@@ -100,7 +100,7 @@ public class SecurityService {
             return null;
 
         String nameSubClubOfModerator = subClubOfModerator.getName();
-        SubClub subClubFromRepository = subClubService.getByName(nameSubClubOfModerator);
+        SubClub subClubFromRepository = subClubRepository.findByName(nameSubClubOfModerator).get();
 
         if (subClubFromRepository == null){
             System.out.println("getSubClubOfModerator() -> SubClub:" + nameSubClubOfModerator + " is not found");
