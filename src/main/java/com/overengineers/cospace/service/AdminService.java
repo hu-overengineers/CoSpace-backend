@@ -64,10 +64,7 @@ public class AdminService {
         }
         return null;
     }
-
-    public SubClubDTO getSubClubByName(@RequestParam(name = "subClubName") String subClubName){
-        return subClubMapper.mapToDto(subClubRepository.findByName(subClubName).get());
-    }
+    
     public List<ReportDTO> getAllReports() {
         return reportMapper.mapToDto(reportRepository.findAll());
     }
