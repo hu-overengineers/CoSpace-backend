@@ -64,7 +64,7 @@ public class AdminService {
         }
         return null;
     }
-    
+
     public List<ReportDTO> getAllReports() {
         return reportMapper.mapToDto(reportRepository.findAll());
     }
@@ -72,7 +72,7 @@ public class AdminService {
     @Transactional
     public MemberDTO banMember(String username){
         Member member = memberRepository.findByUsername(username);
-
+        // TODO: Change with banModerator, this func is unnecessary
         Member newMember = member;
         //memberRepository.save(newMember);
         return memberMapper.mapToDto(newMember);

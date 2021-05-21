@@ -35,7 +35,7 @@ public class MemberController {
     @GetMapping(value = "/enrolled-subclubs")
     public List<SubClubDTO> getEnrolledSubClubs(){
         List<SubClub> subClubs = memberService.getEnrolledSubClubs();
-        return subClubMapper.mapToDto(new ArrayList<>());
+        return subClubMapper.mapToDto(subClubs);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
