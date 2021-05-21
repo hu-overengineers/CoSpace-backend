@@ -64,7 +64,9 @@ public class MemberService {
     }
 
     public PrivateMessageDTO sendPrivateMessage(PrivateMessageDTO privateMessageDTO) {
-        List<SubClubDTO> intersection = subClubService.getCommonSubClubs(securityService.getAuthorizedUsername(), privateMessageDTO.targetMemberUsername);
+        String currentlySignedInMemberUsername = securityService.getAuthorizedUsername();
+
+        List<SubClubDTO> intersection = subClubService.getCommonSubClubs(currentlySignedInMemberUsername, privateMessageDTO.targetMemberUsername);
         if (intersection == null) return null;
 
         if(intersection.size() > 0) // At least one common SubClub between two members

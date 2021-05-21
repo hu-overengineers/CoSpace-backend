@@ -97,11 +97,12 @@ public class SubClubController {
     public boolean amIBanned(@RequestParam(name = "subClubName") String subClubName){
         return subClubService.isBanned(subClubName);
     }
-    
+
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping("/common-subclubs")
     public List<SubClubDTO> getCommonSubClubs(@RequestParam(name = "username") String username) {
-        return subClubService.getCommonSubClubs(securityService.getAuthorizedUsername(), username);
+        String currentlySignedInMemberUsername = securityService.getAuthorizedUsername();
+        return subClubService.getCommonSubClubs(currentlySignedInMemberUsername, username);
     }
 
 }
