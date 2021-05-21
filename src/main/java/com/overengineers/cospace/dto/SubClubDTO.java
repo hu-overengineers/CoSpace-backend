@@ -6,10 +6,16 @@ import lombok.Getter;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
 public class SubClubDTO {
+
+    public final int id;
+
+    public final Date created;
 
     @Size(min = 1, max = 32, message = "Club name can't be more than 32 characters!")
     public final String name;
@@ -23,8 +29,6 @@ public class SubClubDTO {
 
     public final String moderatorUsername;
     
-    public final int id;
-
-    public final Date created;
+    public final List<QuestionDTO> questions;
 
 }
