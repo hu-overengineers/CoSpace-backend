@@ -1,11 +1,8 @@
 package com.overengineers.cospace.controller;
 
-import com.overengineers.cospace.dto.EventDTO;
-import com.overengineers.cospace.dto.MemberDTO;
-import com.overengineers.cospace.dto.ReviewDTO;
-import com.overengineers.cospace.dto.SubClubDTO;
-import com.overengineers.cospace.dto.SubClubStatisticsDTO;
+import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.mapper.MemberMapper;
+import com.overengineers.cospace.mapper.QuestionMapper;
 import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.service.SubClubService;
 
@@ -30,6 +27,7 @@ public class SubClubController {
 
     private final SubClubMapper subClubMapper;
     private final MemberMapper memberMapper;
+    private final QuestionMapper questionMapper;
 
     @PreAuthorize("permitAll")
     @GetMapping(value = "/all")
@@ -50,9 +48,22 @@ public class SubClubController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping("/questionnaire")
+    public List<QuestionDTO> getQuestionnaire(){
+        return questionMapper.mapToDto(subClubService.getQuestionnaire());
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping("/questionnaire-sub")
+    public List<QuestionDTO> getQuestionnaireBySubClub(@RequestParam(name = "subClubName") String subClubName){
+        return questionMapper.mapToDto(subClubService.getQuestionnaireBySubClub(subClubName));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/enroll")
     public ResponseEntity<String> enroll(@RequestParam(name = "subClubName") String subClubName){
-        return subClubService.enroll(subClubName);
+        //return subClubService.enroll(subClubName);
+        return null;
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
