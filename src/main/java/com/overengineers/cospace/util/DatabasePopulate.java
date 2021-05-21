@@ -30,7 +30,6 @@ public class DatabasePopulate {
         Authority adminAuthority = authorityRepository.findByAuthority("ADMIN");
         Authority userAuthority = authorityRepository.findByAuthority("USER");
 
-        Set<Member> admins = new HashSet<>();
         for (int i = 0; i < adminList.size(); i++) {
             String adminUsername = adminList.get(i);
             String adminPassword = passwordEncoder.encode("12345");
