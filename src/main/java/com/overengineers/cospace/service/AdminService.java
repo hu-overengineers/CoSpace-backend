@@ -16,6 +16,7 @@ import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.repository.ReportRepository;
 import com.overengineers.cospace.repository.SubClubRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -122,4 +123,7 @@ public class AdminService {
         return makeModerator(requestedMembers.get(luckyMemberIndex).getUsername(), subClubName);
     }
 
+    public List<MemberDTO> searchMember(String query, Pageable pageable) {
+        return memberMapper.mapToDto(memberRepository.findByUsernameIgnoreCaseContaining(query, pageable));
+    }
 }

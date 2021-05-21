@@ -10,6 +10,7 @@ import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.service.AdminService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +50,14 @@ public class AdminController {
         List<Member> memberList = memberRepository.findAll();
         return memberMapper.mapToDto(memberList);
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping(value = "/search-member")
+    public List<MemberDTO> searchMember(@RequestParam("query") String query, Pageable pageable) throws Exception {
+        // query should include substring of the username
+        return adminService.searchMember(query, pageable);
+    }
+
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/mod-requests") // TODO: This endpoint is used for development, remove for final product

@@ -14,6 +14,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByEmail(String email);
 
     // Search
+    List<Member> findByUsernameIgnoreCaseContaining(String username, Pageable page);
     List<Member> findByUsernameIgnoreCaseContainingAndSubClubs_Name(String username, String name, Pageable page);
 
 }
