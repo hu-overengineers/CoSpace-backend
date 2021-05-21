@@ -42,6 +42,8 @@ public class MemberService {
         return memberRepository.findByUsername(username);
     }
 
+    private final SubClubService subClubService;
+
     public List<SubClub> getEnrolledSubClubs() {
         try{
             String authorizedMemberUsername = securityService.getAuthorizedUsername();
@@ -63,23 +65,11 @@ public class MemberService {
         return memberRepository.findByUsernameIgnoreCaseContainingAndEnrollments_SubClub_Name(query, subClubName, pageable);
     }
 
-    public PrivateMessage sendPrivateMessage(PrivateMessageDTO privateMessageDTO) {
-        String authorizedMemberUsername = securityService.getAuthorizedUsername();
-        List<SubClub> authorSubClubs = enrollmentService.getMemberSubClubs(authorizedMemberUsername);
+    public PrivateMessageDTO sendPrivateMessage(PrivateMessageDTO privateMessageDTO) {
+        String currentlySignedInMemberUsername = securityService.getAuthorizedUsername();
 
-        if(authorSubClubs == null)
-            return null;
-
-        Member targetMember = memberRepository.findByUsername(privateMessageDTO.getTargetMemberUsername());
-        if(targetMember == null)
-            return null;
-
-        List<SubClub> targetSubClubs = enrollmentService.getMemberSubClubs(targetMember.getUsername());
-        if (targetSubClubs == null)
-            return null;
-
-        Set<SubClub> intersection = new HashSet<SubClub>(authorSubClubs);// TODO: Maybe change with subClubService func.
-        intersection.retainAll(targetSubClubs);
+        List<SubClubDTO> intersection = subClubService.getCommonSubClubs(currentlySignedInMemberUsername, privateMessageDTO.targetMemberUsername);
+        if (intersection == null) return null;
 
         if(intersection.size() > 0) // At least one common SubClub between two members
            return privateMessageService.send(privateMessageDTO);

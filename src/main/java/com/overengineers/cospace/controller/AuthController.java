@@ -18,7 +18,6 @@ import javax.validation.constraints.NotBlank;
 
 
 //@Validated
-@CrossOrigin(origins = "*") // TODO: Might need to remove this in production. For debugging purposes.
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")

@@ -1,5 +1,6 @@
 package com.overengineers.cospace.controller;
 
+import com.overengineers.cospace.service.SecurityService;
 import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.mapper.QuestionMapper;
@@ -18,12 +19,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.TimeZone;
 
-@CrossOrigin(origins = "*") // TODO: Might need to remove this in production. For debugging purposes.
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/subclub")
 public class SubClubController {
     private final SubClubService subClubService;
+    private final SecurityService securityService;
 
     private final SubClubMapper subClubMapper;
     private final MemberMapper memberMapper;
@@ -108,6 +109,13 @@ public class SubClubController {
     @GetMapping("/ban-check")
     public boolean amIBanned(@RequestParam(name = "subClubName") String subClubName){
         return subClubService.isBanned(subClubName);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping("/common-subclubs")
+    public List<SubClubDTO> getCommonSubClubs(@RequestParam(name = "username") String username) {
+        String currentlySignedInMemberUsername = securityService.getAuthorizedUsername();
+        return subClubService.getCommonSubClubs(currentlySignedInMemberUsername, username);
     }
 
 }

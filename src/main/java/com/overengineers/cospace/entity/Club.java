@@ -24,6 +24,6 @@ public class Club extends BaseEntity {
     private String details;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.MERGE)
-    private Set<SubClub> childs = new HashSet<>();
+    private Set<SubClub> children = new HashSet<>();
 
 }

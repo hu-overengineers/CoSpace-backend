@@ -2,6 +2,7 @@ package com.overengineers.cospace.controller;
 
 import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.entity.Question;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.mapper.QuestionMapper;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@CrossOrigin(origins = "*") // TODO: Might need to remove this in production. For debugging purposes.
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -61,6 +61,12 @@ public class AdminController {
     public List<MemberDTO> getAllMembers(){
         List<Member> memberList = memberRepository.findAll();
         return memberMapper.mapToDto(memberList);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping(value = "/enrolled-subclubs")
+    public List<SubClubDTO> getEnrolledSubClubs(@RequestParam("username") String username) throws Exception {
+        return adminService.getEnrolledSubClubs(username);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

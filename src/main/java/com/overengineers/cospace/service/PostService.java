@@ -2,7 +2,6 @@ package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.PostDTO;
 import com.overengineers.cospace.dto.ReportDTO;
-import com.overengineers.cospace.entity.Club;
 import com.overengineers.cospace.entity.Post;
 import com.overengineers.cospace.entity.Report;
 import com.overengineers.cospace.entity.SubClub;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +53,14 @@ public class PostService {
 
     public PostDTO getPostDTOById(Long postID){
         return postMapper.mapToDto(postRepository.findById(postID).get());
+    }
+
+    public List<PostDTO> getPostsByAuthorAndSubClub(String username, String subClubName) {
+        return postMapper.mapToDto(postRepository.findByAuthorAndParentName(username, subClubName));
+    }
+
+    public List<PostDTO> getPostsByAuthor(String username) {
+        return postMapper.mapToDto(postRepository.findByAuthor(username));
     }
 
     public List<PostDTO> getTrends(Pageable pageable) {
