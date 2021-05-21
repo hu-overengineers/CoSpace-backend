@@ -39,12 +39,8 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(name = "LAST_LOGIN")
     private Date lastLogin;
 
-    @ManyToMany
-    @JoinTable(name = "member_subClub",
-            joinColumns = {@JoinColumn(name = "fk_member")},
-            inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}
-    )
-    private Set<SubClub> subClubs = new HashSet<>();
+    @OneToMany(mappedBy = "member")
+    Set<Enrollment> enrollments;
 
     @ManyToMany(mappedBy = "dismissibleMembers")
     private Set<SubClub> dismissibleSubClubs = new HashSet<>();
@@ -84,7 +80,7 @@ public class Member extends BaseEntity implements UserDetails {
     // Functions
 
     public boolean isNull() {
-        return getSubClubs() == null;
+        return getEnrollments() == null;
     }
 
     @Override

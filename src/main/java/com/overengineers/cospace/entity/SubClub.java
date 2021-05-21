@@ -23,8 +23,8 @@ public class SubClub extends BaseEntity {
     @Column(name = "RATING")
     private int rating;
 
-    @ManyToMany(mappedBy = "subClubs")
-    private Set<Member> members = new HashSet<>();
+    @OneToMany(mappedBy = "subClub")
+    Set<Enrollment> enrollments;
 
     @OneToMany(mappedBy = "parent")
     private Set<Post> posts = new HashSet<>();
