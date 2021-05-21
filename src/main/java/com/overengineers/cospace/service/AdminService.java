@@ -124,6 +124,8 @@ public class AdminService {
     }
 
     public List<MemberDTO> searchMember(String query, Pageable pageable) {
+        // Sort by username, alphabetically
+        UtilService.fixPageableSort(pageable, "username", true);
         return memberMapper.mapToDto(memberRepository.findByUsernameIgnoreCaseContaining(query, pageable));
     }
 }
