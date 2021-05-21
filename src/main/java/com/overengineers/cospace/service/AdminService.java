@@ -1,29 +1,19 @@
 package com.overengineers.cospace.service;
 
-import com.overengineers.cospace.dto.ClubDTO;
-import com.overengineers.cospace.dto.MemberDTO;
-import com.overengineers.cospace.dto.ReportDTO;
-import com.overengineers.cospace.dto.SubClubDTO;
+import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.entity.Club;
 import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.entity.Question;
 import com.overengineers.cospace.entity.SubClub;
-import com.overengineers.cospace.mapper.ClubMapper;
-import com.overengineers.cospace.mapper.MemberMapper;
-import com.overengineers.cospace.mapper.ReportMapper;
-import com.overengineers.cospace.mapper.SubClubMapper;
-import com.overengineers.cospace.repository.ClubRepository;
-import com.overengineers.cospace.repository.MemberRepository;
-import com.overengineers.cospace.repository.ReportRepository;
-import com.overengineers.cospace.repository.SubClubRepository;
+import com.overengineers.cospace.mapper.*;
+import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +24,6 @@ public class AdminService {
     private final ClubRepository clubRepository;
 
     private final SubClubMapper subClubMapper;
-    private final SubClubService subClubService;
     private final SubClubRepository subClubRepository;
 
     private final ReportMapper reportMapper;
@@ -43,6 +32,9 @@ public class AdminService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
 
+    private final QuestionRepository questionRepository;
+    private final QuestionMapper questionMapper;
+
     private final SecurityService securityService;
 
     @Transactional
@@ -50,6 +42,14 @@ public class AdminService {
         Club club = clubMapper.mapToEntity(clubDTO);
         Club newClub = clubService.saveNewClub(club);
         return clubMapper.mapToDto(newClub);
+    }
+
+    @Transactional
+    public Question createQuestion(QuestionDTO questionDTO, String subClubName){
+        Question question = questionMapper.mapToEntity(questionDTO);
+        question.setParent(subClubRepository.findByName(subClubName).get());
+        Question savedQuestion = questionRepository.save(question);
+        return savedQuestion;
     }
 
     @Transactional
@@ -65,6 +65,9 @@ public class AdminService {
         return null;
     }
 
+    public SubClubDTO getSubClubByName(@RequestParam(name = "subClubName") String subClubName){
+        return subClubMapper.mapToDto(subClubRepository.findByName(subClubName).get());
+    }
     public List<ReportDTO> getAllReports() {
         return reportMapper.mapToDto(reportRepository.findAll());
     }
