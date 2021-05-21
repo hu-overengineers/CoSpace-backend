@@ -5,6 +5,8 @@ import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.dto.ReviewDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.dto.SubClubStatisticsDTO;
+import com.overengineers.cospace.mapper.MemberMapper;
+import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.service.SubClubService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,23 +28,25 @@ import java.util.TimeZone;
 public class SubClubController {
     private final SubClubService subClubService;
 
+    private final SubClubMapper subClubMapper;
+    private final MemberMapper memberMapper;
+
     @PreAuthorize("permitAll")
     @GetMapping(value = "/all")
     public List<SubClubDTO> listAllSubClubs() {
-        return subClubService.listAllSubClubs();
+        return subClubMapper.mapToDto(subClubService.listAllSubClubs());
     }
-
 
     @PreAuthorize("permitAll")
     @GetMapping(value = "/all-with-clubname")
     public List<SubClubDTO> listByParentName(@RequestParam(name = "clubName") String clubName){
-        return subClubService.listByParentName(clubName);
+        return subClubMapper.mapToDto(subClubService.listByParentName(clubName));
     }
 
     @PreAuthorize("permitAll")
     @GetMapping("/search")
     public List<SubClubDTO> search(@RequestParam(name = "query") String query, Pageable pageable){
-        return subClubService.search(query,  pageable);
+        return subClubMapper.mapToDto(subClubService.search(query,  pageable));
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -66,7 +70,7 @@ public class SubClubController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping("/members")
     public List<MemberDTO> getSubClubMembers(@RequestParam(name = "subClubName") String subClubName){
-        return subClubService.getMembers(subClubName);
+        return memberMapper.mapToDto(subClubService.getMembers(subClubName));
     }
 
     @PreAuthorize("permitAll")

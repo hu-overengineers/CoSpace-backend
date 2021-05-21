@@ -6,6 +6,7 @@ import com.overengineers.cospace.dto.PrivateMessageDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
 import com.overengineers.cospace.entity.Club;
 import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.entity.PrivateMessage;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.ClubMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
@@ -32,37 +33,40 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final MemberMapper memberMapper;
-
-    private final SubClubMapper subClubMapper;
 
     private final SecurityService securityService;
     private final PrivateMessageService privateMessageService;
+    private final EnrollmentService enrollmentService;
 
-    public List<SubClubDTO> getEnrolledSubClubs() {
+    public Member getByUsername(String username){
+        return memberRepository.findByUsername(username);
+    }
+
+    public List<SubClub> getEnrolledSubClubs() {
         try{
-            Set<SubClub> subClubs = securityService.getAuthorizedMember().getSubClubs();
-            return subClubMapper.mapToDto(new ArrayList<>(subClubs));
+            String authorizedMemberUsername = securityService.getAuthorizedUsername();
+            List<SubClub> subClubs = enrollmentService.getMemberSubClubs(authorizedMemberUsername);
+            return subClubs;
         }
         catch (Exception e){
             e.printStackTrace();
             return new ArrayList<>();
         }
-
     }
 
-    public List<MemberDTO> search(String query, String subClubName, Pageable pageable) {
+    public List<Member> search(String query, String subClubName, Pageable pageable) {
         if(!securityService.isAuthorizedToSubClub(subClubName))
             return null;
 
         // Sort by username, alphabetically
         UtilService.fixPageableSort(pageable, "username", true);
-        return memberMapper.mapToDto(memberRepository.findByUsernameIgnoreCaseContainingAndSubClubs_Name(query, subClubName, pageable));
-
+        return memberRepository.findByUsernameIgnoreCaseContainingAndEnrollments_SubClub_Name(query, subClubName, pageable);
     }
 
-    public PrivateMessageDTO sendPrivateMessage(PrivateMessageDTO privateMessageDTO) {
-        Set<SubClub> authorSubClubs = securityService.getAuthorizedMember().getSubClubs();
+    public PrivateMessage sendPrivateMessage(PrivateMessageDTO privateMessageDTO) {
+        String authorizedMemberUsername = securityService.getAuthorizedUsername();
+        List<SubClub> authorSubClubs = enrollmentService.getMemberSubClubs(authorizedMemberUsername);
+
         if(authorSubClubs == null)
             return null;
 
@@ -70,11 +74,11 @@ public class MemberService {
         if(targetMember == null)
             return null;
 
-        Set<SubClub> targetSubClubs = targetMember.getSubClubs();
+        List<SubClub> targetSubClubs = enrollmentService.getMemberSubClubs(targetMember.getUsername());
         if (targetSubClubs == null)
             return null;
 
-        Set<SubClub> intersection = new HashSet<SubClub>(authorSubClubs);
+        Set<SubClub> intersection = new HashSet<SubClub>(authorSubClubs);// TODO: Maybe change with subClubService func.
         intersection.retainAll(targetSubClubs);
 
         if(intersection.size() > 0) // At least one common SubClub between two members
@@ -83,7 +87,7 @@ public class MemberService {
             return null;
     }
 
-    public List<PrivateMessageDTO> getPrivateMessages(){
+    public List<PrivateMessage> getPrivateMessages(){
         return privateMessageService.getAllByAuthorizedMember();
     }
 }

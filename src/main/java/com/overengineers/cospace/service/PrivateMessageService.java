@@ -22,18 +22,18 @@ public class PrivateMessageService {
 
     private final SecurityService securityService;
 
-    public PrivateMessageDTO send(PrivateMessageDTO privateMessageDTO) {
+    public PrivateMessage send(PrivateMessageDTO privateMessageDTO) {
         PrivateMessage privateMessage = privateMessageMapper.mapToEntity(privateMessageDTO);
         Member targetMember = memberRepository.findByUsername(privateMessageDTO.getTargetMemberUsername());
         privateMessage.setAuthor(securityService.getAuthorizedUsername());
         privateMessage.setTargetMember(targetMember);
         PrivateMessage savedPrivateMessage = privateMessageRepository.save(privateMessage);
-        return privateMessageMapper.mapToDto(savedPrivateMessage);
+        return savedPrivateMessage;
     }
 
-    public List<PrivateMessageDTO> getAllByAuthorizedMember() {
+    public List<PrivateMessage> getAllByAuthorizedMember() {
         String username = securityService.getAuthorizedUsername();
-        return privateMessageMapper.mapToDto(privateMessageRepository.findByTargetMember_Username(username));
+        return privateMessageRepository.findByTargetMember_Username(username);
     }
 
 

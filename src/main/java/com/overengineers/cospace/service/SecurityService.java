@@ -20,9 +20,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SecurityService {
 
-    private final MemberRepository memberRepository;
-    private final SubClubRepository subClubRepository;
     private final BanRepository banRepository;
+
+    private final MemberService memberService;
+    private final SubClubService subClubService;
+    private final EnrollmentService enrollmentService;
 
     public String getAuthorizedUsername(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -31,12 +33,15 @@ public class SecurityService {
 
     public Member getAuthorizedMember(){
         String username = getAuthorizedUsername();
-        return memberRepository.findByUsername(username);
+        return memberService.getByUsername(username);
     }
 
     public boolean isMemberBannedFromSubClub(String username, String subClubName){
-        if(!subClubRepository.findByName(subClubName).isPresent())
-            return true; // SubClub not found
+        if(subClubService.getByName(subClubName) == null){
+            System.out.println("isMemberBannedFromSubClub() -> SubClub: " + subClubName + " is not found");
+            return true;
+        }
+
 
         Optional<Ban> optionalBan = banRepository.findBySubClubNameAndMember_Username(subClubName, username);
 
@@ -61,15 +66,16 @@ public class SecurityService {
     }
 
     public boolean isMemberEnrolledToSubClub(String username, String subClubName) {
-        Member member = memberRepository.findByUsername(username);
-        Set<SubClub> userSubClubs = member.getSubClubs();
+        List<SubClub> userSubClubs = enrollmentService.getMemberSubClubs(username);
+        SubClub subClub = subClubService.getByName(subClubName);
 
-        if (!subClubRepository.findByName(subClubName).isPresent()) // SubClub is not found
+        if (subClub == null){
+            System.out.println("isMemberEnrolledToSubClub() -> SubClub: " + subClubName + " is not found");
             return false;
-
-        SubClub subClub = subClubRepository.findByName(subClubName).get();
-
-        return userSubClubs.contains(subClub);
+        }
+        else{
+            return userSubClubs.contains(subClub);
+        }
     }
 
     public boolean isMemberEnrolledToSubClub(String subClubName) {
@@ -94,10 +100,12 @@ public class SecurityService {
             return null;
 
         String nameSubClubOfModerator = subClubOfModerator.getName();
-        if (!subClubRepository.findByName(nameSubClubOfModerator).isPresent())
-            return null; // SubClub is not found
+        SubClub subClubFromRepository = subClubService.getByName(nameSubClubOfModerator);
 
-        SubClub subClubFromRepository = subClubRepository.findByName(nameSubClubOfModerator).get();
+        if (subClubFromRepository == null){
+            System.out.println("getSubClubOfModerator() -> SubClub:" + nameSubClubOfModerator + " is not found");
+            return null;
+        }
 
         if(subClubFromRepository.getModerator() == null)
             return null;

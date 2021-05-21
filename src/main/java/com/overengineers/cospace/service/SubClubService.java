@@ -1,6 +1,7 @@
 package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.*;
+import com.overengineers.cospace.entity.Enrollment;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.EventMapper;
@@ -26,9 +27,7 @@ import java.util.*;
 public class SubClubService {
 
     private final SubClubRepository subClubRepository;
-    private final SubClubMapper subClubMapper;
 
-    private final MemberMapper memberMapper;
     private final MemberRepository memberRepository;
 
     private final EventRepository eventRepository;
@@ -39,31 +38,20 @@ public class SubClubService {
     private final ReviewService reviewService;
 
     private final SecurityService securityService;
+    private final EnrollmentService enrollmentService;
 
 
-    public List<SubClubDTO> listAllSubClubs() {
+    public SubClub getByName(String subClubName){
+        if(!subClubRepository.findByName(subClubName).isPresent())
+            return null;
+        return subClubRepository.findByName(subClubName).get();
+    }
+
+    public List<SubClub> listAllSubClubs() {
         List<SubClub> subClubList = subClubRepository.findAll();
-        List<SubClubDTO> subClubDTOList = subClubMapper.mapToDto(subClubList);
-        return subClubDTOList;
+        return subClubList;
     }
 
-
-    @Transactional
-    public ResponseEntity<String> enroll(String subClubName) {
-        Optional<SubClub> optionalSubClub = subClubRepository.findByName(subClubName);
-        if (optionalSubClub.isPresent()) {
-            SubClub subClub = optionalSubClub.get();
-            Member member = securityService.getAuthorizedMember();
-
-            member.getSubClubs().add(subClub);
-            memberRepository.save(member);
-
-            return ResponseEntity.ok("You are successfully enrolled.");
-        }
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND) // 404
-                .body("SubClub not found!");
-    }
 
     @Transactional
     public boolean isBanned(String subClubName) {
@@ -102,18 +90,18 @@ public class SubClubService {
         return reviewService.getSubClubReviews(subClubName);
     }
 
-    public List<SubClubDTO> search(String query, Pageable pageable) {
+    public List<SubClub> search(String query, Pageable pageable) {
         // Sort by rating, descending
         Pageable newPageable = UtilService.fixPageableSort(pageable, "rating", false);
-        return subClubMapper.mapToDto(subClubRepository.findByNameIgnoreCaseContaining(query, newPageable));
+        return subClubRepository.findByNameIgnoreCaseContaining(query, newPageable);
     }
 
-    public List<MemberDTO> getMembers(String subClubName) {
+    public List<Member> getMembers(String subClubName) {
         if (!securityService.isAuthorizedToSubClub(subClubName))
             return null;
 
-        Set<Member> members = subClubRepository.findByName(subClubName).get().getMembers();
-        return memberMapper.mapToDto(new ArrayList<>(members));
+        List<Member> members = enrollmentService.getSubClubMembers(subClubName);
+        return members;
     }
 
     public List<EventDTO> getEvents(String subClubName) {
@@ -152,13 +140,11 @@ public class SubClubService {
     }
 
     public SubClubStatisticsDTO getStatistics(String subClubName, Date timeFrameStart, Date timeFrameEnd) {
-        Optional<SubClub> subClub = subClubRepository.findByName(subClubName);
-        return subClub.map(theSubClub -> new SubClubStatisticsDTO(
-                theSubClub.getMembers().size(),
-                postRepository.countAllByParentNameAndCreatedBetween(subClubName, timeFrameStart, timeFrameEnd))).orElse(null);
+        return new SubClubStatisticsDTO(enrollmentService.getSubClubMembers(subClubName).size(),
+                postRepository.countAllByParentNameAndCreatedBetween(subClubName, timeFrameStart, timeFrameEnd));
     }
 
-    public List<SubClubDTO> listByParentName(String clubName) {
-        return subClubMapper.mapToDto(subClubRepository.findByParent_Name(clubName));
+    public List<SubClub> listByParentName(String clubName) {
+        return subClubRepository.findByParent_Name(clubName);
     }
 }

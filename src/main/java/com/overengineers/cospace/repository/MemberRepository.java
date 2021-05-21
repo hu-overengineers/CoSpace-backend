@@ -9,12 +9,13 @@ import java.util.List;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Member findByUsername(String username);
     Member findByEmail(String email);
+    List<Member> findByEnrollments_SubClub_Name(String subClubName);
     void deleteByUsername(String username);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
 
     // Search
     List<Member> findByUsernameIgnoreCaseContaining(String username, Pageable page);
-    List<Member> findByUsernameIgnoreCaseContainingAndSubClubs_Name(String username, String name, Pageable page);
+    List<Member> findByUsernameIgnoreCaseContainingAndEnrollments_SubClub_Name(String username, String name, Pageable page);
 
 }
