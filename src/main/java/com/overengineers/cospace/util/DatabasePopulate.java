@@ -20,6 +20,7 @@ public class DatabasePopulate {
     private final SubClubRepository subClubRepository;
     private final PostRepository postRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final QuestionRepository questionRepository;
 
     @Transactional
     public void populateDatabase() {
@@ -40,7 +41,8 @@ public class DatabasePopulate {
             memberRepository.save(currentAdmin);
         }
 
-        int populationCount = 5;
+
+        int populationCount = 10;
         for (int i = 1; i <= populationCount; i++) {
             String memberUsername = "member" + i;
             String memberPassword = passwordEncoder.encode("123456");
@@ -51,24 +53,26 @@ public class DatabasePopulate {
             Club club = new Club("club" + i, "club" + i + " Details", null);
             clubRepository.save(club);
 
-            // TODO: Questionnaire should be added to SubClub
-            
-            SubClub sub = new SubClub("sub" + i, "sub" + i + " Details", 0, null, null, null, null, club, memberRepository.findByUsername(adminList.get(i-1)), null, null,null);
+            SubClub sub = new SubClub("sub" + i, "sub" + i + " Details", 0, null, null, null, null, club, null, null, null,null);
             subClubRepository.save(sub);
 
-            Enrollment enrollment = new Enrollment(member, sub, 100, true);
-            enrollmentRepository.save(enrollment);
+            for(int j = 1; j <= 5; j++){
+                Question question = new Question("q" + i + j,"a1","a2","a3", "a" + i + j, "a" + i + j, subClubRepository.findByName("sub" + i).get());
+                Question savedQuestion = questionRepository.save(question);
+            }
 
             for (int j = 0; j < 100; j++) {
                 Post post = new Post("member" + i, "Title" + i, "This is a test content for sub" + i, i, null, subClubRepository.findByName("sub" + i).get());
                 postRepository.save(post);
             }
         }
-        enrollmentRepository.save(new Enrollment(memberRepository.findByUsername("yusuf"), subClubRepository.findByName("sub1").get(), 100, true));
-        enrollmentRepository.save(new Enrollment(memberRepository.findByUsername("cagatay"), subClubRepository.findByName("sub2").get(), 100, true));
-        enrollmentRepository.save(new Enrollment(memberRepository.findByUsername("samil"), subClubRepository.findByName("sub3").get(), 100, true));
-        enrollmentRepository.save(new Enrollment(memberRepository.findByUsername("mert"), subClubRepository.findByName("sub4").get(), 100, true));
-        enrollmentRepository.save(new Enrollment(memberRepository.findByUsername("selim"), subClubRepository.findByName("sub5").get(), 100, true));
 
+        for(int i = 1; i <= 5; i++){
+            enrollmentRepository.save(new Enrollment(memberRepository.findByUsername(adminList.get(i - 1)), subClubRepository.findByName("sub" + i).get(), 100, true));
+            enrollmentRepository.save(new Enrollment(memberRepository.findByUsername("member" + i), subClubRepository.findByName("sub" + i).get(), 100, true));
+            SubClub subClub = subClubRepository.findByName("sub" + i).get();
+            subClub.setModerator(memberRepository.findByUsername(adminList.get(i-1)));
+            subClubRepository.save(subClub);
+        }
     }
 }
