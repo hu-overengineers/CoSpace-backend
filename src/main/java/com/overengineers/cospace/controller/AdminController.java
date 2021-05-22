@@ -76,6 +76,11 @@ public class AdminController {
         return adminService.searchMember(query, pageable);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping(value = "/subclub-requests")
+    public List<SubClubCreateResponseDTO> getSubClubCreateRequests(){
+        return adminService.getSubClubCreateRequests();
+    }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/mod-requests") // TODO: This endpoint is used for development, remove for final product

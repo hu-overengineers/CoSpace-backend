@@ -1,10 +1,7 @@
 package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.*;
-import com.overengineers.cospace.entity.Club;
-import com.overengineers.cospace.entity.Member;
-import com.overengineers.cospace.entity.Question;
-import com.overengineers.cospace.entity.SubClub;
+import com.overengineers.cospace.entity.*;
 import com.overengineers.cospace.mapper.*;
 import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +34,9 @@ public class AdminService {
 
     private final EnrollmentService enrollmentService;
     private final SecurityService securityService;
+
+    private final SubClubCreateRequestRepository subClubCreateRequestRepository;
+    private final SubClubCreateRequestMapper subClubCreateRequestMapper;
 
     @Transactional
     public ClubDTO createClub(ClubDTO clubDTO) {
@@ -92,7 +92,7 @@ public class AdminService {
         return memberMapper.mapToDto(getModeratorRequests(subClubName));
     }
 
-
+    @Transactional
     public SubClubDTO makeModerator(String username, String subClubName){
         if(!securityService.isAuthorizedToSubClub(username, subClubName))
             return null; // Candidate is not authorized (banned or not enrolled)
@@ -109,6 +109,7 @@ public class AdminService {
         SubClub newSubClub = subClubRepository.save(subClub);
         return subClubMapper.mapToDto(newSubClub);
     }
+
 
     public SubClubDTO assignModeratorRandomly(String subClubName){
         List<Member> requestedMembers = getModeratorRequests(subClubName);
@@ -141,5 +142,33 @@ public class AdminService {
         }
 
     }
+
+    public List<SubClubCreateResponseDTO> getSubClubCreateRequests() {
+        List<SubClubCreateRequest> requests = subClubCreateRequestRepository.findAll();
+        List<SubClubCreateResponseDTO> responseDTOList = new ArrayList<>();
+        HashMap<String, List<String>> responseMap = new HashMap<>();
+
+        for(SubClubCreateRequest req : requests){
+            String currentClubName = req.getClubName();
+            String currentSubClubName = req.getSubClubName();
+            if(!responseMap.containsKey(currentClubName)){
+                List<String> subClubList = new ArrayList<>();
+                subClubList.add(currentSubClubName);
+                responseMap.put(currentClubName, subClubList);
+            }
+            else {
+                responseMap.get(currentClubName).add(currentSubClubName);
+            }
+        }
+
+        for(String key : responseMap.keySet()){
+            List<String> currentSubClubList = responseMap.get(key);
+            SubClubCreateResponseDTO resp = new SubClubCreateResponseDTO(key, currentSubClubList, currentSubClubList.size());
+            responseDTOList.add(resp);
+        }
+        return responseDTOList;
+    }
+
+
 
 }

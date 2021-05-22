@@ -1,17 +1,12 @@
 package com.overengineers.cospace.service;
 
-import com.overengineers.cospace.dto.ClubDTO;
-import com.overengineers.cospace.dto.MemberDTO;
-import com.overengineers.cospace.dto.PrivateMessageDTO;
-import com.overengineers.cospace.dto.SubClubDTO;
-import com.overengineers.cospace.entity.Club;
-import com.overengineers.cospace.entity.Member;
-import com.overengineers.cospace.entity.PrivateMessage;
-import com.overengineers.cospace.entity.SubClub;
+import com.overengineers.cospace.dto.*;
+import com.overengineers.cospace.entity.*;
 import com.overengineers.cospace.mapper.ClubMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.repository.MemberRepository;
+import com.overengineers.cospace.repository.SubClubCreateRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.cglib.core.CollectionUtils;
@@ -33,6 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final SubClubCreateRequestRepository subClubCreateRequestRepository;
 
     private final SecurityService securityService;
     private final PrivateMessageService privateMessageService;
@@ -79,5 +75,14 @@ public class MemberService {
 
     public List<PrivateMessage> getPrivateMessages(){
         return privateMessageService.getAllByAuthorizedMember();
+    }
+
+    public SubClubCreateRequest requestSubClub(SubClubCreateRequestDTO subClubCreateRequestDTO) {
+        String subClubName = subClubCreateRequestDTO.getSubClubName();
+        String clubName = subClubCreateRequestDTO.getClubName();
+        String username = securityService.getAuthorizedUsername();
+        SubClubCreateRequest subClubCreateRequest = new SubClubCreateRequest(subClubName, clubName, username);
+        SubClubCreateRequest savedRequest = subClubCreateRequestRepository.save(subClubCreateRequest);
+        return savedRequest;
     }
 }

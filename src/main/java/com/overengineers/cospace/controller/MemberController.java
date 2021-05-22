@@ -1,23 +1,18 @@
 package com.overengineers.cospace.controller;
 
-import com.overengineers.cospace.dto.ClubDTO;
-import com.overengineers.cospace.dto.MemberDTO;
-import com.overengineers.cospace.dto.PrivateMessageDTO;
-import com.overengineers.cospace.dto.SubClubDTO;
-import com.overengineers.cospace.entity.Member;
-import com.overengineers.cospace.entity.PrivateMessage;
+import com.overengineers.cospace.dto.*;
+
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.mapper.PrivateMessageMapper;
+import com.overengineers.cospace.mapper.SubClubCreateRequestMapper;
 import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,6 +24,7 @@ public class MemberController {
     private final MemberMapper memberMapper;
     private final SubClubMapper subClubMapper;
     private final PrivateMessageMapper privateMessageMapper;
+    private final SubClubCreateRequestMapper subClubCreateRequestMapper;
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/enrolled-subclubs")
@@ -56,6 +52,10 @@ public class MemberController {
         return privateMessageMapper.mapToDto(memberService.sendPrivateMessage(privateMessageDTO));
     }
 
-
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping(value = "/request-subclub")
+    public SubClubCreateRequestDTO requestSubClub(@RequestBody SubClubCreateRequestDTO subClubCreateRequestDTO){
+        return subClubCreateRequestMapper.mapToDto(memberService.requestSubClub(subClubCreateRequestDTO));
+    }
 
 }
