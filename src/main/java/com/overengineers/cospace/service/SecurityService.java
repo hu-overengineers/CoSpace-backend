@@ -1,6 +1,7 @@
 package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.entity.Ban;
+import com.overengineers.cospace.entity.Enrollment;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.repository.BanRepository;
@@ -42,7 +43,6 @@ public class SecurityService {
             return true;
         }
 
-
         Optional<Ban> optionalBan = banRepository.findBySubClubNameAndMember_Username(subClubName, username);
 
         if(!optionalBan.isPresent()){
@@ -66,15 +66,17 @@ public class SecurityService {
     }
 
     public boolean isMemberEnrolledToSubClub(String username, String subClubName) {
-        List<SubClub> userSubClubs = enrollmentService.getMemberSubClubs(username);
-        SubClub subClub = subClubRepository.findByName(subClubName).get();
+        Enrollment enrollment = enrollmentService.getEnrollmentByUsernameAndSubClubName(username, subClubName);
 
-        if (subClub == null){
-            System.out.println("isMemberEnrolledToSubClub() -> SubClub: " + subClubName + " is not found");
+        if (enrollment == null){
+            System.out.println("isMemberEnrolledToSubClub() -> SubClub: " + subClubName + " enrollment is not found");
             return false;
         }
-        else{
-            return userSubClubs.contains(subClub);
+        else if(!enrollment.isEnrolled()) {
+            System.out.println("isMemberEnrolledToSubClub() -> " + username + " was dismissed from " + subClubName);
+            return false;
+        }else {
+            return true;
         }
     }
 

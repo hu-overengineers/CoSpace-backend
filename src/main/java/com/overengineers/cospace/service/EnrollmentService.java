@@ -111,4 +111,8 @@ public class EnrollmentService {
                 .body("Enrolled SubClubs: " + enrolledSubClubNames.toString());
     }
 
+    public Enrollment getEnrollmentByUsernameAndSubClubName(String username, String subClubName){
+        return enrollmentRepository.findByMember_UsernameAndSubClub_Name(username, subClubName);
+    }
+
 }
