@@ -163,8 +163,12 @@ public class AdminService {
 
         for(String key : responseMap.keySet()){
             List<String> currentSubClubList = responseMap.get(key);
-            SubClubCreateResponseDTO resp = new SubClubCreateResponseDTO(key, currentSubClubList, currentSubClubList.size());
-            responseDTOList.add(resp);
+            if(currentSubClubList.size() >= 3){// Minimum 3 requests
+                for(String currentSubName : currentSubClubList){
+                    SubClubCreateResponseDTO resp = new SubClubCreateResponseDTO(key, currentSubName, currentSubClubList.size());
+                    responseDTOList.add(resp);
+                }
+            }
         }
         return responseDTOList;
     }

@@ -14,8 +14,8 @@ public class SubClubCreateResponseDTO {
 
     private String clubName;
 
-    private List<String> subClubNameList;
+    private String subClubName;
 
-    private int requestCount;
+    private int requestCountForClub;
 
 }
