@@ -4,6 +4,7 @@ import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.entity.Question;
+import com.overengineers.cospace.mapper.BanMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.mapper.QuestionMapper;
 import com.overengineers.cospace.repository.MemberRepository;
@@ -26,6 +27,7 @@ public class AdminController {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
     private final QuestionMapper questionMapper;
+    private final BanMapper banMapper;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping(value = "/create-club")
@@ -37,6 +39,11 @@ public class AdminController {
     @PostMapping(value = "/create-sub-club")
     public SubClubDTO createSubClub(@RequestBody SubClubDTO subClubDTO){
         SubClubDTO savedSubClubDTO = adminService.createSubClub(subClubDTO);
+
+        if(savedSubClubDTO == null){
+            System.out.println("Club: " + subClubDTO.getParentName() + " is not found!");
+            return null;
+        }
 
         if(savedSubClubDTO.getQuestions() != null)
             savedSubClubDTO.getQuestions().clear();
@@ -102,9 +109,10 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping(value = "/ban-mod")
-    public MemberDTO banMember(@RequestParam(name = "username") String username){
-        return adminService.banMember(username); // NOT IMPLEMENTED
+    @PostMapping(value = "/ban-moderator")
+    public BanDTO banModerator(@RequestParam(name = "username") String username,
+                                  @RequestParam(name = "reason") String reason){
+        return banMapper.mapToDto(adminService.banModerator(username, reason));
     }
 
 }

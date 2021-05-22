@@ -124,6 +124,12 @@ public class SubClubService {
         if (optionalSubClub.isPresent()) {
             SubClub subClub = optionalSubClub.get();
             Member member = securityService.getAuthorizedMember();
+
+            if(member.getModeratorSubClub() != null)
+                return  ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED) // 401
+                        .body("You are a moderator of another SubClub!");
+
             if(!securityService.isAuthorizedToSubClub(subClubName)) {
                 return  ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED) // 401
@@ -134,7 +140,6 @@ public class SubClubService {
                         .status(HttpStatus.UNAUTHORIZED) // 401
                         .body("You were banned when you were a moderator!");
             }
-
             member.setModRequestedSubClubs(subClub);
             memberRepository.save(member);
 

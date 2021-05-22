@@ -36,8 +36,7 @@ public class AdminService {
     private final SecurityService securityService;
 
     private final SubClubCreateRequestRepository subClubCreateRequestRepository;
-    private final SubClubCreateRequestMapper subClubCreateRequestMapper;
-
+    private final BanRepository banRepository;
     @Transactional
     public ClubDTO createClub(ClubDTO clubDTO) {
         Club club = clubMapper.mapToEntity(clubDTO);
@@ -68,15 +67,6 @@ public class AdminService {
 
     public List<ReportDTO> getAllReports() {
         return reportMapper.mapToDto(reportRepository.findAll());
-    }
-
-    @Transactional
-    public MemberDTO banMember(String username){
-        Member member = memberRepository.findByUsername(username);
-        // TODO: Change with banModerator, this func is unnecessary
-        Member newMember = member;
-        //memberRepository.save(newMember);
-        return memberMapper.mapToDto(newMember);
     }
 
     public List<Member> getModeratorRequests(String subClubName) {
@@ -111,6 +101,7 @@ public class AdminService {
     }
 
 
+    @Transactional
     public SubClubDTO assignModeratorRandomly(String subClubName){
         List<Member> requestedMembers = getModeratorRequests(subClubName);
         if(requestedMembers == null)
@@ -174,5 +165,31 @@ public class AdminService {
     }
 
 
+    public Ban banModerator(String username, String reason) {
+        Member member  = memberRepository.findByUsername(username);
+        SubClub subClub = member.getModeratorSubClub();
 
+        Optional<Ban> optionalBan = banRepository.findBySubClubNameAndMember_Username(subClub.getName(), username);
+        Date expirationDate = UtilService.calculateDate(5);
+        Ban newBan;
+
+        if(!optionalBan.isPresent()){ // No previous ban
+            Ban ban = new Ban(reason, expirationDate, 1, true, subClub.getName(), member);
+            newBan = banRepository.save(ban);
+        } else {
+            Ban ban = optionalBan.get();
+            ban.setCount(ban.getCount() + 1);
+            ban.setEndDate(expirationDate);
+            ban.setModBan(true);
+            ban.setReason(reason);
+            newBan = banRepository.save(ban);
+        }
+        member.setModeratorSubClub(null);
+        SubClub subClubNew = subClubRepository.findByName(subClub.getName()).get();
+        subClubNew.setModerator(null);
+        subClubRepository.save(subClubNew);
+        memberRepository.save(member);
+
+        return newBan;
+    }
 }
