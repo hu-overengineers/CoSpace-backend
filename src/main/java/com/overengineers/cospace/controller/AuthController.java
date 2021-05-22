@@ -4,6 +4,7 @@ package com.overengineers.cospace.controller;
 import com.overengineers.cospace.dto.LoginRequestDTO;
 import com.overengineers.cospace.dto.LoginResponseDTO;
 import com.overengineers.cospace.dto.MemberDTO;
+import com.overengineers.cospace.dto.RegisterRequestDTO;
 import com.overengineers.cospace.entity.GenericResponse;
 import com.overengineers.cospace.service.AuthService;
 
@@ -33,8 +34,8 @@ public class AuthController {
 
     @PreAuthorize("permitAll")
     @PostMapping(value = "/register")
-    public ResponseEntity<String> register(@Valid @RequestBody MemberDTO memberDTO) {
-        return authService.register(memberDTO);
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequestDTO registerRequestDTO) {
+        return authService.register(registerRequestDTO);
     }
 
     @PreAuthorize("permitAll")

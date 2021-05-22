@@ -4,6 +4,7 @@ import com.overengineers.cospace.auth.TokenManager;
 import com.overengineers.cospace.dto.LoginRequestDTO;
 import com.overengineers.cospace.dto.LoginResponseDTO;
 import com.overengineers.cospace.dto.MemberDTO;
+import com.overengineers.cospace.dto.RegisterRequestDTO;
 import com.overengineers.cospace.entity.GenericResponse;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.entity.PasswordResetToken;
@@ -90,8 +91,11 @@ public class AuthService {
     }
 
     @Transactional
-    public ResponseEntity<String> register(MemberDTO memberDTO){
-        Member member = memberMapper.mapToEntity(memberDTO);
+    public ResponseEntity<String> register(RegisterRequestDTO registerRequestDTO){
+        Member member = new Member(registerRequestDTO.getUsername(), registerRequestDTO.getPassword(),
+                registerRequestDTO.getEmail(),null, null, null, null,
+                null, null, null, null, null );
+
         if(customUserDetailsManager.userExistsByEmail(member.getEmail())) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT) // 409
