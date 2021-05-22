@@ -4,10 +4,7 @@ import com.overengineers.cospace.dto.ClubDTO;
 import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.dto.PrivateMessageDTO;
 import com.overengineers.cospace.dto.SubClubDTO;
-import com.overengineers.cospace.entity.Club;
-import com.overengineers.cospace.entity.Member;
-import com.overengineers.cospace.entity.PrivateMessage;
-import com.overengineers.cospace.entity.SubClub;
+import com.overengineers.cospace.entity.*;
 import com.overengineers.cospace.mapper.ClubMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.mapper.SubClubMapper;
@@ -51,6 +48,15 @@ public class MemberService {
             return subClubs;
         }
         catch (Exception e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Event> getAttendedEvents() {
+        try {
+            return new ArrayList<>(securityService.getAuthorizedMember().getAttendedEvents());
+        } catch (Exception e){
             e.printStackTrace();
             return new ArrayList<>();
         }

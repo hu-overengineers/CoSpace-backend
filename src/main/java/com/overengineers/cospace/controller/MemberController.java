@@ -1,12 +1,10 @@
 package com.overengineers.cospace.controller;
 
-import com.overengineers.cospace.dto.ClubDTO;
-import com.overengineers.cospace.dto.MemberDTO;
-import com.overengineers.cospace.dto.PrivateMessageDTO;
-import com.overengineers.cospace.dto.SubClubDTO;
+import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.entity.PrivateMessage;
 import com.overengineers.cospace.entity.SubClub;
+import com.overengineers.cospace.mapper.EventMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.mapper.PrivateMessageMapper;
 import com.overengineers.cospace.mapper.SubClubMapper;
@@ -29,12 +27,19 @@ public class MemberController {
     private final MemberMapper memberMapper;
     private final SubClubMapper subClubMapper;
     private final PrivateMessageMapper privateMessageMapper;
+    private final EventMapper eventMapper;
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/enrolled-subclubs")
     public List<SubClubDTO> getEnrolledSubClubs(){
         List<SubClub> subClubs = memberService.getEnrolledSubClubs();
         return subClubMapper.mapToDto(subClubs);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping(value = "/attended-events")
+    public List<EventDTO> getAttendedEvents() {
+        return eventMapper.mapToDto(memberService.getAttendedEvents());
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
