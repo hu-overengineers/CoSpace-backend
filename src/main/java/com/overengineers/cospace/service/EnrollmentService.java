@@ -112,7 +112,7 @@ public class EnrollmentService {
     }
 
     public Enrollment getEnrollmentByUsernameAndSubClubName(String username, String subClubName){
-        return enrollmentRepository.findByMember_UsernameAndSubClub_Name(username, subClubName);
+        return enrollmentRepository.findByMemberUsernameAndSubClubName(username, subClubName);
     }
 
 }

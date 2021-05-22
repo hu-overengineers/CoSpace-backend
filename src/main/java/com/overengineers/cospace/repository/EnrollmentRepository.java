@@ -10,5 +10,5 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     List<Enrollment> findBySubClub_Name(String name);
     List<Enrollment> findByMember_Username(String username);
-    Enrollment findByMember_UsernameAndSubClub_Name(String username, String name);
+    Enrollment findByMemberUsernameAndSubClubName(String username, String name);
 }
