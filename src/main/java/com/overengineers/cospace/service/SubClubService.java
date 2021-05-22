@@ -109,7 +109,10 @@ public class SubClubService {
             Event event = eventOptional.get();
             if (!securityService.isAuthorizedToSubClub(event.getParent().getName()))
                 return null;
-            event.getParticipants().add(securityService.getAuthorizedMember());
+            Member member = securityService.getAuthorizedMember();
+            member.getAttendedEvents().add(event);
+            memberRepository.save(member);
+            event.getParticipants().add(member);
             return eventRepository.save(event);
         }
         return null;
