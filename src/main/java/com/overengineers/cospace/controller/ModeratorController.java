@@ -1,9 +1,10 @@
 package com.overengineers.cospace.controller;
 
-import com.overengineers.cospace.dto.BanDTO;
-import com.overengineers.cospace.dto.EventDTO;
-import com.overengineers.cospace.dto.MemberDTO;
-import com.overengineers.cospace.dto.ReportDTO;
+import com.overengineers.cospace.dto.*;
+import com.overengineers.cospace.mapper.BanMapper;
+import com.overengineers.cospace.mapper.EnrollmentMapper;
+import com.overengineers.cospace.mapper.MemberMapper;
+import com.overengineers.cospace.mapper.ReportMapper;
 import com.overengineers.cospace.service.ModeratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,12 +19,17 @@ public class ModeratorController {
 
     private final ModeratorService moderatorService;
 
+    private final EnrollmentMapper enrollmentMapper;
+    private final MemberMapper memberMapper;
+    private final BanMapper banMapper;
+    private final ReportMapper reportMapper;
+
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/ban")
     public BanDTO banMemberFromSubClub(@RequestParam(name = "username") String username,
                                        @RequestParam(name = "subClubName") String subClubName,
                                        @RequestParam(name = "reason") String reason){
-        return moderatorService.banMemberFromSubClub(username, subClubName, reason);
+        return banMapper.mapToDto(moderatorService.banMemberFromSubClub(username, subClubName, reason));
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
@@ -47,17 +53,19 @@ public class ModeratorController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/reports")
     public List<ReportDTO> getReports(){
-        return moderatorService.getReports();
+        return reportMapper.mapToDto(moderatorService.getReports());
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/dismiss-list")
     public List<MemberDTO> getDismissibleList(){
-        return moderatorService.getDismissibleList();
+        return memberMapper.mapToDto(moderatorService.getDismissibleList());
     }
 
-    // dismiss from SubClub
-
-    // member participate-unparticipate to event in subclub controller
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping(value = "/dismiss")
+    public EnrollmentDTO dismissMemberFromSubClub(@RequestParam(name = "username") String username){
+        return enrollmentMapper.mapToDto(moderatorService.dismissMemberFromSubClub(username));
+    }
 
 }

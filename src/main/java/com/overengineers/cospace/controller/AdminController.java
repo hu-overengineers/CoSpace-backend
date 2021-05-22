@@ -102,9 +102,4 @@ public class AdminController {
         return adminService.banMember(username); // NOT IMPLEMENTED
     }
 
-    // getReports about the moderators
-
-    // ban moderator of subclub with modban (maybe user check in security service ban function, and if auth=admin and username=subclub mod, make admban true)
-
-    // get moderator requests
 }

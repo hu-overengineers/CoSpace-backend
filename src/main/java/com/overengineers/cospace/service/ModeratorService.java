@@ -1,14 +1,8 @@
 package com.overengineers.cospace.service;
 
-import com.overengineers.cospace.dto.BanDTO;
-import com.overengineers.cospace.dto.EventDTO;
-import com.overengineers.cospace.dto.MemberDTO;
-import com.overengineers.cospace.dto.ReportDTO;
+import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.entity.*;
-import com.overengineers.cospace.mapper.BanMapper;
-import com.overengineers.cospace.mapper.EventMapper;
-import com.overengineers.cospace.mapper.MemberMapper;
-import com.overengineers.cospace.mapper.ReportMapper;
+import com.overengineers.cospace.mapper.*;
 import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,20 +18,18 @@ import java.util.Optional;
 public class ModeratorService {
 
     private final MemberRepository memberRepository;
-    private final MemberMapper memberMapper;
-
     private final SubClubRepository subClubRepository;
 
     private final SecurityService securityService;
 
     private final BanRepository banRepository;
-    private final BanMapper banMapper;
 
     private final EventMapper eventMapper;
     private final EventRepository eventRepository;
 
-    private final ReportMapper reportMapper;
     private final ReportRepository reportRepository;
+
+    private final EnrollmentRepository enrollmentRepository;
 
     private final int maxBanCountForDismiss = 3;
     private final int regularBanDurationAsDay = 5;
@@ -51,7 +43,7 @@ public class ModeratorService {
         return true;
     }
     @Transactional
-    public BanDTO banMemberFromSubClub(String username, String subClubName, String reason) {
+    public Ban banMemberFromSubClub(String username, String subClubName, String reason) {
         if(!moderatorCheckBySubClubName(subClubName))
             return null; // Authorized member is not the moderator of the SubClub
 
@@ -70,7 +62,7 @@ public class ModeratorService {
         if(!optionalBan.isPresent()){ // No previous ban
             Ban ban = new Ban(reason, expirationDate, 1, false, subClubName, member);
             newBan = banRepository.save(ban);
-            return banMapper.mapToDto(newBan);
+            return newBan;
         } else {
             Ban ban = optionalBan.get();
             ban.setCount(ban.getCount() + 1);
@@ -85,7 +77,7 @@ public class ModeratorService {
             subClubRepository.save(subClub);
         }
 
-        return banMapper.mapToDto(newBan);
+        return newBan;
     }
 
     @Transactional
@@ -151,21 +143,44 @@ public class ModeratorService {
 
     }
 
-    public List<MemberDTO> getDismissibleList() {
+    public List<Member> getDismissibleList() {
         SubClub subClub = securityService.getSubClubOfModerator();
         if (subClub == null)
             return null;
 
-        return memberMapper.mapToDto(new ArrayList<>(subClub.getDismissibleMembers()));
+        return new ArrayList<>(subClub.getDismissibleMembers());
     }
 
-    public List<ReportDTO> getReports() {
+    public List<Report> getReports() {
         SubClub subClub = securityService.getSubClubOfModerator();
         if (subClub == null)
             return null;
 
-        return reportMapper.mapToDto(reportRepository.findByPost_Parent_Name(subClub.getName()));
+        return reportRepository.findByPost_Parent_Name(subClub.getName());
     }
 
-    // dismiss from subclub
+    public Enrollment dismissMemberFromSubClub(String username)
+    {
+        String subClubName = securityService.getAuthorizedMember().getModeratorSubClub().getName();
+        if(!moderatorCheckBySubClubName(subClubName))
+            return null; // Authorized member is not the moderator of the SubClub
+
+        Enrollment memberEnrollment = enrollmentRepository.findByMember_UsernameAndSubClub_Name(username, subClubName);
+        if (memberEnrollment == null)
+            return null;
+
+        if(!memberEnrollment.isEnrolled())
+            return null; // already dismissed
+
+        for(Member member : getDismissibleList()){
+            if (member.getUsername().equals(username)){
+                memberEnrollment.setEnrolled(false);
+                Enrollment savedEnrollment = enrollmentRepository.save(memberEnrollment);
+                return savedEnrollment;
+            }
+        }
+
+        return null; // Not in dismissible list
+    }
+
 }
