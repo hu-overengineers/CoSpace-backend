@@ -35,7 +35,7 @@ public class EnrollmentService {
     }
 
     public List<SubClub> getMemberSubClubs(String username){
-        return subClubRepository.findByEnrollments_Member_UsernameAndEnrollments_IsEnrolledTrue(username);
+        return subClubRepository.findByEnrollmentsMemberUsernameAndEnrollmentsIsEnrolledTrue(username);
     }
 
     public List<Question> getQuestionnaire() {
