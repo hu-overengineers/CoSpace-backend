@@ -111,6 +111,45 @@ public class EnrollmentService {
                 .body("Enrolled SubClubs: " + enrolledSubClubNames.toString());
     }
 
+    public ResponseEntity<String> enrollSubClub(List<QuestionDTO> memberAnswers, String username){
+        String subClubName = memberAnswers.get(0).getParentName();
+        int correctCount = 0;
+        Optional<SubClub> optionalSubClub = subClubRepository.findByName(subClubName);
+        if (!optionalSubClub.isPresent())
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND) // 404
+                    .body("SubClub not found!");
+
+        for (int i = 0; i < questionNumberPerSubClub; i++) {
+            QuestionDTO currentQuestionDTO = memberAnswers.get(i);
+            Optional<Question> optionalQuestion = questionRepository.findById(currentQuestionDTO.getId());
+            if (!optionalQuestion.isPresent())
+                continue;
+
+            if (optionalQuestion.get().getGroundTruth().equals(currentQuestionDTO.getGroundTruth()))
+                correctCount++;
+        }
+
+        float currentInterestRate = ((float)correctCount / questionNumberPerSubClub) * 100;
+
+        SubClub currentSubClub = optionalSubClub.get();
+        Member authorizedMember = memberRepository.findByUsername(username);
+
+        if (currentInterestRate >= minimumInterestRate) {
+            Enrollment enrollment = new Enrollment(authorizedMember, currentSubClub, currentInterestRate, true);
+            Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+            return ResponseEntity.status(HttpStatus.OK) // 200
+                    .body(subClubName +": " + currentInterestRate);
+        }
+        else
+        {
+            Enrollment enrollment = new Enrollment(authorizedMember, currentSubClub, currentInterestRate, false);
+            Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED) // 200
+                    .body(subClubName +": " + currentInterestRate);
+        }
+    }
+
     public Enrollment getEnrollmentByUsernameAndSubClubName(String username, String subClubName){
         return enrollmentRepository.findByMemberUsernameAndSubClubName(username, subClubName);
     }

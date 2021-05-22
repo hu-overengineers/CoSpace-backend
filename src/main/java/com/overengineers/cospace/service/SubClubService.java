@@ -171,6 +171,19 @@ public class SubClubService {
         return enrollmentService.enroll(answers, authorizedUsername);
     }
 
+    public ResponseEntity<String> enrollSubClub(List<QuestionDTO> answers ) {
+        // TODO: Auth check vs return null, not member and ban check, isDismissed->null
+        String authorizedUsername = securityService.getAuthorizedUsername();
+        String subClubName = answers.get(0).getParentName();
+        Enrollment existedEnrollment = enrollmentService.getEnrollmentByUsernameAndSubClubName(authorizedUsername,subClubName);
+
+        if(existedEnrollment != null){
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED) // 412
+                .body(subClubName +": " + existedEnrollment.getInterestRate());
+        }
+        return enrollmentService.enrollSubClub(answers, authorizedUsername);
+    }
+
     public List<SubClub> getCommonSubClubs(String sourceUsername, String targetUsername) {
         List<SubClub> authorSubClubs = enrollmentService.getMemberSubClubs(securityService.getAuthorizedUsername());
         if(authorSubClubs == null)

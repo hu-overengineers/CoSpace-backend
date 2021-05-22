@@ -66,6 +66,12 @@ public class SubClubController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping(value = "/enroll-subclub")
+    public ResponseEntity<String> enrollSubClub(@RequestBody List<QuestionDTO> answers){
+        return subClubService.enrollSubClub(answers);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping("/review")
     public ReviewDTO review(@RequestBody ReviewDTO reviewDTO){
         return subClubService.reviewToSubClub(reviewDTO); // TODO: Auth check by enrollment
