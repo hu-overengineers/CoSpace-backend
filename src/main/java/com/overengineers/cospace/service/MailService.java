@@ -45,7 +45,7 @@ public class MailService {
     }
 
     private MimeMessage constructResetTokenEmail(final String contextPath, final String token, final Member member) {
-        final String url = contextPath + "/auth/change-password-token?token=" + token;
+        final String url = contextPath + "/password-reset/" + token;
         final String mailSubTitle = messages.getMessage("message.resetPassword", null, Locale.ENGLISH);
         final String mailLinkText = messages.getMessage("message.resetPasswordEmailLink", null, Locale.ENGLISH);
 
@@ -54,7 +54,7 @@ public class MailService {
 
 
     public GenericResponse sendResetPasswordMail(final HttpServletRequest request, Member member,String token){
-        final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        final String baseUrl = "http://localhost:3000";
         // TODO: baseUrl will change with change-password-token fronend page link
         mailSender.send(constructResetTokenEmail(baseUrl, token, member));
         return new GenericResponse( messages.getMessage("message.resetPasswordEmail", null, Locale.ENGLISH));
