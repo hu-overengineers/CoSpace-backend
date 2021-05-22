@@ -1,39 +1,35 @@
 package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.PrivateMessageDTO;
-import com.overengineers.cospace.entity.Member;
 import com.overengineers.cospace.entity.PrivateMessage;
 import com.overengineers.cospace.mapper.PrivateMessageMapper;
-import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.repository.PrivateMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PrivateMessageService {
+public class PrivateMessagingService {
 
     private final PrivateMessageRepository privateMessageRepository;
-    private final PrivateMessageMapper privateMessageMapper;
 
-    private final MemberRepository memberRepository;
+    private final PrivateMessageMapper privateMessageMapper;
 
     private final SecurityService securityService;
 
+    @Transactional
     public PrivateMessage send(PrivateMessageDTO privateMessageDTO) {
         PrivateMessage privateMessage = privateMessageMapper.mapToEntity(privateMessageDTO);
-        Member targetMember = memberRepository.findByUsername(privateMessageDTO.getTargetMemberUsername());
-        privateMessage.setAuthor(securityService.getAuthorizedUsername());
-        privateMessage.setTargetMember(targetMember);
-        PrivateMessage savedPrivateMessage = privateMessageRepository.save(privateMessage);
-        return savedPrivateMessage;
+        privateMessage.setSenderUsername(securityService.getAuthorizedUsername());
+        return privateMessageRepository.save(privateMessage);
     }
 
-    public List<PrivateMessage> getAllByAuthorizedMember() {
+    public List<PrivateMessage> getAllMessagesOfAuthorizedMember() {
         String username = securityService.getAuthorizedUsername();
-        return privateMessageRepository.findByTargetMember_Username(username);
+        return privateMessageRepository.findByReceiverUsernameOrSenderUsername(username, username);
     }
 
 

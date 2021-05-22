@@ -93,7 +93,7 @@ public class AuthService {
     @Transactional
     public ResponseEntity<String> register(RegisterRequestDTO registerRequestDTO){
         Member member = new Member(registerRequestDTO.getUsername(), registerRequestDTO.getPassword(),
-                registerRequestDTO.getEmail(),null, null, null, null,
+                registerRequestDTO.getEmail(),null, null, null,
                 null, null, null, null, null );
 
         if(customUserDetailsManager.userExistsByEmail(member.getEmail())) {
