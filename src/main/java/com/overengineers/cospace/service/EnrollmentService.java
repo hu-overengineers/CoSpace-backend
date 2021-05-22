@@ -120,6 +120,11 @@ public class EnrollmentService {
                     .status(HttpStatus.NOT_FOUND) // 404
                     .body("SubClub not found!");
 
+        if(memberAnswers.size() < questionNumberPerSubClub)
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST) // 400
+                    .body("At least " + questionNumberPerSubClub + " questions!");
+
         for (int i = 0; i < questionNumberPerSubClub; i++) {
             QuestionDTO currentQuestionDTO = memberAnswers.get(i);
             Optional<Question> optionalQuestion = questionRepository.findById(currentQuestionDTO.getId());
