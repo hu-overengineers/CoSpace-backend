@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -45,12 +44,13 @@ public class Member extends BaseEntity implements UserDetails {
     @ManyToMany(mappedBy = "dismissibleMembers")
     private Set<SubClub> dismissibleSubClubs = new HashSet<>();
 
-    @ManyToMany
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "member_event",
             joinColumns = {@JoinColumn(name = "fk_member")},
             inverseJoinColumns = {@JoinColumn(name = "fk_event")}
     )
-    private Set<Event> joinedEvents = new HashSet<>();
+    private Set<Event> attendedEvents = new HashSet<>();
 
     @OneToOne
     @JoinColumn(name = "ban_id", referencedColumnName = "id")
@@ -72,7 +72,7 @@ public class Member extends BaseEntity implements UserDetails {
             joinColumns = {@JoinColumn(name = "fk_member")},
             inverseJoinColumns = {@JoinColumn(name = "fk_subClub")}
     )
-    private SubClub modRequestedSubClubs =new SubClub();
+    private SubClub modRequestedSubClubs = new SubClub();
 
     @OneToMany(mappedBy = "targetMember")
     private Set<PrivateMessage> privateMessages = new HashSet<>();
