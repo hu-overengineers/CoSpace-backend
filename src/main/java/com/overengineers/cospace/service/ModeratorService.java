@@ -38,10 +38,11 @@ public class ModeratorService {
         SubClub subClub = securityService.getSubClubOfModerator();
         if(subClub == null)
             return false; // Member is not a moderator
-        if(subClub.getName() != subClubName)
+        if(!subClub.getName().equals(subClubName))
             return false; // Member is a moderator of another SubClub
         return true;
     }
+
     @Transactional
     public Ban banMemberFromSubClub(String username, String subClubName, String reason) {
         if(!moderatorCheckBySubClubName(subClubName))
@@ -165,7 +166,7 @@ public class ModeratorService {
         if(!moderatorCheckBySubClubName(subClubName))
             return null; // Authorized member is not the moderator of the SubClub
 
-        Enrollment memberEnrollment = enrollmentRepository.findByMember_UsernameAndSubClub_Name(username, subClubName);
+        Enrollment memberEnrollment = enrollmentRepository.findByMemberUsernameAndSubClubName(username, subClubName);
         if (memberEnrollment == null)
             return null;
 
