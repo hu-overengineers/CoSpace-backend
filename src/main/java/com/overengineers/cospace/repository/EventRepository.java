@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByParent_NameAndDateAfter(String parentName, Date date);
-
+    List<Event> findByParent_Name(String parentName);
 }

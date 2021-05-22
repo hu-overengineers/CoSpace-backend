@@ -1,10 +1,7 @@
 package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.*;
-import com.overengineers.cospace.entity.Enrollment;
-import com.overengineers.cospace.entity.Member;
-import com.overengineers.cospace.entity.Question;
-import com.overengineers.cospace.entity.SubClub;
+import com.overengineers.cospace.entity.*;
 import com.overengineers.cospace.mapper.EventMapper;
 import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -102,9 +99,20 @@ public class SubClubService {
     }
 
     public List<EventDTO> getEvents(String subClubName) {
-        Date convertedDatetime = Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant());
+        return eventMapper.mapToDto(eventRepository.findByParent_Name(subClubName));
+    }
 
-        return eventMapper.mapToDto(eventRepository.findByParent_NameAndDateAfter(subClubName,convertedDatetime ));
+    @Transactional
+    public Event attendEvent(Long eventId) {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+        if (eventOptional.isPresent()) {
+            Event event = eventOptional.get();
+            if (!securityService.isAuthorizedToSubClub(event.getParent().getName()))
+                return null;
+            event.getParticipants().add(securityService.getAuthorizedMember());
+            return eventRepository.save(event);
+        }
+        return null;
     }
 
     @Transactional

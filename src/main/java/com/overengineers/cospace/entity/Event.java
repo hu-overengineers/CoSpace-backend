@@ -38,7 +38,7 @@ public class Event extends BaseEntity {
     @Column(name = "UTIL_LINK")
     private String utilLink; // like when2meet
 
-    @ManyToMany(mappedBy = "joinedEvents")
+    @ManyToMany(mappedBy = "attendedEvents")
     private Set<Member> participants = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.ALL})
