@@ -30,7 +30,7 @@ public class Event extends BaseEntity {
     private Date date;
 
     @Column(name = "IS_ONLINE")
-    private boolean isOnline;
+    private Boolean isOnline;
 
     @Column(name = "LOCATION")
     private String location; // if isOnline, location will be url of google meet, zoom, etc. Otherwise, physical loc.

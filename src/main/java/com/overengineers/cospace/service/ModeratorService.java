@@ -93,7 +93,7 @@ public class ModeratorService {
             return null; // Authorized member is not the moderator of the SubClub
 
         Event newEvent = eventMapper.mapToEntity(eventDTO);
-        newEvent.setOnline(Boolean.parseBoolean(eventDTO.getIsOnline()));
+        newEvent.setIsOnline(eventDTO.getIsOnline());
         newEvent.setParent(subClub);
         Event savedEvent = eventRepository.save(newEvent);
         return eventMapper.mapToDto(savedEvent);
@@ -136,7 +136,7 @@ public class ModeratorService {
 
         event.setDetails(eventDTO.getDetails());
         event.setLocation(eventDTO.getLocation());
-        event.setOnline(Boolean.parseBoolean(eventDTO.getIsOnline()));
+        event.setIsOnline(eventDTO.getIsOnline());
         event.setTitle(eventDTO.getTitle());
         event.setUtilLink(eventDTO.getUtilLink());
         Event updatedEvent = eventRepository.save(event);

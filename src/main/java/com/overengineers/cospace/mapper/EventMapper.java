@@ -12,7 +12,6 @@ import java.util.List;
 public interface EventMapper {
 
     @Mapping(source = "event", target = "parentName", qualifiedByName = "parentName")
-    @Mapping(source = "event", target = "isOnline", qualifiedByName = "isOnline")
     @Mapping(source = "event", target = "numberOfParticipants", qualifiedByName = "numberOfParticipants")
     EventDTO mapToDto(Event event);
 
@@ -22,14 +21,6 @@ public interface EventMapper {
             return event.getParent().getName();
         else
             return "";
-    }
-
-    @Named("isOnline")
-    default String isOnlineToIsOnline(Event event) {
-        if (event.isOnline())
-            return "true";
-        else
-            return "false";
     }
 
     @Named("numberOfParticipants")

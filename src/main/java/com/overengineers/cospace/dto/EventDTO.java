@@ -18,7 +18,7 @@ public class EventDTO {
 
     public final Date date;
 
-    public final String isOnline;
+    public final Boolean isOnline;
 
     public final String location;
 
