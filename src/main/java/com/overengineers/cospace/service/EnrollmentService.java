@@ -89,7 +89,7 @@ public class EnrollmentService {
                     correctCount++;
             }
 
-            float currentInterestRate = (correctCount / questionNumberPerSubClub) * 100;
+            float currentInterestRate = ((float)correctCount / questionNumberPerSubClub) * 100;
 
             SubClub currentSubClub = optionalSubClub.get();
             Member authorizedMember = memberRepository.findByUsername(username);
@@ -110,13 +110,5 @@ public class EnrollmentService {
                 .status(HttpStatus.OK) // 200
                 .body("Enrolled SubClubs: " + enrolledSubClubNames.toString());
     }
-
-
-
-
-
-
-
-
 
 }
