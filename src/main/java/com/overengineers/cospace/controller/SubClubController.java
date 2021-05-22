@@ -1,12 +1,12 @@
 package com.overengineers.cospace.controller;
 
-import com.overengineers.cospace.service.SecurityService;
 import com.overengineers.cospace.dto.*;
+import com.overengineers.cospace.mapper.EventMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.mapper.QuestionMapper;
 import com.overengineers.cospace.mapper.SubClubMapper;
+import com.overengineers.cospace.service.SecurityService;
 import com.overengineers.cospace.service.SubClubService;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.TimeZone;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +27,7 @@ public class SubClubController {
     private final SubClubMapper subClubMapper;
     private final MemberMapper memberMapper;
     private final QuestionMapper questionMapper;
+    private final EventMapper eventMapper;
 
     @PreAuthorize("permitAll")
     @GetMapping(value = "/all")
@@ -88,6 +87,12 @@ public class SubClubController {
     @GetMapping("/events")
     public List<EventDTO> getSubClubEvents(@RequestParam(name = "subClubName") String subClubName){
         return subClubService.getEvents(subClubName);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping("/attend-event")
+    public EventDTO attendEvent(@RequestParam(name = "eventId") Long eventId) {
+        return eventMapper.mapToDto(subClubService.attendEvent(eventId));
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")

@@ -52,6 +52,15 @@ public class MemberService {
         }
     }
 
+    public List<Event> getAttendedEvents() {
+        try {
+            return new ArrayList<>(securityService.getAuthorizedMember().getAttendedEvents());
+        } catch (Exception e){
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
     public List<Member> search(String query, String subClubName, Pageable pageable) {
         if(!securityService.isAuthorizedToSubClub(subClubName))
             return null;

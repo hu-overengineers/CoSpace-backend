@@ -6,6 +6,7 @@ import lombok.Getter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Builder
@@ -21,4 +22,7 @@ public class MemberDTO {
     public Date created;
 
     public Date lastLogin;
+
+    public List<EventDTO> attendedEvents;
+
 }
