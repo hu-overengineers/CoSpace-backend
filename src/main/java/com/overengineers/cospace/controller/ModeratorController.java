@@ -57,6 +57,12 @@ public class ModeratorController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @DeleteMapping(value = "/reports")
+    public boolean getReports(@RequestParam(name = "reportId") long reportId){
+        return moderatorService.deleteReport(reportId);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/dismiss-list")
     public List<MemberDTO> getDismissibleList(){
         return memberMapper.mapToDto(moderatorService.getDismissibleList());

@@ -184,4 +184,19 @@ public class ModeratorService {
         return null; // Not in dismissible list
     }
 
+    public boolean deleteReport(long reportId) {
+        Optional<Report> optionalReport = reportRepository.findById(reportId);
+        if(!optionalReport.isPresent())
+            return false; // Not found
+
+        if(!moderatorCheckBySubClubName(optionalReport.get().getPost().getParent().getName()))
+            return false; // Authorized member is not the moderator of the SubClub
+
+        reportRepository.deleteById(reportId);
+
+        if(!reportRepository.findById(reportId).isPresent())
+            return true; // Deleted successfully
+        
+        return false; // Still exists
+    }
 }
