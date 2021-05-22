@@ -29,7 +29,7 @@ public class Post extends BaseEntity {
     @Column(name = "voting")
     private long voting;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private Set<Report> reports = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.MERGE})

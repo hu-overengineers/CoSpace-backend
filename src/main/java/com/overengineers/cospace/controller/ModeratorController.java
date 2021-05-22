@@ -57,9 +57,15 @@ public class ModeratorController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
-    @DeleteMapping(value = "/reports")
-    public boolean getReports(@RequestParam(name = "reportId") long reportId){
+    @PostMapping(value = "/delete-report")
+    public boolean deleteReport(@RequestParam(name = "reportId") long reportId){
         return moderatorService.deleteReport(reportId);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping(value = "/delete-post")
+    public boolean deletePost(@RequestParam(name = "postId") long postId){
+        return moderatorService.deletePost(postId);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")

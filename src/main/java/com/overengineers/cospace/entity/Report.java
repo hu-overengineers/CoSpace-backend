@@ -22,7 +22,7 @@ public class Report extends BaseEntity {
     @Column(name = "CONTENT")
     private String content;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.REFRESH})
     @JoinTable(name = "post_report",
             joinColumns = {@JoinColumn(name = "fk_report")},
             inverseJoinColumns = {@JoinColumn(name = "fk_post")}

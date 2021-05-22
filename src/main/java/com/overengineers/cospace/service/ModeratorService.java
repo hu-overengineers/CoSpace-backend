@@ -28,7 +28,8 @@ public class ModeratorService {
     private final EventRepository eventRepository;
 
     private final ReportRepository reportRepository;
-
+    private final PostRepository postRepository;
+    
     private final EnrollmentRepository enrollmentRepository;
 
     private final int maxBanCountForDismiss = 3;
@@ -196,7 +197,23 @@ public class ModeratorService {
 
         if(!reportRepository.findById(reportId).isPresent())
             return true; // Deleted successfully
-        
+
+        return false; // Still exists
+    }
+
+    public boolean deletePost(long postId){
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        if(!optionalPost.isPresent())
+            return false; // Not found
+
+        if(!moderatorCheckBySubClubName(optionalPost.get().getParent().getName()))
+            return false; // Authorized member is not the moderator of the SubClub
+
+        postRepository.deleteById(postId);
+
+        if(!postRepository.findById(postId).isPresent())
+            return true; // Deleted successfully
+
         return false; // Still exists
     }
 }
