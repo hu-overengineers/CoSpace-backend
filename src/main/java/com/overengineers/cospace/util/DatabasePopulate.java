@@ -49,6 +49,7 @@ public class DatabasePopulate {
         }
 
         int clubCount = 10;
+        int maxSubClubCountPerClub = 5;
         int memberCount = 100;
 
         List<Club> generatedClubs = new ArrayList<>();
@@ -60,7 +61,7 @@ public class DatabasePopulate {
 
         List<SubClub> generatedSubClubs = new ArrayList<>();
         for (Club club : generatedClubs) {
-            for (int k = 0; k < faker.number().numberBetween(1, 5); k++) {
+            for (int k = 0; k < faker.number().numberBetween(1, maxSubClubCountPerClub); k++) {
                 SubClub sub = new SubClub(
                         String.join(" ", faker.lorem().words(faker.number().numberBetween(1, 3))),
                         faker.lorem().sentence(),
@@ -94,7 +95,7 @@ public class DatabasePopulate {
         }
 
         for (Member member : generatedMembers) {
-            int enrolledCount = faker.number().numberBetween(0, 5);
+            int enrolledCount = faker.number().numberBetween(0, clubCount * maxSubClubCountPerClub);
             for (int i = 0; i < enrolledCount; i++) {
                 SubClub randomSubClub = generatedSubClubs.get(faker.number().numberBetween(0, generatedClubs.size() - 1));
                 List<Enrollment> enrollments = enrollmentRepository.findBySubClub_Name(member.getUsername());
