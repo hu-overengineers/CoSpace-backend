@@ -1,8 +1,6 @@
 package com.overengineers.cospace.util;
 
 import com.github.javafaker.Faker;
-import com.github.javafaker.service.FakeValuesService;
-import com.github.javafaker.service.RandomService;
 import com.overengineers.cospace.entity.*;
 import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +69,7 @@ public class DatabasePopulate {
                     String truth = faker.lorem().word();
                     Question question = new Question(faker.lorem().sentence(), truth, faker.lorem().word(), faker.lorem().word(), faker.lorem().word(),
                             truth, sub);
-                    Question savedQuestion = questionRepository.save(question);
+                    questionRepository.save(question);
                 }
 
                 for (int j = 0; j < faker.number().numberBetween(2, 40); j++) {

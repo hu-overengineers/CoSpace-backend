@@ -26,9 +26,9 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final QuestionRepository questionRepository;
 
-    private int minimumInterestRate = 50;
-    private int subClubNumberForQuestionnaire = 6;
-    private int questionNumberPerSubClub = 3;
+    private final int minimumInterestRate = 50;
+    private final int subClubNumberForQuestionnaire = 6;
+    private final int questionNumberPerSubClub = 3;
 
     public List<Member> getSubClubMembers(String subClubName){
         return memberRepository.findByEnrollments_SubClub_NameAndEnrollments_IsEnrolledTrue(subClubName);
@@ -41,13 +41,12 @@ public class EnrollmentService {
     public List<Question> getQuestionnaire() {
         List<Question> questions = new ArrayList<>();
         List<SubClub> allSubClubs = subClubRepository.findAll();
-        if (allSubClubs == null || allSubClubs.size() == 0)
+
+        if (allSubClubs.size() == 0)
             return null; // No SubClub
 
-        for(SubClub subClub: allSubClubs){
-            if(subClub.getQuestions() == null ||subClub.getQuestions().size() < questionNumberPerSubClub)
-                allSubClubs.remove(subClub); // Remove the SubClubs that have not enough questions
-        }
+        // Remove the SubClubs that have not enough questions
+        allSubClubs.removeIf(subClub -> subClub.getQuestions() == null || subClub.getQuestions().size() < questionNumberPerSubClub);
 
         int subClubCount = allSubClubs.size();
         Set<Integer> subClubIndices = UtilService.pickRandom(subClubNumberForQuestionnaire, subClubCount);
@@ -96,19 +95,19 @@ public class EnrollmentService {
 
             if (currentInterestRate >= minimumInterestRate) {
                 Enrollment enrollment = new Enrollment(authorizedMember, currentSubClub, currentInterestRate, true);
-                Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+                enrollmentRepository.save(enrollment);
                 enrolledSubClubNames.add(currentSubClub.getName());
             }
             else
             {
                 Enrollment enrollment = new Enrollment(authorizedMember, currentSubClub, currentInterestRate, false);
-                Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+                enrollmentRepository.save(enrollment);
             }
 
         }
         return ResponseEntity
                 .status(HttpStatus.OK) // 200
-                .body("Enrolled SubClubs: " + enrolledSubClubNames.toString());
+                .body("Enrolled SubClubs: " + enrolledSubClubNames);
     }
 
     public ResponseEntity<String> enrollSubClub(List<QuestionDTO> memberAnswers, String username){
@@ -142,14 +141,14 @@ public class EnrollmentService {
 
         if (currentInterestRate >= minimumInterestRate) {
             Enrollment enrollment = new Enrollment(authorizedMember, currentSubClub, currentInterestRate, true);
-            Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+            enrollmentRepository.save(enrollment);
             return ResponseEntity.status(HttpStatus.OK) // 200
                     .body(subClubName +": " + currentInterestRate);
         }
         else
         {
             Enrollment enrollment = new Enrollment(authorizedMember, currentSubClub, currentInterestRate, false);
-            Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+            enrollmentRepository.save(enrollment);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED) // 200
                     .body(subClubName +": " + currentInterestRate);
         }
