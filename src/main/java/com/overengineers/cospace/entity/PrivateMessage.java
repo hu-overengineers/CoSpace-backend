@@ -25,4 +25,6 @@ public class PrivateMessage extends BaseEntity {
     @Column(name = "CONTENT")
     private String content;
 
+    // TODO: isSeen can be implemented
+
 }
