@@ -1,6 +1,8 @@
 package com.overengineers.cospace.repository;
 
 import com.overengineers.cospace.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Date;
@@ -8,7 +10,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    List<Post> findByParentName(String parentName);
+    Page<Post> findByParentName(String parentName, Pageable pageable);
 
     List<Post> findByAuthor(String author);
 

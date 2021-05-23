@@ -33,8 +33,8 @@ public class PostController {
     @PreAuthorize("permitAll")
     @GetMapping(value = "/subClubPosts")
     @ResponseBody
-    public List<PostDTO> getSubClubPosts(@RequestParam(name = "subClubName") String subClubName){
-        return postService.getSubClubPosts(subClubName);
+    public List<PostDTO> getSubClubPosts(@RequestParam(name = "subClubName") String subClubName, Pageable pageable){
+        return postService.getSubClubPosts(subClubName, pageable);
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")

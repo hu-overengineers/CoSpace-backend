@@ -10,6 +10,7 @@ import com.overengineers.cospace.mapper.ReportMapper;
 import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -47,8 +48,8 @@ public class PostService {
 
     }
 
-    public List<PostDTO> getSubClubPosts(String subClubName) {
-        return postMapper.mapToDto(postRepository.findByParentName(subClubName));
+    public List<PostDTO> getSubClubPosts(String subClubName, Pageable pageable) {
+        return postMapper.mapToDto(postRepository.findByParentName(subClubName, pageable).toList());
     }
 
     public PostDTO getPostDTOById(Long postID){
