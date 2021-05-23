@@ -2,27 +2,14 @@ package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.entity.*;
-import com.overengineers.cospace.mapper.ClubMapper;
-import com.overengineers.cospace.mapper.MemberMapper;
-import com.overengineers.cospace.mapper.SubClubMapper;
 import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.repository.SubClubCreateRequestRepository;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONObject;
-import org.springframework.cglib.core.CollectionUtils;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +18,7 @@ public class MemberService {
     private final SubClubCreateRequestRepository subClubCreateRequestRepository;
 
     private final SecurityService securityService;
-    private final PrivateMessageService privateMessageService;
+    private final PrivateMessagingService privateMessagingService;
     private final EnrollmentService enrollmentService;
 
     public Member getByUsername(String username){
@@ -68,22 +55,6 @@ public class MemberService {
         // Sort by username, alphabetically
         UtilService.fixPageableSort(pageable, "username", true);
         return memberRepository.findByUsernameIgnoreCaseContainingAndEnrollments_SubClub_Name(query, subClubName, pageable);
-    }
-
-    public PrivateMessage sendPrivateMessage(PrivateMessageDTO privateMessageDTO) {
-        String currentlySignedInMemberUsername = securityService.getAuthorizedUsername();
-
-        List<SubClub> intersection = subClubService.getCommonSubClubs(currentlySignedInMemberUsername, privateMessageDTO.targetMemberUsername);
-        if (intersection == null) return null;
-
-        if(intersection.size() > 0) // At least one common SubClub between two members
-           return privateMessageService.send(privateMessageDTO);
-        else
-            return null;
-    }
-
-    public List<PrivateMessage> getPrivateMessages(){
-        return privateMessageService.getAllByAuthorizedMember();
     }
 
     public SubClubCreateRequest requestSubClub(SubClubCreateRequestDTO subClubCreateRequestDTO) {

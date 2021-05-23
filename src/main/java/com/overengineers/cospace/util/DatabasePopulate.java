@@ -37,7 +37,7 @@ public class DatabasePopulate {
             String adminPassword = passwordEncoder.encode("12345");
             String adminEmail = adminEmailList.get(i) + "@gmail.com";
 
-            Member currentAdmin = new Member(adminUsername, adminPassword,adminEmail,null,null,null,null,null,Set.of(adminAuthority,userAuthority),null,null, null);
+            Member currentAdmin = new Member(adminUsername, adminPassword,adminEmail,null,null,null,null,null,Set.of(adminAuthority,userAuthority),null , null);
             memberRepository.save(currentAdmin);
         }
 
@@ -47,7 +47,7 @@ public class DatabasePopulate {
             String memberUsername = "member" + i;
             String memberPassword = passwordEncoder.encode("123456");
             String memberEmail = memberUsername + "@gmail.com";
-            Member member = new Member(memberUsername, memberPassword,memberEmail,null,null,null,null,null,Set.of(userAuthority),null,null, null);
+            Member member = new Member(memberUsername, memberPassword,memberEmail,null,null,null,null,null,Set.of(userAuthority),null , null);
             memberRepository.save(member);
 
             Club club = new Club("club" + i, "club" + i + " Details", null);
@@ -61,7 +61,7 @@ public class DatabasePopulate {
                 Question savedQuestion = questionRepository.save(question);
             }
 
-            for (int j = 0; j < 100; j++) {
+            for (int j = 0; j < 20; j++) {
                 Post post = new Post("member" + i, "Title" + i, "This is a test content for sub" + i, i, null, subClubRepository.findByName("sub" + i).get());
                 postRepository.save(post);
             }

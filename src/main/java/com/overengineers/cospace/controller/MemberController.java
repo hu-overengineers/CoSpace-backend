@@ -1,15 +1,10 @@
 package com.overengineers.cospace.controller;
 
 import com.overengineers.cospace.dto.*;
-import com.overengineers.cospace.entity.Member;
-import com.overengineers.cospace.entity.PrivateMessage;
 import com.overengineers.cospace.entity.SubClub;
-import com.overengineers.cospace.mapper.EventMapper;
-import com.overengineers.cospace.mapper.MemberMapper;
-import com.overengineers.cospace.mapper.PrivateMessageMapper;
-import com.overengineers.cospace.mapper.SubClubCreateRequestMapper;
-import com.overengineers.cospace.mapper.SubClubMapper;
+import com.overengineers.cospace.mapper.*;
 import com.overengineers.cospace.service.MemberService;
+import com.overengineers.cospace.service.PrivateMessagingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +17,7 @@ import java.util.List;
 @RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
+    private final PrivateMessagingService privateMessagingService;
 
     private final MemberMapper memberMapper;
     private final SubClubMapper subClubMapper;
@@ -31,7 +27,7 @@ public class MemberController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/enrolled-subclubs")
-    public List<SubClubDTO> getEnrolledSubClubs(){
+    public List<SubClubDTO> getEnrolledSubClubs() {
         List<SubClub> subClubs = memberService.getEnrolledSubClubs();
         return subClubMapper.mapToDto(subClubs);
     }
@@ -51,19 +47,19 @@ public class MemberController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/private-message")
-    public List<PrivateMessageDTO> getPrivateMessages(){
-        return privateMessageMapper.mapToDto(memberService.getPrivateMessages());
+    public List<PrivateMessageDTO> getPrivateMessages() {
+        return privateMessageMapper.mapToDto(privateMessagingService.getAllMessagesOfAuthorizedMember());
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/private-message")
-    public PrivateMessageDTO sendPrivateMessage(@RequestBody PrivateMessageDTO privateMessageDTO){
-        return privateMessageMapper.mapToDto(memberService.sendPrivateMessage(privateMessageDTO));
+    public PrivateMessageDTO sendPrivateMessage(@RequestBody PrivateMessageDTO privateMessageDTO) {
+        return privateMessageMapper.mapToDto(privateMessagingService.send(privateMessageDTO));
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/request-subclub")
-    public SubClubCreateRequestDTO requestSubClub(@RequestBody SubClubCreateRequestDTO subClubCreateRequestDTO){
+    public SubClubCreateRequestDTO requestSubClub(@RequestBody SubClubCreateRequestDTO subClubCreateRequestDTO) {
         return subClubCreateRequestMapper.mapToDto(memberService.requestSubClub(subClubCreateRequestDTO));
     }
 

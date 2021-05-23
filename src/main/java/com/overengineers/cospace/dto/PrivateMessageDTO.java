@@ -13,11 +13,10 @@ public class PrivateMessageDTO {
 
     public final Date created;
 
-    public final String author;
-
-    public final String title;
+    public final String senderUsername;
 
     public final String content;
 
-    public final String targetMemberUsername;
+    public final String receiverUsername;
+
 }

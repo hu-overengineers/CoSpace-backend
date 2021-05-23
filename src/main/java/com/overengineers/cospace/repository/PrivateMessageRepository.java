@@ -6,6 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PrivateMessageRepository extends JpaRepository<PrivateMessage, Long> {
-    List<PrivateMessage> findByTargetMember_Username(String username);
-
+    List<PrivateMessage> findByReceiverUsernameOrSenderUsername(String receiver_username, String sender_username);
 }

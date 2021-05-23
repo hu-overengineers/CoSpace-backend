@@ -16,19 +16,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class PrivateMessage extends BaseEntity {
 
-    @Column(name = "AUTHOR")
-    private String author;
+    @Column(name = "SENDER_USERNAME")
+    private String senderUsername;
 
-    @Column(name = "TITLE")
-    private String title;
+    @Column(name = "RECEIVER_USERNAME")
+    private String receiverUsername;
 
     @Column(name = "CONTENT")
     private String content;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinTable(name = "member_privateMessage",
-            joinColumns = {@JoinColumn(name = "fk_privateMsg")},
-            inverseJoinColumns = {@JoinColumn(name = "fk_member")}
-    )
-    private Member targetMember =new Member();
 }
