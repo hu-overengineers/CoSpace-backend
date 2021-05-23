@@ -43,7 +43,7 @@ public class SubClub extends BaseEntity {
     private Club parent = new Club();
 
     @OneToOne
-    @JoinColumn(name = "member_username")
+    @JoinColumn(name = "moderator")
     private Member moderator;
 
     @ManyToMany(cascade = CascadeType.ALL)
