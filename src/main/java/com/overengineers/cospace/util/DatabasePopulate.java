@@ -94,7 +94,7 @@ public class DatabasePopulate {
         }
 
         for (Member member : generatedMembers) {
-            int enrolledCount = faker.number().numberBetween(0, 14);
+            int enrolledCount = faker.number().numberBetween(0, 5);
             for (int i = 0; i < enrolledCount; i++) {
                 SubClub randomSubClub = generatedSubClubs.get(faker.number().numberBetween(0, generatedClubs.size() - 1));
                 List<Enrollment> enrollments = enrollmentRepository.findBySubClub_Name(member.getUsername());
