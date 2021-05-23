@@ -22,7 +22,7 @@ public class PrivateMessage extends BaseEntity {
     @Column(name = "RECEIVER_USERNAME")
     private String receiverUsername;
 
-    @Column(name = "CONTENT")
+    @Column(name = "CONTENT", columnDefinition = "TEXT")
     private String content;
 
     // TODO: isSeen can be implemented

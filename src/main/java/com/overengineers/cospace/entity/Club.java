@@ -20,7 +20,7 @@ public class Club extends BaseEntity {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "DETAILS")
+    @Column(name = "DETAILS", columnDefinition = "TEXT")
     private String details;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.MERGE)

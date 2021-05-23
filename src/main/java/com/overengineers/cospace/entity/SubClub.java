@@ -17,7 +17,7 @@ public class SubClub extends BaseEntity {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "DETAILS")
+    @Column(name = "DETAILS", columnDefinition = "TEXT")
     private String details;
 
     @Column(name = "RATING")

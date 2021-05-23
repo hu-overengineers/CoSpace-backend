@@ -19,7 +19,7 @@ public class Report extends BaseEntity {
     @Column(name = "AUTHOR")
     private String author;
 
-    @Column(name = "CONTENT")
+    @Column(name = "CONTENT", columnDefinition = "TEXT")
     private String content;
 
     @ManyToOne(cascade = {CascadeType.REFRESH})

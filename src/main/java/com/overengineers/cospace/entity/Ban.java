@@ -16,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ban extends BaseEntity {
-    @Column(name = "REASON")
+    @Column(name = "REASON", columnDefinition = "TEXT")
     private String reason;
 
     @Temporal(TemporalType.TIMESTAMP)

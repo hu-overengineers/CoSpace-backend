@@ -19,7 +19,7 @@ public class Review extends BaseEntity {
     @Column(name = "AUTHOR")
     private String author;
 
-    @Column(name = "CONTENT")
+    @Column(name = "CONTENT", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "RATING")

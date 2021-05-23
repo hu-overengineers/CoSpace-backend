@@ -22,7 +22,7 @@ public class Event extends BaseEntity {
     @Column(name = "TITLE")
     private String title;
 
-    @Column(name = "DETAILS")
+    @Column(name = "DETAILS", columnDefinition = "TEXT")
     private String details;
 
     @Temporal(TemporalType.TIMESTAMP)
