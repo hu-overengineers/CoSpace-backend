@@ -8,7 +8,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -41,55 +44,87 @@ public class DatabasePopulate {
             String adminPassword = passwordEncoder.encode("12345");
             String adminEmail = adminEmailList.get(i) + "@gmail.com";
 
-            Member currentAdmin = new Member(adminUsername, adminPassword,adminEmail,null,null,null,null,null,Set.of(adminAuthority,userAuthority),null , null);
+            Member currentAdmin = new Member(adminUsername, adminPassword, adminEmail, null, null, null, null, null, Set.of(adminAuthority, userAuthority), null, null);
             memberRepository.save(currentAdmin);
         }
 
+        int clubCount = 10;
+        int memberCount = 100;
 
-        int populationCount = 10;
+        List<Club> generatedClubs = new ArrayList<>();
+        for (int c = 1; c <= clubCount; c++) {
+            String clubName = String.join(" ", faker.lorem().words(faker.number().numberBetween(1, 3)));
+            Club club = new Club(clubName, faker.lorem().sentence(), null);
+            generatedClubs.add(clubRepository.save(club));
+        }
+
         List<SubClub> generatedSubClubs = new ArrayList<>();
-        for (int i = 1; i <= populationCount; i++) {
+        for (Club club : generatedClubs) {
+            for (int k = 0; k < faker.number().numberBetween(1, 5); k++) {
+                SubClub sub = new SubClub(
+                        String.join(" ", faker.lorem().words(faker.number().numberBetween(1, 3))),
+                        faker.lorem().sentence(),
+                        0, null, null, null, null,
+                        club,
+                        null, null, null, null);
+
+                generatedSubClubs.add(subClubRepository.save(sub));
+
+                for (int j = 1; j <= faker.number().numberBetween(5, 10); j++) {
+                    String truth = faker.lorem().word();
+                    Question question = new Question(
+                            faker.lorem().sentence(),
+                            truth,
+                            faker.lorem().word(),
+                            faker.lorem().word(),
+                            faker.lorem().word(),
+                            truth,
+                            sub);
+                    questionRepository.save(question);
+                }
+            }
+        }
+        List<Member> generatedMembers = new ArrayList<>();
+        for (int m = 0; m < memberCount; m++) {
             String memberUsername = faker.name().username();
             String memberPassword = passwordEncoder.encode("123456");
             String memberEmail = memberUsername + "@gmail.com";
-            Member member = new Member(memberUsername, memberPassword,memberEmail,null,null,null,null,null,Set.of(userAuthority),null , null);
-            memberRepository.save(member);
+            Member member = new Member(memberUsername, memberPassword, memberEmail, null, null, null, null, null, Set.of(userAuthority), null, null);
+            generatedMembers.add(memberRepository.save(member));
+        }
 
-            String clubName = String.join(" ", faker.lorem().words(faker.number().numberBetween(1, 3)));
-            Club club = new Club(clubName, faker.lorem().sentence(), null);
-            clubRepository.save(club);
-
-            for (int k = 0; k < faker.number().numberBetween(1, 5); k++) {
-
-                SubClub sub = new SubClub(String.join(" ", faker.lorem().words(faker.number().numberBetween(1, 3))),
-                        faker.lorem().sentence(), 0, null, null, null, null, club, null, null, null,null);
-                sub = subClubRepository.save(sub);
-
-                for(int j = 1; j <= 5; j++){
-                    String truth = faker.lorem().word();
-                    Question question = new Question(faker.lorem().sentence(), truth, faker.lorem().word(), faker.lorem().word(), faker.lorem().word(),
-                            truth, sub);
-                    questionRepository.save(question);
+        for (Member member : generatedMembers) {
+            int enrolledCount = faker.number().numberBetween(0, 14);
+            for (int i = 0; i < enrolledCount; i++) {
+                SubClub randomSubClub = generatedSubClubs.get(faker.number().numberBetween(0, generatedClubs.size() - 1));
+                List<Enrollment> enrollments = enrollmentRepository.findBySubClub_Name(member.getUsername());
+                if (enrollments.stream().noneMatch(enrollment -> enrollment.getMember().getUsername().equals(member.getUsername()))) {
+                    enrollmentRepository.save(new Enrollment(member, randomSubClub, faker.number().numberBetween(50, 100), true));
                 }
-
-                for (int j = 0; j < faker.number().numberBetween(2, 40); j++) {
-                    enrollmentRepository.save(new Enrollment(member, sub, 100, true));
-                    Post post = new Post( memberUsername,
-                            faker.lorem().sentence(),
-                            String.join(" ", faker.lorem().sentences(faker.number().numberBetween(1, 10))), faker.number().numberBetween(-5, 100),
-                            null, sub);
-                    post.setCreated(faker.date().past(12 * 30, TimeUnit.DAYS));
-                    postRepository.save(post);
-                }
-
-                generatedSubClubs.add(sub);
             }
         }
 
-        for(int i = 1; i <= 5; i++){
+        for (Member member : generatedMembers) {
+            int postCount = faker.number().numberBetween(0, 20);
+            member = memberRepository.findByUsername(member.getUsername());
+
+            for (int i = 0; i < postCount; i++) {
+                List<SubClub> subClubs = subClubRepository.findByEnrollmentsMemberUsernameAndEnrollmentsIsEnrolledTrue(member.getUsername());
+                if (subClubs.size() == 0) continue;
+                SubClub randomSubClub = subClubs.get(faker.number().numberBetween(0, subClubs.size() - 1));
+                Post post = new Post(member.getUsername(),
+                        faker.lorem().sentence(),
+                        String.join(" ", faker.lorem().sentences(faker.number().numberBetween(1, 10))), faker.number().numberBetween(-5, 100),
+                        null, randomSubClub);
+                post.setCreated(faker.date().past(12 * 30, TimeUnit.DAYS));
+                postRepository.save(post);
+            }
+        }
+
+        for (int i = 1; i <= 5; i++) {
             SubClub subClub = generatedSubClubs.get(i - 1);
             enrollmentRepository.save(new Enrollment(memberRepository.findByUsername(adminList.get(i - 1)), subClub, 100, true));
-            subClub.setModerator(memberRepository.findByUsername(adminList.get(i-1)));
+            subClub.setModerator(memberRepository.findByUsername(adminList.get(i - 1)));
             subClubRepository.save(subClub);
         }
     }
