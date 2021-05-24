@@ -25,8 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostService {
     public enum CustomFeed {
-        POPULAR("Popular"),
-        RANDOM("Random");
+        POPULAR("Popular");
 
         private final String name;
 
@@ -75,8 +74,6 @@ public class PostService {
     public List<Post> getPosts(String feedName, Date start, Date end, Pageable pageable) {
         if (feedName.equals(CustomFeed.POPULAR.name)) {
             return postRepository.findByCreatedBetween(start, end, pageable).toList();
-        } else if (feedName.equals(CustomFeed.RANDOM.name)) {
-            return null;
         } else {
             SubClub subClub = subClubService.getByName(feedName);
             if (subClub != null) {
