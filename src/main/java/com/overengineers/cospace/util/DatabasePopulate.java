@@ -55,6 +55,7 @@ public class DatabasePopulate {
         List<Club> generatedClubs = new ArrayList<>();
         for (int c = 1; c <= clubCount; c++) {
             String clubName = String.join(" ", faker.lorem().words(faker.number().numberBetween(1, 3)));
+            if (clubRepository.findByName(clubName).isPresent()) continue;
             Club club = new Club(clubName, faker.lorem().sentence(), null);
             generatedClubs.add(clubRepository.save(club));
         }
@@ -62,12 +63,17 @@ public class DatabasePopulate {
         List<SubClub> generatedSubClubs = new ArrayList<>();
         for (Club club : generatedClubs) {
             for (int k = 0; k < faker.number().numberBetween(1, maxSubClubCountPerClub); k++) {
+                String subClubName =
+                        String.join(" ", faker.lorem().words(faker.number().numberBetween(1, 3)));
                 SubClub sub = new SubClub(
-                        String.join(" ", faker.lorem().words(faker.number().numberBetween(1, 3))),
+                        subClubName,
                         faker.lorem().sentence(),
                         0, null, null, null, null,
                         club,
                         null, null, null, null);
+
+                if (clubRepository.findByName(subClubName).isPresent()) continue;
+                if (subClubRepository.findByName(subClubName).isPresent()) continue;
 
                 generatedSubClubs.add(subClubRepository.save(sub));
 
@@ -97,7 +103,7 @@ public class DatabasePopulate {
         for (Member member : generatedMembers) {
             int enrolledCount = faker.number().numberBetween(0, clubCount * maxSubClubCountPerClub);
             for (int i = 0; i < enrolledCount; i++) {
-                SubClub randomSubClub = generatedSubClubs.get(faker.number().numberBetween(0, generatedClubs.size() - 1));
+                SubClub randomSubClub = generatedSubClubs.get(faker.number().numberBetween(0, generatedSubClubs.size() - 1));
                 List<Enrollment> enrollments = enrollmentRepository.findBySubClub_Name(member.getUsername());
                 if (enrollments.stream().noneMatch(enrollment -> enrollment.getMember().getUsername().equals(member.getUsername()))) {
                     enrollmentRepository.save(new Enrollment(member, randomSubClub, faker.number().numberBetween(50, 100), true));
