@@ -5,14 +5,13 @@ import com.overengineers.cospace.entity.*;
 import com.overengineers.cospace.mapper.EventMapper;
 import com.overengineers.cospace.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -174,17 +173,24 @@ public class SubClubService {
         return enrollmentService.enroll(answers, authorizedUsername);
     }
 
-    public ResponseEntity<String> enrollSubClub(List<QuestionDTO> answers ) {
+    public ResponseEntity<Object> enrollSubClub(List<QuestionDTO> answers ) {
         // TODO: Auth check vs return null, not member and ban check, isDismissed->null
         String authorizedUsername = securityService.getAuthorizedUsername();
         String subClubName = answers.get(0).getParentName();
         Enrollment existedEnrollment = enrollmentService.getEnrollmentByUsernameAndSubClubName(authorizedUsername,subClubName);
 
-        if(existedEnrollment != null){
-            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED) // 412
-                .body(subClubName +": " + existedEnrollment.getInterestRate());
+        List<JSONObject> entities = new ArrayList<JSONObject>();
+
+        if(existedEnrollment != null) {
+            JSONObject entity = new JSONObject();
+            entity.put("Message", "Already enrolled");
+            entities.add(entity);
         }
-        return enrollmentService.enrollSubClub(answers, authorizedUsername);
+        else{
+            return enrollmentService.enrollSubClub(answers, authorizedUsername);
+        }
+        return new ResponseEntity<Object>(entities, HttpStatus.OK);
+
     }
 
     public List<SubClub> getCommonSubClubs(String sourceUsername, String targetUsername) {
