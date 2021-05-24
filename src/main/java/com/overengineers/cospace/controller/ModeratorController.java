@@ -1,10 +1,7 @@
 package com.overengineers.cospace.controller;
 
 import com.overengineers.cospace.dto.*;
-import com.overengineers.cospace.mapper.BanMapper;
-import com.overengineers.cospace.mapper.EnrollmentMapper;
-import com.overengineers.cospace.mapper.MemberMapper;
-import com.overengineers.cospace.mapper.ReportMapper;
+import com.overengineers.cospace.mapper.*;
 import com.overengineers.cospace.service.ModeratorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +20,7 @@ public class ModeratorController {
     private final MemberMapper memberMapper;
     private final BanMapper banMapper;
     private final ReportMapper reportMapper;
+    private final EventMapper eventMapper;
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PostMapping(value = "/ban")
@@ -30,6 +28,12 @@ public class ModeratorController {
                                        @RequestParam(name = "subClubName") String subClubName,
                                        @RequestParam(name = "reason") String reason){
         return banMapper.mapToDto(moderatorService.banMemberFromSubClub(username, subClubName, reason));
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping(value = "/event")
+    public List<EventDTO> getEvents(){
+        return eventMapper.mapToDto(moderatorService.getEvents());
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")

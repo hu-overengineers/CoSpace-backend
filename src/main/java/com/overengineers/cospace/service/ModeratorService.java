@@ -216,4 +216,11 @@ public class ModeratorService {
 
         return false; // Still exists
     }
+
+    public List<Event> getEvents() {
+        SubClub subClub = securityService.getSubClubOfModerator();
+        if (subClub == null)
+            return null;
+        return new ArrayList<>(subClub.getEvents());
+    }
 }
