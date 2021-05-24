@@ -2,25 +2,47 @@ package com.overengineers.cospace.service;
 
 import com.overengineers.cospace.dto.PostDTO;
 import com.overengineers.cospace.dto.ReportDTO;
+import com.overengineers.cospace.entity.Club;
 import com.overengineers.cospace.entity.Post;
 import com.overengineers.cospace.entity.Report;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.PostMapper;
 import com.overengineers.cospace.mapper.ReportMapper;
-import com.overengineers.cospace.repository.*;
+import com.overengineers.cospace.repository.PostRepository;
+import com.overengineers.cospace.repository.ReportRepository;
+import com.overengineers.cospace.repository.SubClubRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
+    public enum CustomFeed {
+        POPULAR("Popular"),
+        RANDOM("Random");
+
+        private final String name;
+
+        private CustomFeed(String s) {
+            name = s;
+        }
+
+        public boolean equalsName(String otherName) {
+            return name.equals(otherName);
+        }
+
+        public String toString() {
+            return this.name;
+        }
+    }
+
     private final SubClubRepository subClubRepository;
 
     private final ReportRepository reportRepository;
@@ -30,14 +52,16 @@ public class PostService {
     private final PostMapper postMapper;
 
     private final SecurityService securityService;
+    private final SubClubService subClubService;
+    private final ClubService clubService;
 
     @Transactional
     public PostDTO createPost(PostDTO postDTO) {
 
-        if(!securityService.isAuthorizedToSubClub(postDTO.getParentName()))
+        if (!securityService.isAuthorizedToSubClub(postDTO.getParentName()))
             return null;
 
-        SubClub subClub  = subClubRepository.findByName(postDTO.getParentName()).get();
+        SubClub subClub = subClubRepository.findByName(postDTO.getParentName()).get();
 
         Post newPost = postMapper.mapToEntity(postDTO);
         newPost.setAuthor(securityService.getAuthorizedUsername());
@@ -48,11 +72,32 @@ public class PostService {
 
     }
 
-    public List<PostDTO> getSubClubPosts(String subClubName, Pageable pageable) {
-        return postMapper.mapToDto(postRepository.findByParentName(subClubName, pageable).toList());
+    public List<Post> getPosts(String feedName, Date start, Date end, Pageable pageable) {
+        if (feedName.equals(CustomFeed.POPULAR.name)) {
+            return postRepository.findByCreatedBetween(start, end, pageable).toList();
+        } else if (feedName.equals(CustomFeed.RANDOM.name)) {
+            return null;
+        } else {
+            SubClub subClub = subClubService.getByName(feedName);
+            if (subClub != null) {
+                return getSubClubPosts(subClub.getName(), start, end, pageable);
+            } else {
+                Club club = clubService.getByName(feedName);
+                if (club == null) return null;
+                return getClubPosts(club.getName(), start, end, pageable);
+            }
+        }
     }
 
-    public PostDTO getPostDTOById(Long postID){
+    public List<Post> getSubClubPosts(String subClubName, Date start, Date end, Pageable pageable) {
+        return postRepository.findByParentNameAndCreatedBetween(subClubName, start, end, pageable).toList();
+    }
+
+    public List<Post> getClubPosts(String clubName, Date start, Date end, Pageable pageable) {
+        return postRepository.findByParent_Parent_NameAndCreatedBetween(clubName, start, end, pageable).toList();
+    }
+
+    public PostDTO getPostDTOById(Long postID) {
         return postMapper.mapToDto(postRepository.findById(postID).get());
     }
 
@@ -73,7 +118,7 @@ public class PostService {
     @Transactional
     public ReportDTO reportPost(ReportDTO reportDTO) {
         Optional<Post> reportedPost = postRepository.findById(Long.parseLong(reportDTO.getPostId()));
-        if(reportedPost.isPresent()){
+        if (reportedPost.isPresent()) {
             Report newReport = reportMapper.mapToEntity(reportDTO);
             newReport.setPost(reportedPost.get());
             newReport.setAuthor(securityService.getAuthorizedUsername());
@@ -97,12 +142,12 @@ public class PostService {
     private PostDTO votePost(Long postId, int vote) {
         Optional<Post> optionalCurrentPost = postRepository.findById(postId);
 
-        if(!optionalCurrentPost.isPresent()){
+        if (!optionalCurrentPost.isPresent()) {
             return null;
         }
         Post currentPost = optionalCurrentPost.get();
 
-        if(!securityService.isAuthorizedToSubClub(currentPost.getParent().getName()))
+        if (!securityService.isAuthorizedToSubClub(currentPost.getParent().getName()))
             return null; // Not authorized
 
         long currentVote = currentPost.getVoting();

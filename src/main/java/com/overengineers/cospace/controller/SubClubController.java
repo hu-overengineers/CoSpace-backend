@@ -9,12 +9,13 @@ import com.overengineers.cospace.service.SecurityService;
 import com.overengineers.cospace.service.SubClubService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -110,11 +111,9 @@ public class SubClubController {
     @PreAuthorize("permitAll")
     @GetMapping("/statistics")
     public SubClubStatisticsDTO getStatistics(@RequestParam(name = "subClubName") String subClubName,
-                                              @RequestParam(name = "timeStart") Long timeStart,
-                                              @RequestParam(name = "timeEnd") Long timeEnd) {
-        return subClubService.getStatistics(subClubName,
-                Date.from(Instant.ofEpochMilli(timeStart)),
-                Date.from(Instant.ofEpochMilli(timeEnd)));
+                                              @RequestParam(name = "start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date start,
+                                              @RequestParam(name = "end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date end) {
+        return subClubService.getStatistics(subClubName, start, end);
     }
 
     @GetMapping("/ban-check")

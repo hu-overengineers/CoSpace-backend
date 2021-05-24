@@ -4,6 +4,7 @@ import com.overengineers.cospace.dto.ClubDTO;
 import com.overengineers.cospace.dto.MemberDTO;
 import com.overengineers.cospace.entity.Club;
 import com.overengineers.cospace.entity.Member;
+import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.ClubMapper;
 import com.overengineers.cospace.mapper.MemberMapper;
 import com.overengineers.cospace.repository.ClubRepository;
@@ -41,6 +42,10 @@ public class ClubService {
         // Sort by name, alphabetic order
         Pageable newPageable = UtilService.fixPageableSort(pageable, "name", true);
         return clubMapper.mapToDto(clubRepository.findByNameIgnoreCaseContaining(query, newPageable));
+    }
+
+    public Club getByName(String clubName) {
+        return clubRepository.findByName(clubName).orElse(null);
     }
 
 }

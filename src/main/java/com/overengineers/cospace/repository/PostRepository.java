@@ -10,7 +10,11 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    Page<Post> findByParentName(String parentName, Pageable pageable);
+    Page<Post> findByParentNameAndCreatedBetween(String parentName, Date start, Date end, Pageable pageable);
+
+    Page<Post> findByParent_Parent_NameAndCreatedBetween(String name, Date start, Date end, Pageable pageable);
+
+    Page<Post> findByCreatedBetween(Date start, Date end, Pageable pageable);
 
     List<Post> findByAuthor(String author);
 

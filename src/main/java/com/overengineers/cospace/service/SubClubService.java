@@ -35,10 +35,8 @@ public class SubClubService {
 
     private final QuestionRepository questionRepository;
 
-    public SubClub getByName(String subClubName){
-        if(!subClubRepository.findByName(subClubName).isPresent())
-            return null;
-        return subClubRepository.findByName(subClubName).get();
+    public SubClub getByName(String subClubName) {
+        return subClubRepository.findByName(subClubName).orElse(null);
     }
 
     public List<SubClub> listAllSubClubs() {
