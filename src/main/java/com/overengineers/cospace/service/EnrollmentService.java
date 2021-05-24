@@ -10,6 +10,7 @@ import com.overengineers.cospace.repository.MemberRepository;
 import com.overengineers.cospace.repository.QuestionRepository;
 import com.overengineers.cospace.repository.SubClubRepository;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -110,21 +111,27 @@ public class EnrollmentService {
                 .body("Enrolled SubClubs: " + enrolledSubClubNames);
     }
 
-    public ResponseEntity<String> enrollSubClub(List<QuestionDTO> memberAnswers, String username){
+    public ResponseEntity<Object> enrollSubClub(List<QuestionDTO> memberAnswers, String username){
+        List<JSONObject> entities = new ArrayList<JSONObject>();
         String subClubName = memberAnswers.get(0).getParentName();
         int correctCount = 0;
         Optional<SubClub> optionalSubClub = subClubRepository.findByName(subClubName);
-        if (!optionalSubClub.isPresent())
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND) // 404
-                    .body("SubClub not found!");
+        if (!optionalSubClub.isPresent()){
+            JSONObject entity = new JSONObject();
+            entity.put("Message", "SubClub is not found");
+            entities.add(entity);
+            return new ResponseEntity<Object>(entities, HttpStatus.OK);
+        }
 
         if(memberAnswers.size() < questionNumberPerSubClub)
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST) // 400
-                    .body("At least " + questionNumberPerSubClub + " questions!");
+        {
+            JSONObject entity = new JSONObject();
+            entity.put("Message", "At least" + questionNumberPerSubClub + "questions!");
+            entities.add(entity);
+            return new ResponseEntity<Object>(entities, HttpStatus.OK);
+        }
 
-        for (int i = 0; i < questionNumberPerSubClub; i++) {
+        for (int i = 0; i < memberAnswers.size(); i++) {
             QuestionDTO currentQuestionDTO = memberAnswers.get(i);
             Optional<Question> optionalQuestion = questionRepository.findById(currentQuestionDTO.getId());
             if (!optionalQuestion.isPresent())
@@ -134,7 +141,7 @@ public class EnrollmentService {
                 correctCount++;
         }
 
-        float currentInterestRate = ((float)correctCount / questionNumberPerSubClub) * 100;
+        float currentInterestRate = ((float)correctCount / memberAnswers.size()) * 100;
 
         SubClub currentSubClub = optionalSubClub.get();
         Member authorizedMember = memberRepository.findByUsername(username);
@@ -142,15 +149,31 @@ public class EnrollmentService {
         if (currentInterestRate >= minimumInterestRate) {
             Enrollment enrollment = new Enrollment(authorizedMember, currentSubClub, currentInterestRate, true);
             enrollmentRepository.save(enrollment);
-            return ResponseEntity.status(HttpStatus.OK) // 200
-                    .body(subClubName +": " + currentInterestRate);
+
+            JSONObject entity = new JSONObject();
+            entity.put("Message", "Success");
+            entities.add(entity);
+            entity.put("SubClubName", subClubName);
+            entities.add(entity);
+            entity.put("Interest Rate", currentInterestRate);
+            entities.add(entity);
+
+            return new ResponseEntity<Object>(entities, HttpStatus.OK);
         }
         else
         {
             Enrollment enrollment = new Enrollment(authorizedMember, currentSubClub, currentInterestRate, false);
             enrollmentRepository.save(enrollment);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED) // 200
-                    .body(subClubName +": " + currentInterestRate);
+            JSONObject entity = new JSONObject();
+            entity.put("Message", "Failed");
+            entities.add(entity);
+            entity.put("SubClubName", subClubName);
+            entities.add(entity);
+            entity.put("Interest Rate", currentInterestRate);
+            entities.add(entity);
+
+            return new ResponseEntity<Object>(entities, HttpStatus.OK);
+
         }
     }
 
