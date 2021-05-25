@@ -137,4 +137,7 @@ public class SecurityService {
         return isModBanned(username);
     }
 
+    public boolean hasAuthority(String authority){
+        return this.getAuthorizedMember().getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals(authority));
+    }
 }
