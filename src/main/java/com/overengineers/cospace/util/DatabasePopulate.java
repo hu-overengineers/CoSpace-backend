@@ -122,7 +122,7 @@ public class DatabasePopulate {
                 Post post = new Post(member.getUsername(),
                         faker.lorem().sentence(),
                         String.join(" ", faker.lorem().sentences(faker.number().numberBetween(1, 10)))
-                                + String.format("<p><img src=\"%s\" alt=\"undefined\" style=\"height: auto;width: 480\"/></p>",
+                                + String.format("<p><img src=\"%s\" alt=\"undefined\" style=\"height: auto;width: auto\"/></p>",
                                 faker.internet().image()), faker.number().numberBetween(-5, 100),
                         null, randomSubClub);
                 post.setCreated(faker.date().past(12 * 30, TimeUnit.DAYS));
