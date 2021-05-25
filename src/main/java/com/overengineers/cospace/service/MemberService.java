@@ -65,4 +65,8 @@ public class MemberService {
         SubClubCreateRequest savedRequest = subClubCreateRequestRepository.save(subClubCreateRequest);
         return savedRequest;
     }
+
+    public Member getMemberByName(String username) {
+        return memberRepository.findByUsername(username);
+    }
 }
