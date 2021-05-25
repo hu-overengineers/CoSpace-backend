@@ -25,6 +25,12 @@ public class MemberController {
     private final EventMapper eventMapper;
     private final SubClubCreateRequestMapper subClubCreateRequestMapper;
 
+    @PreAuthorize("permitAll")
+    @GetMapping
+    public MemberDTO getMemberByName(@RequestParam(name = "username") String username){
+        return memberMapper.mapToDto(memberService.getMemberByName(username));
+    }
+
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/enrolled-subclubs")
     public List<SubClubDTO> getEnrolledSubClubs() {
