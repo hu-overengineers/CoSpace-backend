@@ -37,6 +37,9 @@ public class AdminService {
 
     private final SubClubCreateRequestRepository subClubCreateRequestRepository;
     private final BanRepository banRepository;
+
+    private final CustomUserDetailsManager customUserDetailsManager;
+
     @Transactional
     public ClubDTO createClub(ClubDTO clubDTO) {
         Club club = clubMapper.mapToEntity(clubDTO);
@@ -67,6 +70,22 @@ public class AdminService {
 
     public List<ReportDTO> getAllReports() {
         return reportMapper.mapToDto(reportRepository.findAll());
+    }
+
+    @Transactional
+    public void kickMemberFromCoSpace(String username) {
+        customUserDetailsManager.deleteUser(username);
+    }
+
+    public boolean deleteReport(long reportId) {
+
+        Optional<Report> optionalReport = reportRepository.findById(reportId);
+        if(!optionalReport.isPresent())
+            return false; // Not found
+
+        reportRepository.deleteById(reportId);
+
+        return !reportRepository.findById(reportId).isPresent(); // Deleted successfully
     }
 
     public List<Member> getModeratorRequests(String subClubName) {

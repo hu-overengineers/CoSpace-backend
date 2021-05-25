@@ -12,6 +12,8 @@ import com.overengineers.cospace.service.AdminService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +63,24 @@ public class AdminController {
     @GetMapping(value = "/reports")
     public List<ReportDTO> getReports(){
         return adminService.getAllReports();
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping(value = "/delete-report")
+    public boolean deleteReport(@RequestParam(name = "reportId") long reportId){
+        return adminService.deleteReport(reportId);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @PostMapping(value = "/kick-member")
+    public ResponseEntity<MemberDTO> kickMemberFromCoSpace(@RequestParam(name = "username") String username){
+        // TODO: delete on table "member" violates foreign key constraint "fk9cc49omvv5knjko94ora5eucb" on table "enrollment"
+        Member member = memberRepository.findByUsername(username);
+        if (member != null) {
+            adminService.kickMemberFromCoSpace(username);
+            return ResponseEntity.ok(memberMapper.mapToDto(member));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
