@@ -74,7 +74,7 @@ public class AdminController {
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping(value = "/kick-member")
     public ResponseEntity<MemberDTO> kickMemberFromCoSpace(@RequestParam(name = "username") String username){
-        // TODO: delete on table "member" violates foreign key constraint "fk9cc49omvv5knjko94ora5eucb" on table "enrollment"
+        // TODO: delete on table "member" violates foreign key constraint on table "enrollment"
         Member member = memberRepository.findByUsername(username);
         if (member != null) {
             adminService.kickMemberFromCoSpace(username);

@@ -121,7 +121,9 @@ public class DatabasePopulate {
                 SubClub randomSubClub = subClubs.get(faker.number().numberBetween(0, subClubs.size() - 1));
                 Post post = new Post(member.getUsername(),
                         faker.lorem().sentence(),
-                        String.join(" ", faker.lorem().sentences(faker.number().numberBetween(1, 10))), faker.number().numberBetween(-5, 100),
+                        String.join(" ", faker.lorem().sentences(faker.number().numberBetween(1, 10)))
+                                + String.format("<p><img src=\"%s\" alt=\"undefined\" style=\"height: auto;width: 480\"/></p>",
+                                faker.internet().image()), faker.number().numberBetween(-5, 100),
                         null, randomSubClub);
                 post.setCreated(faker.date().past(12 * 30, TimeUnit.DAYS));
                 postRepository.save(post);
