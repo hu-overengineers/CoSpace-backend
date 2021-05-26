@@ -16,6 +16,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findByCreatedBetween(Date start, Date end, Pageable pageable);
 
+    Page<Post> findByContentIgnoreCaseContaining(String query, Pageable pageable);
+
     List<Post> findByAuthor(String author);
 
     List<Post> findByAuthorAndParentName(String author, String parentName);

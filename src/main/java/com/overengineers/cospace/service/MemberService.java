@@ -54,7 +54,7 @@ public class MemberService {
 
         // Sort by username, alphabetically
         UtilService.fixPageableSort(pageable, "username", true);
-        return memberRepository.findByUsernameIgnoreCaseContainingAndEnrollments_SubClub_Name(query, subClubName, pageable);
+        return memberRepository.findByUsernameIgnoreCaseContainingAndEnrollments_SubClub_Name(query, subClubName, pageable).toList();
     }
 
     public SubClubCreateRequest requestSubClub(SubClubCreateRequestDTO subClubCreateRequestDTO) {

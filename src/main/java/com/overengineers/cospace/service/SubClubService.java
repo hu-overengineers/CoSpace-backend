@@ -85,7 +85,7 @@ public class SubClubService {
     public List<SubClub> search(String query, Pageable pageable) {
         // Sort by rating, descending
         Pageable newPageable = UtilService.fixPageableSort(pageable, "rating", false);
-        return subClubRepository.findByNameIgnoreCaseContaining(query, newPageable);
+        return subClubRepository.findByNameIgnoreCaseContaining(query, newPageable).toList();
     }
 
     public List<Member> getMembers(String subClubName) {
