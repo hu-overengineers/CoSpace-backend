@@ -234,6 +234,7 @@ public class AdminService {
         return null;
     }
 
+    @Transactional
     public boolean deleteSubClub(long id) {
 
         Optional<SubClub> optionalSubClub= subClubRepository.findById(id);
@@ -243,7 +244,6 @@ public class AdminService {
         Club club = optionalSubClub.get().getParent();
         long clubId = club.getId();
         int childCount = club.getChildren().size();
-
         subClubRepository.deleteById(id);
 
         if(subClubRepository.findById(id).isPresent())

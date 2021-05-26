@@ -9,6 +9,7 @@ import java.util.List;
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
     List<Enrollment> findBySubClub_Name(String name);
+    void deleteBySubClub_Name(String name);
     List<Enrollment> findByMember_Username(String username);
     Enrollment findByMemberUsernameAndSubClubName(String username, String name);
 }

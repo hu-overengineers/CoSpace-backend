@@ -23,16 +23,16 @@ public class SubClub extends BaseEntity {
     @Column(name = "RATING")
     private int rating;
 
-    @OneToMany(mappedBy = "subClub")
+    @OneToMany(orphanRemoval = true, mappedBy = "subClub")
     Set<Enrollment> enrollments;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(orphanRemoval = true, mappedBy = "parent")
     private Set<Post> posts = new HashSet<>();
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(orphanRemoval = true, mappedBy = "parent")
     private Set<Review> reviews = new HashSet<>();
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(orphanRemoval = true, mappedBy = "parent")
     private Set<Question> questions = new HashSet<>();
 
     @ManyToOne(cascade = {CascadeType.MERGE})
@@ -53,9 +53,9 @@ public class SubClub extends BaseEntity {
     )
     private Set<Member> dismissibleMembers = new HashSet<>();
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(orphanRemoval = true, mappedBy = "parent")
     private Set<Event> events = new HashSet<>();
 
-    @OneToMany(mappedBy = "modRequestedSubClubs")
+    @OneToMany(orphanRemoval = true, mappedBy = "modRequestedSubClubs")
     private Set<Member> modRequestedMembers = new HashSet<>();
 }
