@@ -59,6 +59,13 @@ public class AdminController {
         return savedSubClubDTO;
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PutMapping(value = "/subclub")
+    public SubClubDTO updateSubClub(@RequestBody SubClubDTO subClubDTO){
+
+        return adminService.updateSubClub(subClubDTO);
+    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping(value = "/reports")
     public List<ReportDTO> getReports(){
