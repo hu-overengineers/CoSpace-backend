@@ -8,6 +8,7 @@ import java.util.List;
 public interface SubClubCreateRequestRepository extends JpaRepository<SubClubCreateRequest, Long> {
 
     List<SubClubCreateRequest> findByClubName(String clubName);
+    void deleteBySubClubName(String subClubName);
     long countAllByClubName(String clubName);
 
 }

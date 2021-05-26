@@ -64,6 +64,7 @@ public class AdminService {
             subClub.setParent(parent.get());
             subClub.setRating(0);
             SubClub newSubClub = subClubRepository.save(subClub);
+            subClubCreateRequestRepository.deleteBySubClubName(subClubDTO.getName());
             return subClubMapper.mapToDto(newSubClub);
         }
         return null;
