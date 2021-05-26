@@ -233,4 +233,28 @@ public class AdminService {
 
         return null;
     }
+
+    public boolean deleteSubClub(long id) {
+
+        Optional<SubClub> optionalSubClub= subClubRepository.findById(id);
+        if(!optionalSubClub.isPresent())
+            return false; // Not found
+
+        Club club = optionalSubClub.get().getParent();
+        long clubId = club.getId();
+        int childCount = club.getChildren().size();
+
+        subClubRepository.deleteById(id);
+
+        if(subClubRepository.findById(id).isPresent())
+            return false; // SubClub couldn't be deleted
+
+        if(childCount == 1){
+            clubRepository.deleteById(clubId);
+            return !clubRepository.findById(clubId).isPresent(); // Both SubClub and Club are deleted successfully
+        }
+
+        return true; // SubClub is deleted, Club has more than one SubClub
+    }
+
 }

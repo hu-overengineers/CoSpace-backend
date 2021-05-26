@@ -59,6 +59,12 @@ public class AdminController {
         return savedSubClubDTO;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping(value = "/delete-sub-club")
+    public boolean deleteSubClub(@RequestParam(name = "id") long id){
+        return adminService.deleteSubClub(id);
+    }
+
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @PutMapping(value = "/subclub")
     public SubClubDTO updateSubClub(@RequestBody SubClubDTO subClubDTO){
