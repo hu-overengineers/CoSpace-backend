@@ -8,5 +8,5 @@ import java.util.List;
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     List<Question> findByParent_Name(String subClubName);
-
+    void deleteByParent_Name(String subClubName);
 }
