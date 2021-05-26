@@ -1,5 +1,6 @@
 package com.overengineers.cospace.service;
 
+import com.overengineers.cospace.entity.SubClub;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +61,18 @@ public class UtilService {
             picked.add(RANDOM.nextInt(k));
         }
         return picked;
+    }
+
+    public static long differenceDays(Date d1, Date d2){
+        long diff = d1.getTime() - d2.getTime();
+        return TimeUnit.SECONDS.convert(diff, TimeUnit.MILLISECONDS);
+    }
+
+    public static boolean isSubClubInactive(SubClub subClub, int maxInactive){
+        long diffDays = differenceDays(now(), subClub.getLastModified());
+        if(diffDays >= maxInactive)
+            return true;
+        return false;
     }
 
 }

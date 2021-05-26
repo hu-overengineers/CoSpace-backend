@@ -9,6 +9,7 @@ import org.json.simple.JSONObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -32,6 +33,7 @@ public class SubClubService {
     private final SecurityService securityService;
     private final EnrollmentService enrollmentService;
     private final SearchService searchService;
+    private final MailService mailService;
 
     private final QuestionRepository questionRepository;
 
@@ -211,5 +213,32 @@ public class SubClubService {
         Set<SubClub> intersection = new HashSet<>(authorSubClubs);
         intersection.retainAll(targetSubClubs);
         return new ArrayList<>(intersection);
+    }
+
+    private Map<String, String> getMemberMailsMap(String subClubName){
+        List<Member> members = enrollmentService.getSubClubMembers(subClubName);
+        Map<String, String> map = new HashMap<>();
+        for(Member member : members){
+            map.put(member.getUsername(), member.getEmail());
+        }
+        return map;
+    }
+
+    @Scheduled(cron="0 0 13 * * ?")
+    public void scheduleFixedDelayTask() { // Every day 13:00
+        int maxInactiveDays = 90;
+        int mailSentDayBefore = 7; // Mail will at day 83
+        List<SubClub> subClubList = subClubRepository.findAll();
+
+        for(SubClub sub : subClubList){
+            if(UtilService.differenceDays(UtilService.now(), sub.getLastModified()) == maxInactiveDays - mailSentDayBefore){
+                mailService.sendSubClubDeleteMail(getMemberMailsMap(sub.getName()), sub.getName());
+            }
+
+            if(UtilService.isSubClubInactive(sub, maxInactiveDays)){
+                subClubRepository.deleteById(sub.getId());
+            }
+        }
+
     }
 }

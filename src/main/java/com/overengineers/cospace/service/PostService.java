@@ -67,6 +67,8 @@ public class PostService {
         newPost.setParent(subClub);
         newPost.setVoting(0);
         Post savedPost = postRepository.save(newPost);
+        subClub.setLastModified(UtilService.now());
+        subClubRepository.save(subClub);
         return postMapper.mapToDto(savedPost);
 
     }
