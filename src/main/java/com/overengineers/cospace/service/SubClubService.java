@@ -64,9 +64,10 @@ public class SubClubService {
     public ReviewDTO reviewToSubClub(ReviewDTO reviewDTO) {
         String subClubName = reviewDTO.getParentName();
 
-        if (!securityService.isAuthorizedToSubClub(subClubName)) {
-            return null; // Enrollment and Ban check
-        }
+        // TODO: Enrolment check needed
+        //if (!securityService.isAuthorizedToSubClub(subClubName)) {
+        //    return null; // Enrollment and Ban check
+        //}
 
         SubClub subClub = subClubRepository.findByName(subClubName).get();
         ReviewDTO savedReview = reviewService.createReviewFromDTO(reviewDTO, subClub);
