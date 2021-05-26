@@ -211,4 +211,25 @@ public class AdminService {
 
         return newBan;
     }
+
+    @Transactional
+    public SubClubDTO updateSubClub(SubClubDTO subClubDTO) {
+        
+        Optional<Club> parent = clubRepository.findByName(subClubDTO.getParentName());
+        Optional<SubClub> optionalSubClub = subClubRepository.findById(subClubDTO.id);
+
+        if (optionalSubClub.isPresent()) {
+            SubClub subClub = optionalSubClub.get();
+
+            subClub.setName(subClubDTO.getName());
+            subClub.setDetails(subClubDTO.getDetails());
+
+            List<Question> question = questionMapper.mapToEntity(subClubDTO.getQuestions());
+            subClub.setQuestions(new HashSet<>(question));
+
+            return subClubMapper.mapToDto(subClub);
+        }
+
+        return null;
+    }
 }
