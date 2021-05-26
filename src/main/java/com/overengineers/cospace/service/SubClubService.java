@@ -31,6 +31,7 @@ public class SubClubService {
 
     private final SecurityService securityService;
     private final EnrollmentService enrollmentService;
+    private final SearchService searchService;
 
     private final QuestionRepository questionRepository;
 
@@ -85,7 +86,7 @@ public class SubClubService {
     public List<SubClub> search(String query, Pageable pageable) {
         // Sort by rating, descending
         Pageable newPageable = UtilService.fixPageableSort(pageable, "rating", false);
-        return subClubRepository.findByNameIgnoreCaseContaining(query, newPageable);
+        return searchService.searchSubClubs(query, newPageable).toList();
     }
 
     public List<Member> getMembers(String subClubName) {

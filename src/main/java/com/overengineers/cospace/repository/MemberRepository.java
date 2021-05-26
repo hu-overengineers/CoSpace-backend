@@ -1,6 +1,7 @@
 package com.overengineers.cospace.repository;
 
 import com.overengineers.cospace.entity.Member;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,7 +16,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByEmail(String email);
 
     // Search
-    List<Member> findByUsernameIgnoreCaseContaining(String username, Pageable page);
-    List<Member> findByUsernameIgnoreCaseContainingAndEnrollments_SubClub_Name(String username, String name, Pageable page);
+    Page<Member> findByUsernameIgnoreCaseContaining(String username, Pageable page);
+    Page<Member> findByUsernameIgnoreCaseContainingAndEnrollments_SubClub_Name(String username, String name, Pageable page);
 
 }
