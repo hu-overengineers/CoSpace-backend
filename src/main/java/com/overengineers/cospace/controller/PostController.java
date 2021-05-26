@@ -84,4 +84,10 @@ public class PostController {
         return postService.getPostsByAuthorAndSubClub(username, subClubName);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PostMapping(value = "/delete-own-by-id")
+    public boolean deleteOwnPostById(@RequestParam(name = "id") Long id){
+        return postService.deleteOwnPostById(id);
+    }
+
 }

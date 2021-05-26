@@ -153,4 +153,25 @@ public class PostService {
         return postMapper.mapToDto(newPost);
     }
 
+    @Transactional
+    public boolean deleteOwnPostById(Long postId){
+
+        Optional<Post> optionalCurrentPost = postRepository.findById(postId);
+        if(!optionalCurrentPost.isPresent())
+            return false;
+
+        Post currentPost = optionalCurrentPost.get();
+
+        if(!currentPost.getAuthor().equals(securityService.getAuthorizedUsername()))
+            return false;
+
+        postRepository.deleteById(postId);
+
+        if(!postRepository.findById(postId).isPresent())
+            return true; // Deleted successfully
+
+        return false; // Still exists
+
+    }
+
 }
