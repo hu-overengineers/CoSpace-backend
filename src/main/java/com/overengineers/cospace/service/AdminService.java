@@ -99,9 +99,26 @@ public class AdminService {
         return new ArrayList<>(subClub.getModRequestedMembers());
     }
 
-    public List<MemberDTO> getModeratorRequestsDTO(String subClubName) {
-        return memberMapper.mapToDto(getModeratorRequests(subClubName));
+
+    public List<String> getModeratorNeedSubClubs() {
+        List<SubClub> subClubList = subClubRepository.findAll();
+        List<String> subClubNames = new ArrayList<>();
+
+        for(SubClub sub : subClubList){
+
+            if(sub.getModerator() != null)
+                continue;
+
+            if(sub.getModRequestedMembers() == null)
+                continue;
+
+            if(sub.getModRequestedMembers().size() > 0)
+                subClubNames.add(sub.getName());
+        }
+
+        return subClubNames;
     }
+
 
     @Transactional
     public SubClubDTO makeModerator(String username, String subClubName){

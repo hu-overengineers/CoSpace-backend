@@ -123,9 +123,9 @@ public class AdminController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping(value = "/mod-requests") // TODO: This endpoint is used for development, remove for final product
-    public List<MemberDTO> getModeratorRequests(@RequestParam(name = "subClubName") String subClubName){
-        return adminService.getModeratorRequestsDTO(subClubName);
+    @GetMapping(value = "/mod-requests")
+    public List<String> getModeratorNeededSubClubs(){
+        return adminService.getModeratorNeedSubClubs();
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
