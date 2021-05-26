@@ -74,8 +74,8 @@ public class MemberController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     @GetMapping(value = "/enrollment")
-    public List<EnrollmentDTO> getMyEnrollmentList(){
-        return enrollmentMapper.mapToDto(enrollmentService.getMyEnrollmentList());
+    public List<EnrollmentDTO> getMyEnrollmentList(@RequestParam(name = "username") String username){
+        return enrollmentMapper.mapToDto(enrollmentService.getCommonEnrollmentList(username));
     }
 
 

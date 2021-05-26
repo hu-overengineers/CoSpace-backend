@@ -183,10 +183,35 @@ public class EnrollmentService {
         return enrollmentRepository.findByMemberUsernameAndSubClubName(username, subClubName);
     }
 
-    public List<Enrollment> getMyEnrollmentList(){
+    private List<SubClub> getCommonSubClubList(String targetUsername){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getPrincipal().toString();
-        return enrollmentRepository.findByMember_Username(username);
+        String myUsername = authentication.getPrincipal().toString();
+        List<SubClub> authorSubClubs = getMemberSubClubs(myUsername);
+        if(authorSubClubs == null)
+            return null;
+
+        Member targetMember = memberRepository.findByUsername(targetUsername);
+        if(targetMember == null)
+            return null;
+
+        List<SubClub> targetSubClubs = getMemberSubClubs(targetUsername);
+        if (targetSubClubs == null)
+            return null;
+
+        Set<SubClub> intersection = new HashSet<>(authorSubClubs);
+        intersection.retainAll(targetSubClubs);
+        return new ArrayList<>(intersection);
+    }
+
+    public List<Enrollment> getCommonEnrollmentList(String username){
+        List<SubClub> subClubList = getCommonSubClubList(username);
+        List<Enrollment> enrollmentList = new ArrayList<>();
+
+        for(SubClub sub : subClubList){
+            enrollmentList.add(enrollmentRepository.findByMemberUsernameAndSubClubName(username, sub.getName()));
+        }
+
+        return enrollmentList;
     }
 
 }
