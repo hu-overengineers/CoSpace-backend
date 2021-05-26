@@ -3,6 +3,7 @@ package com.overengineers.cospace.controller;
 import com.overengineers.cospace.dto.*;
 import com.overengineers.cospace.entity.SubClub;
 import com.overengineers.cospace.mapper.*;
+import com.overengineers.cospace.service.EnrollmentService;
 import com.overengineers.cospace.service.MemberService;
 import com.overengineers.cospace.service.PrivateMessagingService;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,14 @@ import java.util.List;
 public class MemberController {
     private final MemberService memberService;
     private final PrivateMessagingService privateMessagingService;
+    private final EnrollmentService enrollmentService;
 
     private final MemberMapper memberMapper;
     private final SubClubMapper subClubMapper;
     private final PrivateMessageMapper privateMessageMapper;
     private final EventMapper eventMapper;
     private final SubClubCreateRequestMapper subClubCreateRequestMapper;
+    private final EnrollmentMapper enrollmentMapper;
 
     @PreAuthorize("permitAll")
     @GetMapping
@@ -68,5 +71,12 @@ public class MemberController {
     public SubClubCreateRequestDTO requestSubClub(@RequestBody SubClubCreateRequestDTO subClubCreateRequestDTO) {
         return subClubCreateRequestMapper.mapToDto(memberService.requestSubClub(subClubCreateRequestDTO));
     }
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @GetMapping(value = "/enrollment")
+    public List<EnrollmentDTO> getMyEnrollmentList(){
+        return enrollmentMapper.mapToDto(enrollmentService.getMyEnrollmentList());
+    }
+
 
 }
