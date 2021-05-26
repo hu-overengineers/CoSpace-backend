@@ -237,9 +237,7 @@ public class AdminService {
 
             subClub.setName(subClubDTO.getName());
             subClub.setDetails(subClubDTO.getDetails());
-            questionRepository.deleteByParent_Name(subClub.getName());
 
-            SubClub savedSub = subClubRepository.save
             SubClubDTO savedSubClubDTO = subClubMapper.mapToDto(subClubRepository.save(subClub));
 
             return savedSubClubDTO;
@@ -254,9 +252,6 @@ public class AdminService {
             System.out.println("SubClub: " + subClubDTO.getName() + " is not found!");
             return null;
         }
-
-        if(savedSubClubDTO.getQuestions() != null)
-            savedSubClubDTO.getQuestions().clear();
 
         for(QuestionDTO questionDTO : subClubDTO.getQuestions()){
             Question currentQuestion = createQuestion(questionDTO, subClubDTO.getName());
