@@ -214,9 +214,8 @@ public class AdminService {
 
     @Transactional
     public SubClubDTO updateSubClub(SubClubDTO subClubDTO) {
-        
-        Optional<Club> parent = clubRepository.findByName(subClubDTO.getParentName());
-        Optional<SubClub> optionalSubClub = subClubRepository.findById(subClubDTO.id);
+        // TODO: Review needed
+        Optional<SubClub> optionalSubClub = subClubRepository.findById((long) subClubDTO.id);
 
         if (optionalSubClub.isPresent()) {
             SubClub subClub = optionalSubClub.get();
@@ -227,7 +226,9 @@ public class AdminService {
             List<Question> question = questionMapper.mapToEntity(subClubDTO.getQuestions());
             subClub.setQuestions(new HashSet<>(question));
 
-            return subClubMapper.mapToDto(subClub);
+            SubClub updatedSubClub = subClubRepository.save(subClub);
+
+            return subClubMapper.mapToDto(updatedSubClub);
         }
 
         return null;
