@@ -129,7 +129,7 @@ public class SubClubService {
             if(member.getModeratorSubClub() != null)
                 return  ResponseEntity
                         .status(HttpStatus.UNAUTHORIZED) // 401
-                        .body("You are a moderator of another SubClub!");
+                        .body("You are a moderator of another sub-club!");
 
             if(!securityService.isAuthorizedToSubClub(subClubName)) {
                 return  ResponseEntity
