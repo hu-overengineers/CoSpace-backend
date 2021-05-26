@@ -34,6 +34,7 @@ public class AdminService {
 
     private final EnrollmentService enrollmentService;
     private final SecurityService securityService;
+    private final SearchService searchService;
 
     private final SubClubCreateRequestRepository subClubCreateRequestRepository;
     private final BanRepository banRepository;
@@ -136,9 +137,8 @@ public class AdminService {
     }
 
     public List<MemberDTO> searchMember(String query, Pageable pageable) {
-        // Sort by username, alphabetically
         UtilService.fixPageableSort(pageable, "username", true);
-        return memberMapper.mapToDto(memberRepository.findByUsernameIgnoreCaseContaining(query, pageable).toList());
+        return memberMapper.mapToDto(searchService.searchMembers(query, pageable).toList());
     }
 
     public List<SubClubDTO> getEnrolledSubClubs(String username) {

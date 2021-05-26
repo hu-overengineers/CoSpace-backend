@@ -40,4 +40,8 @@ public class SearchService {
     public Page<Post> searchPosts(String query, Pageable pageable) {
         return postRepository.findByContentIgnoreCaseContaining(query, pageable);
     }
+
+    public Page<Member> searchMembersWithinTheSameSubClub(String query, String subClubName, Pageable pageable) {
+        return memberRepository.findByUsernameIgnoreCaseContainingAndEnrollments_SubClub_Name(query, subClubName, pageable);
+    }
 }

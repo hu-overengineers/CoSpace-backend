@@ -48,7 +48,7 @@ public class MemberController {
     @GetMapping(value = "/search")
     public List<MemberDTO> searchMember(@RequestParam("query") String query, @RequestParam("parentName") String parentName, Pageable pageable) throws Exception {
         // query should include substring of the username
-        return memberMapper.mapToDto(memberService.search(query, parentName, pageable));
+        return memberMapper.mapToDto(memberService.searchWithinTheSameSubClub(query, parentName, pageable));
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
