@@ -28,7 +28,7 @@ public class EnrollmentService {
     private final QuestionRepository questionRepository;
 
     private final int minimumInterestRate = 50;
-    private final int subClubNumberForQuestionnaire = 6;
+    private final int subClubNumberForQuestionnaire = 4;
     private final int questionNumberPerSubClub = 3;
 
     public List<Member> getSubClubMembers(String subClubName){
