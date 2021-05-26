@@ -69,7 +69,13 @@ public class AuthService {
             member.setLastLogin(new Date());
             memberRepository.save(member);
 
-            LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, TokenManager.getAuthorities(user));
+            int enrollmentCount;
+            if(member.getEnrollments() != null)
+                enrollmentCount = member.getEnrollments().size();
+            else
+                enrollmentCount = 0;
+
+            LoginResponseDTO loginResponseDTO = new LoginResponseDTO(token, TokenManager.getAuthorities(user),enrollmentCount);
             return new ResponseEntity<LoginResponseDTO>(loginResponseDTO, HttpStatus.OK);
         }
         catch (Exception e){

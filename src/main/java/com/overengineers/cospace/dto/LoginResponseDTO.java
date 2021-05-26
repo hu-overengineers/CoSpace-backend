@@ -13,5 +13,6 @@ public class LoginResponseDTO {
 
     public String token;
     public List<String> auth;
+    public int enrollmentCount;
 
 }
