@@ -27,10 +27,26 @@ public class DatabasePopulate {
     private final EnrollmentRepository enrollmentRepository;
     private final QuestionRepository questionRepository;
 
-    Faker faker = new Faker();
+    // Faker faker = new Faker();
 
     @Transactional
     public void populateDatabase() {
+        authorityRepository.saveAll(Set.of(new Authority(null, null, "USER"), new Authority(null, null, "ADMIN")));
+
+        List<String> adminList = new ArrayList<>(Arrays.asList("yusuf", "cagatay", "samil", "mert", "selim"));
+        List<String> adminEmailList = new ArrayList<>(Arrays.asList("ketenyusuf", "cagatayyigit3", "m.samilatesoglu", "validatedev", "selim.seker00"));
+        Authority adminAuthority = authorityRepository.findByAuthority("ADMIN");
+        Authority userAuthority = authorityRepository.findByAuthority("USER");
+
+        for (int i = 0; i < adminList.size(); i++) {
+            String adminUsername = adminList.get(i);
+            String adminPassword = passwordEncoder.encode("12345");
+            String adminEmail = adminEmailList.get(i) + "@gmail.com";
+
+            Member currentAdmin = new Member(adminUsername, adminPassword, adminEmail, null, null, null, null, null, Set.of(adminAuthority, userAuthority), null, null);
+            memberRepository.save(currentAdmin);
+        }
+
         /*
         authorityRepository.saveAll(Set.of(new Authority(null, null, "USER"), new Authority(null, null, "ADMIN")));
 
