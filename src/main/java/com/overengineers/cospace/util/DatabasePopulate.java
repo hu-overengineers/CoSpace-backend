@@ -31,7 +31,7 @@ public class DatabasePopulate {
 
     @Transactional
     public void populateDatabase() {
-
+        /*
         authorityRepository.saveAll(Set.of(new Authority(null, null, "USER"), new Authority(null, null, "ADMIN")));
 
         List<String> adminList = new ArrayList<>(Arrays.asList("yusuf", "cagatay", "samil", "mert", "selim"));
@@ -136,5 +136,6 @@ public class DatabasePopulate {
             subClub.setModerator(memberRepository.findByUsername(adminList.get(i - 1)));
             subClubRepository.save(subClub);
         }
+        */
     }
 }
