@@ -119,7 +119,6 @@ public class AdminService {
         return subClubNames;
     }
 
-
     @Transactional
     public SubClubDTO makeModerator(String username, String subClubName){
         if(!securityService.isAuthorizedToSubClub(username, subClubName))
@@ -137,7 +136,6 @@ public class AdminService {
         SubClub newSubClub = subClubRepository.save(subClub);
         return subClubMapper.mapToDto(newSubClub);
     }
-
 
     @Transactional
     public SubClubDTO assignModeratorRandomly(String subClubName){
@@ -201,7 +199,6 @@ public class AdminService {
         return responseDTOList;
     }
 
-
     public Ban banModerator(String username, String reason) {
         Member member  = memberRepository.findByUsername(username);
         SubClub subClub = member.getModeratorSubClub();
@@ -232,7 +229,7 @@ public class AdminService {
 
     @Transactional
     public SubClubDTO updateSubClub(SubClubDTO subClubDTO) {
-        // TODO: Review needed
+
         Optional<SubClub> optionalSubClub = subClubRepository.findById((long) subClubDTO.id);
 
         if (optionalSubClub.isPresent()) {
@@ -241,15 +238,28 @@ public class AdminService {
             subClub.setName(subClubDTO.getName());
             subClub.setDetails(subClubDTO.getDetails());
 
-            List<Question> question = questionMapper.mapToEntity(subClubDTO.getQuestions());
-            subClub.setQuestions(new HashSet<>(question));
+            SubClubDTO savedSubClubDTO = subClubMapper.mapToDto(subClubRepository.save(subClub));
 
-            SubClub updatedSubClub = subClubRepository.save(subClub);
-
-            return subClubMapper.mapToDto(updatedSubClub);
+            return savedSubClubDTO;
         }
 
         return null;
+    }
+
+    @Transactional
+    public SubClubDTO updateSubClubUtil(SubClubDTO subClubDTO, SubClubDTO savedSubClubDTO){
+        if(savedSubClubDTO == null){
+            System.out.println("SubClub: " + subClubDTO.getName() + " is not found!");
+            return null;
+        }
+
+        for(QuestionDTO questionDTO : subClubDTO.getQuestions()){
+            Question currentQuestion = createQuestion(questionDTO, subClubDTO.getName());
+            QuestionDTO currentQuestionDTO = questionMapper.mapToDto(currentQuestion);
+            savedSubClubDTO.getQuestions().add(currentQuestionDTO);
+        }
+
+        return savedSubClubDTO;
     }
 
     @Transactional
